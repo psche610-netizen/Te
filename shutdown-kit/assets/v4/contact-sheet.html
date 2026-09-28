@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>V4 contact sheet</title>
+<style>
+  body{margin:0;background:#111e23;color:#ded7bc;font:12px system-ui}
+  #grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:4px}
+  figure{margin:0;background:#1b2b30}
+  img{display:block;width:100%}
+  figcaption{padding:2px 4px}
+</style>
+<div id="grid"></div>
+<script type="importmap">{"imports":{"three":"../../game/node_modules/three/build/three.module.js","three/addons/":"../../game/node_modules/three/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+
+const manifest = await (await fetch('manifest.json')).json();
+const filter = new URLSearchParams(location.search).get('only');
+const assets = manifest.assets.filter(a => !filter || filter.split(',').includes(a.id));
+const size = 320;
+const renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true});
+renderer.setSize(size, size);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const loader = new GLTFLoader();
+const grid = document.getElementById('grid');
+
+for (const a of assets) {
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#1b2b30');
+  scene.add(new THREE.HemisphereLight('#c9d6d2', '#20302f', 1.4));
+  const sun = new THREE.DirectionalLight('#ffd9a0', 2.4);
+  sun.position.set(4, 8, 5);
+  scene.add(sun);
+  let label = a.id;
+  try {
+    const gltf = await loader.loadAsync(a.file);
+    const root = gltf.scene;
+    scene.add(root);
+    const box = new THREE.Box3().setFromObject(root);
+    const c = box.getCenter(new THREE.Vector3());
+    const s = box.getSize(new THREE.Vector3());
+    const r = Math.max(s.x, s.y, s.z) * 0.75 || 1;
+    const cam = new THREE.OrthographicCamera(-r, r, r, -r, 0.01, 1000);
+    cam.position.set(c.x + r * 2, c.y + r * 1.6, c.z + r * 2);
+    cam.lookAt(c);
+    renderer.render(scene, cam);
+    label += ` · ${s.x.toFixed(1)}×${s.y.toFixed(1)}×${s.z.toFixed(1)}m · ${gltf.animations.length} clips`;
+  } catch (e) {
+    label += ' · LOAD ERROR';
+  }
+  const fig = document.createElement('figure');
+  fig.innerHTML = `<img alt="${a.id}" src="${renderer.domElement.toDataURL()}"><figcaption>${label}</figcaption>`;
+  grid.append(fig);
+}
+document.body.dataset.done = '1';
+</script>
+</html>
