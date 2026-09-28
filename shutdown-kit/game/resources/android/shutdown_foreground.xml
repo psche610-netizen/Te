@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SHUTDOWN launcher mark: flat concrete hunter head with one red slit. Inside the 66dp adaptive safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path android:fillColor="#5A5F66" android:pathData="M40,30h28v48h-28z" />
+    <path android:fillColor="#1C1F24" android:pathData="M40,70h28v8h-28z" />
+    <path android:fillColor="#E5383B" android:pathData="M44,46h20v4h-20z" />
+</vector>
