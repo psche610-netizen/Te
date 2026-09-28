@@ -106,12 +106,19 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 Fonts, icons (30), panels, buttons, joystick, meter, tokens — present. Not yet wired into the game.
 
-## Suggested order (few at a time)
+## Phase mapping
 
-1. Floor + thick walls + pier + decals (fixes the whole look of 05).
-2. Operator + Warden fixes; first GLB integration in-game (shared atlas).
-3. Bug fixes: pipe-valve, capsule beacon, beacon, scrap.
-4. Water, waterfall, outlet pipe.
-5. Weaver rebuild + ladle + molten stream (Foundry).
-6. Core: radial bridges, shaft wall, pillars, spindle.
-7. Title/map: monolith, rocks, tower block, chimney, silo, plinth.
+Work order and checkboxes live in `../../SHUTDOWN.md` section 17. Section → phase:
+
+| Audit section | Phase |
+|---|---|
+| Pipeline, shared atlas, OK machines integrated | 13 |
+| B environment shell (floor, walls, pier) + G decals/stripes | 14 |
+| A characters (operator, warden) + rigs | 15 |
+| B/G bug fixes + new props | 16 |
+| C Cold Storage + H water/waterfall + outlet pipe | 17 |
+| D Foundry + A weaver | 18 |
+| E Core | 19 |
+| F title / map / overseer + I UI | 20 |
+
+When an asset is fixed or created, change its status here to OK and tick section 17.

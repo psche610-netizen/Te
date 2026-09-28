@@ -21,23 +21,25 @@ Landscape, single-player stealth horror for mobile. You are trapped inside Facil
 
 ---
 
-## 2. Art direction (anti-slop rules)
+## 2. Art direction — V4 (anti-slop rules)
 
-Reference board: `public/concepts/v3/`
+> **V4 replaces the v3 flat-shaded rules (updated 2026-09-28).** The v3 look (one flat color per face, primitives only) is what the shipped code currently renders; Phases 13–21 (section 17) migrate it to V4. Where old notes in section 16 say "flat" / "primitives only", V4 wins.
+
+Reference board: `shutdown-kit/concepts/v4/01–11.png` (source of truth for look). Asset kit: `shutdown-kit/assets/v4/` (see `AUDIT.md` there for status of every asset).
 
 | Rule | Spec |
 |---|---|
-| Render | Matte flat-shaded low-poly, one flat color per face. No textures, no noise, no specular. |
-| Camera | Orthographic isometric, ~45°. Reads like an architectural diorama. |
-| Light | One key light, hard shadows. Emissive only on interactables. |
-| Palette | `#0E0F12` black · `#1C1F24` graphite · `#5A5F66` concrete · `#EDEAE3` bone · `#FF5A1F` signal orange (player / interactables) · `#E5383B` red (enemy / danger only) |
-| Crew colors | Teal `#2EC4B6`, pale yellow `#F2D06B` (teammates only — roadmap) |
-| Type | Heavy condensed grotesk for titles (e.g. Anton / Bebas Neue), monospace for labels (JetBrains Mono / IBM Plex Mono). |
-| UI | Swiss grid, 1px rules, sharp corners, lots of negative space. No gradients, no bevels, no glow. |
-| Banned | Sparks, lens flare, bloom haze, particles-for-decoration, glossy renders, faces, emoji. |
-| Characters | Faceless mannequins. Hunter = tall thin geometric robot with one red slit. |
-
-**Off-style references to ignore:** `v3/07-crew.png` (too voxel/glossy) and `v3/10-paywall.png` (white background). Use them for layout only.
+| Render | Low-poly, chunky silhouettes, bevelled edges. Hand-painted matte enamel from ONE shared atlas (`assets/v4/textures/painted-enamel-atlas.png`, 4 quadrants). Roughness ~0.9, metalness 0. No photoreal PBR, no glossy speculars. |
+| Camera | Orthographic isometric, ~45°. Reads like an architectural diorama. (Unchanged.) |
+| Light | Warm amber key light, cool blue-indigo shadows, contact AO (baked or cheap SSAO-free fake). Emissive only on lamps, interactables and the red slit. |
+| Palette | Tokens in `assets/v4/ui/tokens.json`: petrol `#23474C` · teal `#507C79` · ivory `#DED7BC` · amber `#DEA33A` (player / interactables / edge lines) · indigo `#142127` (darks, void) · danger `#D84726` (enemy / danger only). Concrete greys allowed for floors/walls. |
+| Crew colors | Teal and ivory suits (teammates only — roadmap). |
+| Type | Display: Bebas Neue. Instrument/labels: Share Tech Mono. Files in `assets/v4/ui/fonts/`. |
+| UI | Swiss grid, 1px rules, sharp corners, v4 panels/buttons/icons from `assets/v4/ui/` (`v4.css`, `icons.svg`). No bevels, no glow. |
+| Markings | Stencil text decals (SECTOR B, B-1, G-02, room names, OVERSEER slogans) and amber/black hazard stripes on edges, floors and moving parts. Allowed and expected. |
+| Effects | Allowed: dark water with ripples, waterfall, molten pour glow (Foundry only), flat red vision cone. Keep them cheap and readable. |
+| Banned | Sparks, lens flare, bloom haze, decorative particles, chrome/glossy, faces, emoji, gradients in UI. |
+| Characters | Faceless. Operator = bulky amber hazmat suit, rounded helmet, dark visor, backpack. Warden = tall ivory/indigo robot, box head, one wide red slit. Weaver = chunky armored six-legged unit "W-01". |
 
 ---
 
@@ -60,17 +62,17 @@ Title ─► Mic calibration (first launch) ─► Sector map ─► Loadout ─
 
 | # | Screen | Art ref |
 |---|---|---|
-| 1 | Title | `v3/01-title.png` |
-| 2 | Mic calibration | `v3/02-mic.png` |
-| 3 | Sector map | `v3/03-sectors.png` |
-| 4 | Loadout | `v3/04-loadout.png` |
-| 5 | Gameplay — shifting map | `v3/05-shift.png` |
-| 6 | Locker — hold breath | `v3/06-locker.png` |
-| 7 | Crew rescue (roadmap, not v1) | `v3/07-crew.png` |
-| 8 | The Core finale | `v3/08-core.png` |
-| 9 | Results | `v3/09-results.png` |
-| 10 | Paywall | `v3/10-paywall.png` |
-| 11 | Overseer Mode (roadmap) | `v3/11-overseer.png` |
+| 1 | Title | `v4/01-title.png` |
+| 2 | Mic calibration | `v4/02-mic.png` |
+| 3 | Sector map | `v4/03-sectors.png` |
+| 4 | Loadout | `v4/04-loadout.png` |
+| 5 | Gameplay — shifting map | `v4/05-shift.png` |
+| 6 | Locker — hold breath | `v4/06-locker.png` |
+| 7 | Crew rescue (roadmap, not v1) | `v4/07-crew.png` |
+| 8 | The Core finale | `v4/08-core.png` |
+| 9 | Results | `v4/09-results.png` |
+| 10 | Paywall | `v4/10-paywall.png` |
+| 11 | Overseer Mode (roadmap) | `v4/11-overseer.png` |
 
 ---
 
@@ -208,7 +210,8 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 |---|---|
 | App shell | Next.js (static export) + Capacitor → Android APK |
 | 3D | Three.js via React Three Fiber + drei |
-| Models | Built in code from primitives (boxes, cylinders). No Blender needed. |
+| Models | **V4:** authored in Blender via script (`assets/v4/source/build_assets.py`, Blender 5.0.1 / `bpy`), exported as GLB (Y up, metres, ground origin), loaded with drei `useGLTF`, one shared texture. Code primitives stay as fallback until each GLB is integrated. |
+| Textures | One shared painted atlas (+ one decal/stencil atlas). GLBs must NOT embed their own copy in the shipped build (strip with `@gltf-transform/cli`). KTX2 compression in Phase 21. |
 | UI | HTML/CSS overlay (Tailwind) on top of the canvas |
 | Pathfinding | Grid A* on the level module grid |
 | Audio in | Web Audio API `AnalyserNode` on mic stream (Capacitor mic permission) |
@@ -310,16 +313,16 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 | 0:50–1:05 | OVERSEER adapts: "Locker four. Again?" — hunter goes straight to the player's usual locker. |
 | 1:05–1:20 | The Core finale, rings rotating, purge timer. |
 | 1:20–1:35 | Paywall → Test Store purchase → Foundry unlocks → THE WEAVER reveal. |
-| 1:35–1:50 | Tech: adaptive director, mic pipeline, primitives-only 3D, Capacitor. |
+| 1:35–1:50 | Tech: adaptive director, mic pipeline, script-authored Blender GLB kit, Capacitor. |
 | 1:50–2:00 | Roadmap: online co-op with proximity voice the hunter hears, Overseer Mode. End card. |
 
 ---
 
 ## 13. Roadmap (post-hackathon, pitch only)
-- **Crew bots:** AI teammates, processing pods, rescue (see section 5, `v3/07-crew.png`).
+- **Crew bots:** AI teammates, processing pods, rescue (see section 5, `v4/07-crew.png`).
 - **Online co-op:** 4 survivors vs AI facility.
 - **Proximity voice chat the hunter can hear.**
-- **Overseer Mode:** 1 player *is* the building (walls, locks, sends hunters) vs 4 survivors. See `v3/11-overseer.png`.
+- **Overseer Mode:** 1 player *is* the building (walls, locks, sends hunters) vs 4 survivors. See `v4/11-overseer.png`.
 - iOS + Galaxy Store release.
 - Daily seeded nights with leaderboards.
 
@@ -331,7 +334,9 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 | Mic is annoying / unfair | Calibration, generous threshold, full mic-off mode |
 | Shifting map feels cheap | Always telegraph, never trap, route-safety check |
 | Hunter too hard/easy | Tunable constants file, playtest early |
-| Looks like AI slop in-engine | Strict palette + flat shading + no post FX beyond subtle vignette |
+| Looks like AI slop in-engine | V4 palette tokens + one painted atlas + stencil decals; compare every asset against `concepts/v4` at the game camera before integrating; no post FX beyond subtle vignette |
+| V4 assets too heavy for mobile | Shared atlas (no per-GLB textures), triangle budgets, instancing, KTX2, measure draw calls per phase |
+| Deadline (Sep 30) vs art pass | Each V4 phase keeps the game shippable (primitive fallback). If time runs out, ship with whatever phases are done; Phase 14 + 15 give the biggest visual win |
 | Scope creep | Checklist order = priority. Foundry is cuttable; Sector 1 + Core + paywall are not. Crew already cut to roadmap. |
 
 ---
@@ -347,7 +352,9 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code). All phases done; remaining work is user-side (see Next step).
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass planned: Phases 13–21 in section 17. Current: Phase 13 not started.** Rules in section 2 are now V4.
+
+**Next step (agent):** start Phase 13 (section 17). Do one phase per turn, then stop and report.
 
 **Phase 12 (Ship) — done (edited via GitLab, no local build):**
 - `capacitor.config.ts` (appId `com.hideogroup.shutdown`, webDir `out`, ink background). Deps added: `@capacitor/android`, `@capacitor/haptics`, dev `@capacitor/cli` (all ^8). **The lockfile was not regenerated**: CI uses `pnpm install --no-frozen-lockfile`; run `pnpm install` locally and commit `pnpm-lock.yaml`.
@@ -374,7 +381,7 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 - P10 Playtest: Sector 3 unlocks after buying Foundry Pass; Weaver looks/moves right (tripod gait, feet lift while stepping forward, legs don't clip corridor walls; tune `KNEE`/`FOOT` in `weaver-body.tsx`), hears you from farther, sees wide but short. GHOST: hack then walk past a camera within 5s = not logged. DECOY: throw lands ≤6 away, pulses 3×, hunter investigates. OVERRIDE: first shift reversal each night costs no charge. DAILY: same sector/modifier all day, best score saved, needs Foundry Pass.
 
-**Next step (user):** 1) Let the GitLab `android-apk` pipeline run on the Phase 12 MR; fix anything `pnpm typecheck` or Gradle reports (Phases 10–12 were written without a local build). 2) `pnpm install` locally and commit the updated `pnpm-lock.yaml`. 3) RevenueCat dashboard: Test Store, products, entitlements, then set `REVENUECAT_ANDROID_KEY` in CI. 4) Run the Playtest checklist on the web preview and the APK. 5) Push `game/` to a public GitHub repo, capture a 1179×2556 screenshot, record the demo video (section 12), submit on Devpost.
+**Next step (user, ship tasks, still open):** 1) Let the GitLab `android-apk` pipeline run on the Phase 12 MR; fix anything `pnpm typecheck` or Gradle reports (Phases 10–12 were written without a local build). 2) `pnpm install` locally and commit the updated `pnpm-lock.yaml`. 3) RevenueCat dashboard: Test Store, products, entitlements, then set `REVENUECAT_ANDROID_KEY` in CI. 4) Run the Playtest checklist on the web preview and the APK. 5) Push `game/` to a public GitHub repo, capture a 1179×2556 screenshot, record the demo video (section 12), submit on Devpost.
 
 Earlier: Phase 9 (RevenueCat) logic-tested headlessly (`/tmp/p9/test.mts`, 12 checks: mock init/prices, empty restore, Foundry `pass` state without entitlement, purchase → `open` + still sealed (no layout until Phase 10), restore persists across adapter instances, skins fall back to free defaults without entitlement and apply with it, bad skin save sanitized). `tsc --noEmit` clean, `pnpm build` static export OK.
 
@@ -496,7 +503,8 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - `lib/purchases/` — purchases adapter (types, mock, revenuecat, zustand store). `components/shell/paywall.tsx` — screen 10. `lib/game/skins.ts` + `use-skin-colors.ts` — cosmetic skins. Loadout has PERKS / SKINS tabs.
 - `lib/game/level/sector3.ts` — The Foundry layout. `lib/game/daily.ts` — seeded Daily Night. `lib/game/decoy.ts` + `components/game/decoy-view.tsx` — Decoy perk. `components/game/weaver-body.tsx` — THE WEAVER six-legged body (picked in `hunter-view.tsx` by `profile.kind`).
 - `capacitor.config.ts` — Android shell. `scripts/prepare-android.mjs` — generate/patch/sync `android/`. `resources/android/` — launcher icon sources. `.github/workflows/android.yml` — GitHub APK build (GitLab: repo-root `.gitlab-ci.yml`). `README.md`, `LICENSE`.
-- `public/concepts/v3/` — mockups (reference only).
+- `shutdown-kit/concepts/v4/` — V4 mockups (look reference). `concepts/v3/` — old flat mockups (layout only).
+- `shutdown-kit/assets/v4/` — V4 asset kit: `models/*.glb`, `source/build_assets.py` + `.blend`, `textures/`, `ui/` (tokens, fonts, icons, panels), `effects/`, `scenes/`, `manifest.json`, `AUDIT.md` (status of every asset), `contact-sheet.html` (all GLBs in one grid), `preview.html` (orbit viewer).
 
 **Run notes:**
 - `pnpm install && pnpm dev`. On resume, if a template `node_modules` already exists, `pnpm install` may say "Already up to date" without installing three/R3F. Run `pnpm install --frozen-lockfile` and confirm `node_modules/@react-three` exists. `pnpm build` produces a static export in `out/` (`output: 'export'`, `trailingSlash: true`).
@@ -504,3 +512,70 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - Android: Node 22, JDK 21, Android SDK. `pnpm build && pnpm android:prepare && (cd android && ./gradlew assembleDebug)`. APK at `android/app/build/outputs/apk/debug/app-debug.apk`. RevenueCat key via `NEXT_PUBLIC_REVENUECAT_ANDROID_KEY` at build time.
 - GitLab repo (`hideo-group/hideo-project`) stores the kit extracted under `shutdown-kit/`. For local dev, follow PROMPT.md setup: copy `shutdown-kit/game/*` to the project root, then `pnpm install --frozen-lockfile && pnpm dev`. Run `npx tsc --noEmit` after pulling the Phase 10 close-out (edited without a local build).
 
+
+---
+
+## 17. V4 art pass — phases 13–21
+
+**Goal:** make the game look like `concepts/v4/` using the Blender GLB kit in `assets/v4/`, without breaking gameplay. Asset-by-asset status (OK / FIX / NEW) is in `assets/v4/AUDIT.md`; this section says *when* each one is done.
+
+**Rules for every V4 phase**
+- One phase per turn. Stop, report, wait for "next".
+- Per asset: **author** (edit `source/build_assets.py`, export GLB) → **review** (`contact-sheet.html` next to the matching concept, at the game camera angle) → **integrate** (replace the primitive in code) → **log** (tick below + `AUDIT.md` status → OK).
+- Keep the primitive version as fallback until the GLB is integrated and checked. The game must run after every phase.
+- Gameplay code (`lib/game/*`) does not change for art. Only views (`components/game/*`), materials, loader and lights. Colliders stay from the level grid, not from meshes.
+- Budgets: ≤150 draw calls per scene, props ≤1.5k tris, characters ≤6k tris, hero machines ≤4k tris. GLBs reference the shared atlas; no embedded duplicate textures in `game/public/`.
+- Verification: `npx tsc --noEmit` + headless checks. agent-browser is OK for the GLB contact sheet only. **Do not run the game in agent-browser**; the user playtests and sends screenshots. Add what to check to the Playtest checklist.
+- Blender: not installed in the v0 sandbox. Try `pip install bpy==5.0.1` (needs Python 3.11) once; if that fails, write the script changes and ask the user to run `blender --background --python assets/v4/source/build_assets.py` locally.
+
+### Phase 13 — Pipeline + V4 look in engine (no new models)
+- [ ] `lib/game/assets.ts`: GLB registry (id → path), `useGLTF.preload`, one shared atlas texture + material factory (`MeshStandardMaterial`, roughness 0.9, metalness 0) applied by material name.
+- [ ] Script `scripts/pack-v4.mjs`: copy `assets/v4/models` → `game/public/models/v4`, strip embedded images with `@gltf-transform/cli`, point to `public/textures/v4/atlas.png` (from ~140 MB to a few MB).
+- [ ] V4 palette in `config.ts` `PALETTE` + `globals.css` tokens; fonts Bebas Neue + Share Tech Mono from `assets/v4/ui/fonts/`.
+- [ ] Lights: warm amber key, cool indigo fill/ambient, hard shadows kept.
+- [ ] Integrate the OK machines first as proof: turbine-generator (generator), locker-bank/locker-single (lockers), supply-crate (crates), control-console.
+
+### Phase 14 — Environment shell (biggest visual change, screen 05)
+- [ ] FIX walkway-floor → worn grey concrete tiles, amber edge lines, hazard dashes.
+- [ ] FIX bulkhead-wall + wall-corner → thick (~0.8 m) concrete block walls with seams and top cap. Rebuild wall rendering from thin arms to thick blocks (update deviation note in section 16).
+- [ ] FIX foundation-pier → dark concrete base block in water.
+- [ ] NEW decal atlas: stencils (SECTOR B, TURBINE HALL A, B-1, C1, G-02, 01–07, slogans) + hazard stripes; decal quads on walls/floors.
+- [ ] Integrate sliding-bulkhead (dynamic wall, `__panel__` slides on +X), service-door (door), wall-lamp, guardrail.
+
+### Phase 15 — Characters + animation
+- [ ] FIX operator-amber → bulkier suit, knee pads, gloves/boots, bigger backpack, chest radio.
+- [ ] FIX warden → larger ivory box head, wide red slit, articulated hands (locker close-up 06).
+- [ ] Rigs + clips: operator idle / walk / run / crouch / hide-enter; warden idle / walk / scan / chase / grab. Drive from existing `walkPhase` + hunter mode.
+- [ ] Integrate in player-view, hunter-view, loadout diorama, locker view. Skins recolor via material tint.
+
+### Phase 16 — Bug fixes + Plant props
+- [ ] FIX pipe-valve (floating handwheel), containment-capsule (floating beacon; add pipes + stripes), warning-beacon (smaller, lens + cage), scrap-bundle (tied plates/rebar).
+- [ ] NEW pipe-tee, vertical riser, pipe bracket, junction box, floor drain grate, coat hook + hanging workwear.
+- [ ] Dress Sector 1 with pipes, ducts, electrical cabinets, ladders, stairs, grated bridge (visual only, off the walkable grid or on wall cells).
+
+### Phase 17 — Water + Cold Storage (Sector 2)
+- [ ] FIX water-tile → dark water shader with ripples (cheap, no reflections). FIX waterfall → volume, foam, splash ring.
+- [ ] NEW outlet-pipe (outfall feeding the waterfall).
+- [ ] NEW frost-silo. Integrate coolant-tank, refrigeration-unit, cold-storage-door in Sector 2.
+
+### Phase 18 — Foundry (Sector 3)
+- [ ] FIX weaver → chunky armored "W-01": box torso, thick 3-joint hydraulic legs, hazard stripes, box head with red slit. Keep the tripod gait logic in `weaver-body.tsx`.
+- [ ] FIX foundry-crucible → hanging ladle on gantry hook. FIX molten-stream → width, orange core glow, splash.
+- [ ] NEW tall-smokestack. Integrate furnace, overhead-gantry (+ stripes, "F-03"), casting-trough.
+
+### Phase 19 — The Core (screen 08)
+- [ ] FIX core-ring-inner/middle/outer → amber edge lines, ring numbers 01/02/03, railing posts. Segments must still split per `arena.ts` segment count.
+- [ ] NEW core-radial-bridge (spokes), core-shaft-wall (lamp rows), core-support-pillar.
+- [ ] FIX core-spindle → tall modular column, red sensor band, "CORE" stencil. core-kill-switch + number plates 1–4. Integrate retracting segment for drops.
+
+### Phase 20 — Menus + UI re-skin (screens 01, 02, 03, 04, 09, 10)
+- [ ] FIX overseer-housing → monumental monolith with red slit. FIX chimney → ~1.5 m, taller, red/ivory bands. FIX operator-plinth → square concrete block, "OPERATOR 07", hazard edge.
+- [ ] NEW sea-rock / cliff stacks, facility-tower-block, forklift + pallet.
+- [ ] Title diorama and 3D sector map built from the kit (replace flat nodes). Loadout on the new plinth.
+- [ ] All HTML screens + HUD + touch controls use `assets/v4/ui` (panels, buttons, icons, joystick, meter).
+
+### Phase 21 — Performance + ship
+- [ ] KTX2 atlas, meshopt GLBs, instancing check, draw calls ≤150 on each scene, APK size check.
+- [ ] Rebuild APK, new screenshots (1179×2556), demo video (section 12), Devpost.
+
+**Order if time runs short:** 13 → 14 → 15 → 16 → 19 → 17 → 18 → 20 → 21 (Plant + Core are the demo; Foundry is paid/cuttable).
