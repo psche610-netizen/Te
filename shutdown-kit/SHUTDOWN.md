@@ -23,7 +23,7 @@ Landscape, single-player stealth horror for mobile. You are trapped inside Facil
 
 ## 2. Art direction — V4 (anti-slop rules)
 
-> **V4 replaces the v3 flat-shaded rules (updated 2026-09-28).** The v3 look (one flat color per face, primitives only) is what the shipped code currently renders; Phases 13–21 (section 17) migrate it to V4. Where old notes in section 16 say "flat" / "primitives only", V4 wins.
+> **V4 replaces the v3 flat-shaded rules (updated 2026-09-28).** The v3 look (one flat color per face, primitives only) is what the shipped code currently renders; Phases 13–27 (section 17) migrate it to V4: assets first (13–20), integration later (21–27). Where old notes in section 16 say "flat" / "primitives only", V4 wins.
 
 Reference board: `shutdown-kit/concepts/v4/01–11.png` (source of truth for look). Asset kit: `shutdown-kit/assets/v4/` (see `AUDIT.md` there for status of every asset).
 
@@ -352,9 +352,9 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass planned: Phases 13–21 in section 17. Current: Phase 13 not started.** Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 13. Rules in section 2 are now V4.
 
-**Next step (agent):** start Phase 13 (section 17). Do one phase per turn, then stop and report.
+**Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
 **Phase 12 (Ship) — done (edited via GitLab, no local build):**
 - `capacitor.config.ts` (appId `com.hideogroup.shutdown`, webDir `out`, ink background). Deps added: `@capacitor/android`, `@capacitor/haptics`, dev `@capacitor/cli` (all ^8). **The lockfile was not regenerated**: CI uses `pnpm install --no-frozen-lockfile`; run `pnpm install` locally and commit `pnpm-lock.yaml`.
@@ -515,67 +515,94 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 
 ---
 
-## 17. V4 art pass — phases 13–21
+## 17. V4 art pass — phases 13–27
 
 **Goal:** make the game look like `concepts/v4/` using the Blender GLB kit in `assets/v4/`, without breaking gameplay. Asset-by-asset status (OK / FIX / NEW) is in `assets/v4/AUDIT.md`; this section says *when* each one is done.
 
-**Rules for every V4 phase**
-- One phase per turn. Stop, report, wait for "next".
-- Per asset: **author** (edit `source/build_assets.py`, export GLB) → **review** (`contact-sheet.html` next to the matching concept, at the game camera angle) → **integrate** (replace the primitive in code) → **log** (tick below + `AUDIT.md` status → OK).
-- Keep the primitive version as fallback until the GLB is integrated and checked. The game must run after every phase.
+**Order: all assets first, integration later.**
+- **Part A (13–20) = asset authoring only.** Blender script, GLBs, atlases, rigs/clips, decals, UI kit. No changes to `game/` code. Every asset is finished and reviewed on the contact sheet before any integration starts.
+- **Part B (21–27) = engine integration + ship.** Loader, materials, lights, replacing primitives in views. Done after Part A (the user may do some of it).
+
+**Rules for every phase**
+- One phase per turn. Stop, report, commit + push, wait for "next".
+- Part A per asset: **author** (edit `source/build_assets.py`, export GLB) → **review** (`contact-sheet.html` next to the matching concept, at the game camera angle) → **log** (tick below + `AUDIT.md` status → OK).
+- Part B per asset: **integrate** (replace the primitive in code) → **log**. Keep the primitive as fallback until the GLB is checked in engine. The game must run after every phase.
 - Gameplay code (`lib/game/*`) does not change for art. Only views (`components/game/*`), materials, loader and lights. Colliders stay from the level grid, not from meshes.
-- Budgets: ≤150 draw calls per scene, props ≤1.5k tris, characters ≤6k tris, hero machines ≤4k tris. GLBs reference the shared atlas; no embedded duplicate textures in `game/public/`.
-- Verification: `npx tsc --noEmit` + headless checks. agent-browser is OK for the GLB contact sheet only. **Do not run the game in agent-browser**; the user playtests and sends screenshots. Add what to check to the Playtest checklist.
-- Blender: not installed in the v0 sandbox. Try `pip install bpy==5.0.1` (needs Python 3.11) once; if that fails, write the script changes and ask the user to run `blender --background --python assets/v4/source/build_assets.py` locally.
+- Budgets: ≤150 draw calls per scene, props ≤1.5k tris, characters ≤6k tris, hero machines ≤4k tris. GLBs reference the shared atlas; no embedded duplicate textures.
+- Verification: Part A = script runs, manifest tri counts within budget, contact-sheet review (agent-browser OK for the contact sheet only). Part B = `npx tsc --noEmit` + headless checks. **Do not run the game in agent-browser**; the user playtests and sends screenshots. Add what to check to the Playtest checklist.
+- Blender: not installed in the v0 sandbox. Try `pip install bpy==5.0.1` (needs Python 3.11) once; if that fails, write the script changes and ask the user to run `blender --background --python assets/v4/source/build_assets.py` locally, then commit the exported GLBs.
 
-### Phase 13 — Pipeline + V4 look in engine (no new models)
-- [ ] `lib/game/assets.ts`: GLB registry (id → path), `useGLTF.preload`, one shared atlas texture + material factory (`MeshStandardMaterial`, roughness 0.9, metalness 0) applied by material name.
-- [ ] Script `scripts/pack-v4.mjs`: copy `assets/v4/models` → `game/public/models/v4`, strip embedded images with `@gltf-transform/cli`, point to `public/textures/v4/atlas.png` (from ~140 MB to a few MB).
-- [ ] V4 palette in `config.ts` `PALETTE` + `globals.css` tokens; fonts Bebas Neue + Share Tech Mono from `assets/v4/ui/fonts/`.
-- [ ] Lights: warm amber key, cool indigo fill/ambient, hard shadows kept.
-- [ ] Integrate the OK machines first as proof: turbine-generator (generator), locker-bank/locker-single (lockers), supply-crate (crates), control-console.
+## Part A — Assets
 
-### Phase 14 — Environment shell (biggest visual change, screen 05)
-- [ ] FIX walkway-floor → worn grey concrete tiles, amber edge lines, hazard dashes.
-- [ ] FIX bulkhead-wall + wall-corner → thick (~0.8 m) concrete block walls with seams and top cap. Rebuild wall rendering from thin arms to thick blocks (update deviation note in section 16).
-- [ ] FIX foundation-pier → dark concrete base block in water.
-- [ ] NEW decal atlas: stencils (SECTOR B, TURBINE HALL A, B-1, C1, G-02, 01–07, slogans) + hazard stripes; decal quads on walls/floors.
-- [ ] Integrate sliding-bulkhead (dynamic wall, `__panel__` slides on +X), service-door (door), wall-lamp, guardrail.
+### Phase 13 — Asset pipeline + shared atlas
+- [ ] `build_assets.py`: build one asset or a group (`-- --only <id>` / `--group <name>`), so later phases re-export only what changed.
+- [ ] Shared materials by name (petrol, teal, ivory, amber, indigo, danger, concrete, dark, emissive-*) all sampling ONE atlas; GLBs reference `textures/painted-enamel-atlas.png` externally (no embedded copy). Fallback: `assets/v4/source/pack.mjs` strips embedded images with `@gltf-transform/cli` (~165 MB → a few MB).
+- [ ] Decal/stencil atlas `textures/decals-atlas.png` (SECTOR B, TURBINE HALL A, B-1, C1, G-02, 01–07, room names, OVERSEER slogans) + hazard-stripe strip; UV layout documented in `manifest.json`.
+- [ ] `contact-sheet.html`: add a game-camera view (ortho iso ~45°, amber key + indigo fill) and show the matching concept next to each asset; `manifest.json` lists tris + budget per asset.
 
-### Phase 15 — Characters + animation
-- [ ] FIX operator-amber → bulkier suit, knee pads, gloves/boots, bigger backpack, chest radio.
+### Phase 14 — Environment shell assets (screen 05)
+- [ ] FIX walkway-floor → worn grey concrete tiles, amber edge lines, hazard dashes, drain grate variant.
+- [ ] FIX bulkhead-wall + wall-corner → thick (~0.8 m) concrete block walls with seams and top cap; add wall-end, wall-T and wall-cross pieces for the grid.
+- [ ] FIX foundation-pier → dark concrete base block that sits in water.
+- [ ] sliding-bulkhead: hazard stripes on frame edges + "B-1" stencil. Decal quad meshes (wall stencil, floor stencil, hazard edge strip) using the decal atlas.
+
+### Phase 15 — Characters + rigs + clips
+- [ ] FIX operator-amber (and crew-teal / crew-ivory) → bulkier suit, knee pads, dark gloves/boots, bigger backpack, chest radio.
 - [ ] FIX warden → larger ivory box head, wide red slit, articulated hands (locker close-up 06).
-- [ ] Rigs + clips: operator idle / walk / run / crouch / hide-enter; warden idle / walk / scan / chase / grab. Drive from existing `walkPhase` + hunter mode.
-- [ ] Integrate in player-view, hunter-view, loadout diorama, locker view. Skins recolor via material tint.
+- [ ] Armatures + clips in the GLB: operator idle / walk / run / crouch / hide-enter; warden idle / walk / scan / chase / grab. Walk/run clips loop on a known cycle so Part B can drive them from `walkPhase`.
+- [ ] Skin-tintable material slots (suit, trim) named for recolor.
 
-### Phase 16 — Bug fixes + Plant props
+### Phase 16 — Plant props (Sector 1)
 - [ ] FIX pipe-valve (floating handwheel), containment-capsule (floating beacon; add pipes + stripes), warning-beacon (smaller, lens + cage), scrap-bundle (tied plates/rebar).
+- [ ] FIX turbine-generator minor (bigger coupling flange + pipe run), locker-interior-frame worn inner door, core-kill-switch number plates 1–4 (shared plate mesh).
 - [ ] NEW pipe-tee, vertical riser, pipe bracket, junction box, floor drain grate, coat hook + hanging workwear.
-- [ ] Dress Sector 1 with pipes, ducts, electrical cabinets, ladders, stairs, grated bridge (visual only, off the walkable grid or on wall cells).
 
-### Phase 17 — Water + Cold Storage (Sector 2)
-- [ ] FIX water-tile → dark water shader with ripples (cheap, no reflections). FIX waterfall → volume, foam, splash ring.
+### Phase 17 — Water + Cold Storage assets (Sector 2)
+- [ ] FIX water-tile → mesh + shader spec (dark water, ripple normal/UV scroll, no reflections); FIX waterfall → volume, foam, splash ring.
 - [ ] NEW outlet-pipe (outfall feeding the waterfall).
-- [ ] NEW frost-silo. Integrate coolant-tank, refrigeration-unit, cold-storage-door in Sector 2.
+- [ ] NEW frost-silo. Review coolant-tank, refrigeration-unit, cold-storage-door against 03/09.
 
-### Phase 18 — Foundry (Sector 3)
-- [ ] FIX weaver → chunky armored "W-01": box torso, thick 3-joint hydraulic legs, hazard stripes, box head with red slit. Keep the tripod gait logic in `weaver-body.tsx`.
+### Phase 18 — Foundry assets (Sector 3)
+- [ ] FIX weaver → chunky armored "W-01": box torso, thick 3-joint hydraulic legs, hazard stripes, box head with red slit. Leg bones/pivots named to match the tripod gait in `weaver-body.tsx` (KNEE/FOOT).
 - [ ] FIX foundry-crucible → hanging ladle on gantry hook. FIX molten-stream → width, orange core glow, splash.
-- [ ] NEW tall-smokestack. Integrate furnace, overhead-gantry (+ stripes, "F-03"), casting-trough.
+- [ ] NEW tall-smokestack. overhead-gantry + hazard stripes and "F-03" label.
 
-### Phase 19 — The Core (screen 08)
-- [ ] FIX core-ring-inner/middle/outer → amber edge lines, ring numbers 01/02/03, railing posts. Segments must still split per `arena.ts` segment count.
+### Phase 19 — Core assets (screen 08)
+- [ ] FIX core-ring-inner/middle/outer → amber edge lines, ring numbers 01/02/03, railing posts; export as per-segment pieces matching the `arena.ts` segment count.
 - [ ] NEW core-radial-bridge (spokes), core-shaft-wall (lamp rows), core-support-pillar.
-- [ ] FIX core-spindle → tall modular column, red sensor band, "CORE" stencil. core-kill-switch + number plates 1–4. Integrate retracting segment for drops.
+- [ ] FIX core-spindle → tall modular column, red sensor band, "CORE" stencil.
 
-### Phase 20 — Menus + UI re-skin (screens 01, 02, 03, 04, 09, 10)
+### Phase 20 — Menu world + UI kit (screens 01, 02, 03, 04, 09, 10)
 - [ ] FIX overseer-housing → monumental monolith with red slit. FIX chimney → ~1.5 m, taller, red/ivory bands. FIX operator-plinth → square concrete block, "OPERATOR 07", hazard edge.
 - [ ] NEW sea-rock / cliff stacks, facility-tower-block, forklift + pallet.
-- [ ] Title diorama and 3D sector map built from the kit (replace flat nodes). Loadout on the new plinth.
-- [ ] All HTML screens + HUD + touch controls use `assets/v4/ui` (panels, buttons, icons, joystick, meter).
+- [ ] Scene recipes (`source/scene_recipes.py`) for the title diorama and the 3D sector map islands, exported as GLB layouts.
+- [ ] UI kit complete: panels, buttons, icons (every icon the HUD/screens need), joystick, meter, checked against 01–11. **Part A done → all AUDIT rows OK.**
 
-### Phase 21 — Performance + ship
+## Part B — Integration + ship (after all assets)
+
+### Phase 21 — Engine pipeline + V4 look
+- [ ] Copy packed GLBs + atlases into `game/public/models/v4` and `game/public/textures/v4`.
+- [ ] `lib/game/assets.ts`: GLB registry (id → path), `useGLTF.preload`, shared atlas + material factory (`MeshStandardMaterial`, roughness 0.9, metalness 0) by material name.
+- [ ] V4 palette in `config.ts` `PALETTE` + `globals.css`; fonts Bebas Neue + Share Tech Mono. Lights: amber key, indigo fill/ambient, hard shadows kept.
+
+### Phase 22 — Integrate environment + Plant
+- [ ] Thick wall rendering from the grid (update deviation note in section 16), floor, pier, decals, doors, bulkheads, lamps, rails.
+- [ ] Machines + props: generator, lockers, crates, console, Sector 1 dressing (off the walkable grid or on wall cells).
+
+### Phase 23 — Integrate characters
+- [ ] player-view, hunter-view, loadout diorama, locker view; clips driven by `walkPhase` + hunter mode; skins via material tint.
+
+### Phase 24 — Integrate Sectors 2 + 3
+- [ ] Water shader, waterfall, outlet pipe, Cold Storage props; Foundry props, Weaver GLB with existing gait.
+
+### Phase 25 — Integrate the Core
+- [ ] Ring segments, bridges, shaft wall, pillars, spindle, kill switches, retracting segment for drops.
+
+### Phase 26 — Menus + UI re-skin
+- [ ] Title diorama and 3D sector map from the kit, Loadout on the new plinth; all HTML screens + HUD + touch controls on `assets/v4/ui`.
+
+### Phase 27 — Performance + ship
 - [ ] KTX2 atlas, meshopt GLBs, instancing check, draw calls ≤150 on each scene, APK size check.
 - [ ] Rebuild APK, new screenshots (1179×2556), demo video (section 12), Devpost.
 
-**Order if time runs short:** 13 → 14 → 15 → 16 → 19 → 17 → 18 → 20 → 21 (Plant + Core are the demo; Foundry is paid/cuttable).
+**Order if time runs short:** Part A 13 → 14 → 15 → 16 → 19 → 17 → 18 → 20, then Part B 21 → 22 → 23 → 25 → 24 → 26 → 27 (Plant + Core are the demo; Foundry is paid/cuttable).

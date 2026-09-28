@@ -1,6 +1,6 @@
 # Te — SHUTDOWN (start here)
 
-Landscape mobile stealth-horror game for RevenueCat Shipaton 2026. Gameplay is complete (Phases 0–12). **Current work: V4 art pass, Phases 13–21.**
+Landscape mobile stealth-horror game for RevenueCat Shipaton 2026. Gameplay is complete (Phases 0–12). **Current work: V4 art pass, Phases 13–27 — Part A (13–20) builds all assets first, Part B (21–27) integrates them later.**
 
 ## For the next agent / LLM — read in this order
 1. `shutdown-kit/PROMPT.md` — how to work (one phase per turn, rules, handoff).
@@ -24,4 +24,4 @@ shutdown-kit/
 ## Status
 - Game code: done (v3 flat primitives look).
 - V4 assets: 56 GLBs exist (~33 OK, ~22 need fixes, ~20 missing). None integrated in the game yet.
-- Next: **Phase 13** (GLB loader, shared atlas, V4 palette/lights).
+- Next: **Phase 13** (asset pipeline: per-asset builds, one shared external atlas, decal atlas, game-camera contact sheet).

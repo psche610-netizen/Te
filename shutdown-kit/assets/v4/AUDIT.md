@@ -108,17 +108,18 @@ Fonts, icons (30), panels, buttons, joystick, meter, tokens — present. Not yet
 
 ## Phase mapping
 
-Work order and checkboxes live in `../../SHUTDOWN.md` section 17. Section → phase:
+Work order and checkboxes live in `../../SHUTDOWN.md` section 17. **All assets are authored first (Part A, 13–20); integration into the game comes after (Part B, 21–27).** Section → authoring phase:
 
 | Audit section | Phase |
 |---|---|
-| Pipeline, shared atlas, OK machines integrated | 13 |
+| Pipeline, shared external atlas, decal atlas, contact sheet | 13 |
 | B environment shell (floor, walls, pier) + G decals/stripes | 14 |
-| A characters (operator, warden) + rigs | 15 |
+| A characters (operator, crew, warden) + rigs | 15 |
 | B/G bug fixes + new props | 16 |
 | C Cold Storage + H water/waterfall + outlet pipe | 17 |
 | D Foundry + A weaver | 18 |
 | E Core | 19 |
 | F title / map / overseer + I UI | 20 |
+| Integration of everything above | 21–27 |
 
 When an asset is fixed or created, change its status here to OK and tick section 17.
