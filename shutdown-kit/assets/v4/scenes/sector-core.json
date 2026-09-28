@@ -1,0 +1,315 @@
+{
+  "id": "sector-core",
+  "description": "Sector-selection miniature: core",
+  "coordinates": "Blender Z up; rotation radians around Z",
+  "instances": [
+    {
+      "asset": "walkway-floor",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        0,
+        4,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        0,
+        4,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        4,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        4,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        4,
+        4,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        4,
+        4,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        0,
+        6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        4,
+        6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -2,
+        0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -2,
+        4,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        0,
+        -2,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        4,
+        -2,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        6,
+        0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        6,
+        4,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        0,
+        5.7,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        4,
+        5.7,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "overseer-housing",
+      "position": [
+        1.8,
+        2,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "electrical-cabinet",
+      "position": [
+        -0.2,
+        1,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "electrical-cabinet",
+      "position": [
+        4,
+        1,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "water-tile",
+      "position": [
+        2,
+        2,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        1.3,
+        1.3,
+        1
+      ]
+    }
+  ]
+}

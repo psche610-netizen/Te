@@ -1,0 +1,1369 @@
+{
+  "version": 2,
+  "status": "complete-concept-asset-inventory",
+  "visual_match": "Requires scene-level comparison; no pixel-identical claim.",
+  "authoring": "Blender 5.0.1",
+  "coordinates": "GLB Y up; metres; character front +Z after Blender -Y conversion",
+  "textures": [
+    "textures/painted-enamel-atlas.png",
+    "textures/painted-workwear-atlas.png"
+  ],
+  "assets": [
+    {
+      "id": "turbine-generator",
+      "file": "models/turbine-generator.glb",
+      "category": "environment",
+      "description": "Hero horizontal generator with service console, removable end flanges and pipe connections.",
+      "triangles": 34484,
+      "mesh_primitives": 7,
+      "bytes": 4348960,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -2.4000000953674316,
+          -1.7790000438690186,
+          -3.2521274562213875e-08
+        ],
+        "max": [
+          2.4000000953674316,
+          1.125,
+          2.609999895095825
+        ]
+      }
+    },
+    {
+      "id": "control-console",
+      "file": "models/control-console.glb",
+      "category": "environment",
+      "description": "Analogue twin-gauge repair station; amber controls use a separate emissive material.",
+      "triangles": 10776,
+      "mesh_primitives": 6,
+      "bytes": 2832056,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.7275428771972656,
+          -0.39900001883506775,
+          0.0
+        ],
+        "max": [
+          0.6653878092765808,
+          0.3149999976158142,
+          1.6769200563430786
+        ]
+      }
+    },
+    {
+      "id": "locker-bank",
+      "file": "models/locker-bank.glb",
+      "category": "environment",
+      "description": "Three full-height enamel lockers with louvers, hinges, number plates and recessed handles.",
+      "triangles": 8784,
+      "mesh_primitives": 5,
+      "bytes": 2694596,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.1749999523162842,
+          -0.4320003092288971,
+          0.0
+        ],
+        "max": [
+          1.1749999523162842,
+          0.36000001430511475,
+          2.240000009536743
+        ]
+      }
+    },
+    {
+      "id": "supply-crate",
+      "file": "models/supply-crate.glb",
+      "category": "environment",
+      "description": "Portable enamel supply case with reinforced corners, latches, handle and amber identification stripe.",
+      "triangles": 3196,
+      "mesh_primitives": 6,
+      "bytes": 2320848,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.6100000143051147,
+          -0.4475000202655792,
+          0.030000001192092896
+        ],
+        "max": [
+          0.6100000143051147,
+          0.41999998688697815,
+          1.0230000019073486
+        ]
+      }
+    },
+    {
+      "id": "pipe-elbow",
+      "file": "models/pipe-elbow.glb",
+      "category": "environment",
+      "description": "Quarter-circle cast pipe, radius 0.28 m, flange connections and visible six-sided fasteners.",
+      "triangles": 4576,
+      "mesh_primitives": 3,
+      "bytes": 2456164,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.09999996423721313,
+          -0.3700000047683716,
+          0.1899999976158142
+        ],
+        "max": [
+          1.0199999809265137,
+          0.3700000047683716,
+          1.3700000047683716
+        ]
+      }
+    },
+    {
+      "id": "pipe-straight",
+      "file": "models/pipe-straight.glb",
+      "category": "environment",
+      "description": "Two-metre pipe module with flanges. Repeat along local X.",
+      "triangles": 6052,
+      "mesh_primitives": 3,
+      "bytes": 2556364,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0099999904632568,
+          -0.3700000047683716,
+          -8.523721106712401e-08
+        ],
+        "max": [
+          1.0764999389648438,
+          0.3700000047683716,
+          0.7900000810623169
+        ]
+      }
+    },
+    {
+      "id": "bulkhead-wall",
+      "file": "models/bulkhead-wall.glb",
+      "category": "environment",
+      "description": "Four-metre ivory wall with blue skirting, separate conduit and painted signage.",
+      "triangles": 2656,
+      "mesh_primitives": 4,
+      "bytes": 2288492,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -2.0399999618530273,
+          -0.3499999940395355,
+          0.0
+        ],
+        "max": [
+          2.0399999618530273,
+          0.24500000476837158,
+          3.0450000762939453
+        ]
+      }
+    },
+    {
+      "id": "sliding-bulkhead",
+      "file": "models/sliding-bulkhead.glb",
+      "category": "environment",
+      "description": "Door frame with independently named sliding panel. Panel motion local +X; clear width 2.6 m.",
+      "triangles": 3160,
+      "mesh_primitives": 9,
+      "bytes": 2317592,
+      "clips": [
+        "open"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.7000000476837158,
+          -0.36500000953674316,
+          0.0
+        ],
+        "max": [
+          1.9249999523162842,
+          0.32499998807907104,
+          3.1649999618530273
+        ]
+      }
+    },
+    {
+      "id": "wall-lamp",
+      "file": "models/wall-lamp.glb",
+      "category": "environment",
+      "description": "Industrial task light with enamel shade, protective cage and separate luminous bulb.",
+      "triangles": 1892,
+      "mesh_primitives": 4,
+      "bytes": 2274264,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.2709384858608246,
+          -0.6709384918212891,
+          0.31850001215934753
+        ],
+        "max": [
+          0.2709384858608246,
+          0.08500000089406967,
+          0.7634961605072021
+        ]
+      }
+    },
+    {
+      "id": "walkway-floor",
+      "file": "models/walkway-floor.glb",
+      "category": "environment",
+      "description": "Four-by-four modular service floor with bevelled tiles and amber route edges.",
+      "triangles": 7236,
+      "mesh_primitives": 3,
+      "bytes": 2650984,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -2.0,
+          -2.0,
+          -0.3400000035762787
+        ],
+        "max": [
+          2.0,
+          2.0,
+          0.04600000008940697
+        ]
+      }
+    },
+    {
+      "id": "guardrail",
+      "file": "models/guardrail.glb",
+      "category": "environment",
+      "description": "Four-metre guardrail with midrail and bolted feet.",
+      "triangles": 1304,
+      "mesh_primitives": 2,
+      "bytes": 2234208,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.9950000047683716,
+          -0.08500000089406967,
+          0.0
+        ],
+        "max": [
+          1.9950000047683716,
+          0.08500000089406967,
+          1.106515884399414
+        ]
+      }
+    },
+    {
+      "id": "operator-amber",
+      "file": "models/operator-amber.glb",
+      "category": "character",
+      "description": "Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.",
+      "triangles": 13524,
+      "mesh_primitives": 8,
+      "bytes": 7328536,
+      "clips": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "repair",
+        "hide",
+        "hold-breath",
+        "rescue",
+        "caught",
+        "sit-exhausted"
+      ],
+      "rigged": true,
+      "bounds_blender": {
+        "min": [
+          -0.3810544013977051,
+          -0.014888733625411987,
+          0.1789795458316803
+        ],
+        "max": [
+          0.3787843585014343,
+          0.8859272599220276,
+          1.8633716106414795
+        ]
+      }
+    },
+    {
+      "id": "crew-teal",
+      "file": "models/crew-teal.glb",
+      "category": "character",
+      "description": "Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.",
+      "triangles": 13524,
+      "mesh_primitives": 8,
+      "bytes": 7328448,
+      "clips": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "repair",
+        "hide",
+        "hold-breath",
+        "rescue",
+        "caught",
+        "sit-exhausted"
+      ],
+      "rigged": true,
+      "bounds_blender": {
+        "min": [
+          -0.3810544013977051,
+          -0.014888733625411987,
+          0.1789795458316803
+        ],
+        "max": [
+          0.3787843585014343,
+          0.8859272599220276,
+          1.8633716106414795
+        ]
+      }
+    },
+    {
+      "id": "crew-ivory",
+      "file": "models/crew-ivory.glb",
+      "category": "character",
+      "description": "Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.",
+      "triangles": 13524,
+      "mesh_primitives": 8,
+      "bytes": 7328468,
+      "clips": [
+        "idle",
+        "walk",
+        "run",
+        "crouch",
+        "repair",
+        "hide",
+        "hold-breath",
+        "rescue",
+        "caught",
+        "sit-exhausted"
+      ],
+      "rigged": true,
+      "bounds_blender": {
+        "min": [
+          -0.3810544013977051,
+          -0.014888733625411987,
+          0.1789795458316803
+        ],
+        "max": [
+          0.3787843585014343,
+          0.8859272599220276,
+          1.8633716106414795
+        ]
+      }
+    },
+    {
+      "id": "warden",
+      "file": "models/warden.glb",
+      "category": "character",
+      "description": "Tall asymmetric surveillance hunter with instrument head, red slit, articulated hands and six skeletal clips.",
+      "triangles": 14516,
+      "mesh_primitives": 6,
+      "bytes": 3793244,
+      "clips": [
+        "idle",
+        "patrol",
+        "chase",
+        "search",
+        "capture",
+        "stunned"
+      ],
+      "rigged": true,
+      "bounds_blender": {
+        "min": [
+          -0.5217255353927612,
+          -0.5434596538543701,
+          0.0034220218658447266
+        ],
+        "max": [
+          0.47601357102394104,
+          0.15091809630393982,
+          2.2394230365753174
+        ]
+      }
+    },
+    {
+      "id": "weaver",
+      "file": "models/weaver.glb",
+      "category": "character",
+      "description": "Six-legged foundry maintenance hunter; independent three-joint legs, sensor head and six skeletal clips.",
+      "triangles": 15880,
+      "mesh_primitives": 7,
+      "bytes": 3989020,
+      "clips": [
+        "idle",
+        "scuttle",
+        "chase",
+        "scan",
+        "strike",
+        "stunned"
+      ],
+      "rigged": true,
+      "bounds_blender": {
+        "min": [
+          -1.2300000190734863,
+          -0.9197486639022827,
+          -0.14039325714111328
+        ],
+        "max": [
+          1.2300000190734863,
+          1.0731931924819946,
+          1.4294445514678955
+        ]
+      }
+    },
+    {
+      "id": "containment-capsule",
+      "file": "models/containment-capsule.glb",
+      "category": "machinery",
+      "description": "Crew rescue capsule with transparent window, animated lifting door, red beacon and release lever.",
+      "triangles": 3280,
+      "mesh_primitives": 10,
+      "bytes": 2365308,
+      "clips": [
+        "open",
+        "release"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.705442190170288,
+          -0.9654420018196106,
+          0.0
+        ],
+        "max": [
+          0.6100000143051147,
+          0.5550000071525574,
+          3.0399999618530273
+        ]
+      }
+    },
+    {
+      "id": "locker-single",
+      "file": "models/locker-single.glb",
+      "category": "environment",
+      "description": "Functional hiding locker with hollow interior, front vent openings and a hinged door clip.",
+      "triangles": 1284,
+      "mesh_primitives": 4,
+      "bytes": 2235880,
+      "clips": [
+        "open"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.7400000095367432,
+          -0.8177816867828369,
+          0.0
+        ],
+        "max": [
+          0.41249996423721313,
+          0.35750001668930054,
+          2.2150001525878906
+        ]
+      }
+    },
+    {
+      "id": "locker-interior-frame",
+      "file": "models/locker-interior-frame.glb",
+      "category": "environment",
+      "description": "First-person locker front with two genuinely open sight slits; renders the scene outside through the geometry.",
+      "triangles": 2300,
+      "mesh_primitives": 3,
+      "bytes": 2303680,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.8224999904632568,
+          -0.06650008261203766,
+          0.0
+        ],
+        "max": [
+          0.8225000500679016,
+          0.04500000178813934,
+          2.299999952316284
+        ]
+      }
+    },
+    {
+      "id": "wall-microphone",
+      "file": "models/wall-microphone.glb",
+      "category": "equipment",
+      "description": "Ivory wall microphone, slotted grille, conduit connection and red detection lamp.",
+      "triangles": 3224,
+      "mesh_primitives": 4,
+      "bytes": 2365288,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.3100000023841858,
+          -0.1810000091791153,
+          0.0
+        ],
+        "max": [
+          0.3100000023841858,
+          0.10999999940395355,
+          0.9399999976158142
+        ]
+      }
+    },
+    {
+      "id": "rotary-control",
+      "file": "models/rotary-control.glb",
+      "category": "equipment",
+      "description": "Calibrated industrial rotary input with animated knob and ivory tick marks.",
+      "triangles": 3464,
+      "mesh_primitives": 6,
+      "bytes": 2380980,
+      "clips": [
+        "turn"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.33000001311302185,
+          -0.612500011920929,
+          0.0
+        ],
+        "max": [
+          0.33000001311302185,
+          0.10999999940395355,
+          1.0099999904632568
+        ]
+      }
+    },
+    {
+      "id": "battery-pack",
+      "file": "models/battery-pack.glb",
+      "category": "equipment",
+      "description": "Portable operator equipment with physically modeled fittings.",
+      "triangles": 1108,
+      "mesh_primitives": 4,
+      "bytes": 2208892,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.1899999976158142,
+          -0.14499999582767487,
+          0.0
+        ],
+        "max": [
+          0.1899999976158142,
+          0.10000000149011612,
+          0.675000011920929
+        ]
+      }
+    },
+    {
+      "id": "hand-radio",
+      "file": "models/hand-radio.glb",
+      "category": "equipment",
+      "description": "Portable operator equipment with physically modeled fittings.",
+      "triangles": 680,
+      "mesh_primitives": 3,
+      "bytes": 2190896,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.07500000298023224,
+          -0.04500001296401024,
+          0.019999995827674866
+        ],
+        "max": [
+          0.07500000298023224,
+          0.032499998807907104,
+          0.550000011920929
+        ]
+      }
+    },
+    {
+      "id": "repair-tool",
+      "file": "models/repair-tool.glb",
+      "category": "equipment",
+      "description": "Portable operator equipment with physically modeled fittings.",
+      "triangles": 824,
+      "mesh_primitives": 2,
+      "bytes": 3669416,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.08500000834465027,
+          -0.027499999850988388,
+          0.02499999850988388
+        ],
+        "max": [
+          0.08500000834465027,
+          0.027499999850988388,
+          0.4649999737739563
+        ]
+      }
+    },
+    {
+      "id": "scrap-bundle",
+      "file": "models/scrap-bundle.glb",
+      "category": "equipment",
+      "description": "Portable operator equipment with physically modeled fittings.",
+      "triangles": 1760,
+      "mesh_primitives": 2,
+      "bytes": 2261284,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.20999999344348907,
+          -0.2459999918937683,
+          0.0
+        ],
+        "max": [
+          0.24599997699260712,
+          0.06499999761581421,
+          0.30000001192092896
+        ]
+      }
+    },
+    {
+      "id": "breathing-canister",
+      "file": "models/breathing-canister.glb",
+      "category": "equipment",
+      "description": "Portable operator equipment with physically modeled fittings.",
+      "triangles": 852,
+      "mesh_primitives": 3,
+      "bytes": 2196116,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.10000000149011612,
+          -0.10000000149011612,
+          0.030000001192092896
+        ],
+        "max": [
+          0.21199999749660492,
+          0.10000000149011612,
+          0.6511417031288147
+        ]
+      }
+    },
+    {
+      "id": "operator-plinth",
+      "file": "models/operator-plinth.glb",
+      "category": "environment",
+      "description": "Worn concrete loadout display pedestal with operator identification.",
+      "triangles": 2836,
+      "mesh_primitives": 2,
+      "bytes": 2268360,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.8600000143051147,
+          -0.8600000143051147,
+          0.0
+        ],
+        "max": [
+          0.8600000143051147,
+          0.8600000143051147,
+          0.30000001192092896
+        ]
+      }
+    },
+    {
+      "id": "foundation-pier",
+      "file": "models/foundation-pier.glb",
+      "category": "environment",
+      "description": "Deep structural pier with stepped wall buttresses and hardware.",
+      "triangles": 972,
+      "mesh_primitives": 3,
+      "bytes": 2212492,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -2.0250000953674316,
+          -2.125,
+          -3.5999999046325684
+        ],
+        "max": [
+          2.0250000953674316,
+          2.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "id": "wall-corner",
+      "file": "models/wall-corner.glb",
+      "category": "environment",
+      "description": "L-shaped ivory cutaway corner with teal lower panels.",
+      "triangles": 432,
+      "mesh_primitives": 2,
+      "bytes": 2172088,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -1.0,
+          0.0
+        ],
+        "max": [
+          1.149999976158142,
+          1.149999976158142,
+          3.0
+        ]
+      }
+    },
+    {
+      "id": "service-door",
+      "file": "models/service-door.glb",
+      "category": "environment",
+      "description": "Inset ivory service door with round latch and open animation.",
+      "triangles": 1000,
+      "mesh_primitives": 4,
+      "bytes": 2215292,
+      "clips": [
+        "open"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.1749999523162842,
+          -0.20800000429153442,
+          0.0
+        ],
+        "max": [
+          0.7250000238418579,
+          0.17499999701976776,
+          2.3600001335144043
+        ]
+      }
+    },
+    {
+      "id": "ladder",
+      "file": "models/ladder.glb",
+      "category": "environment",
+      "description": "Three-metre maintenance ladder with wall standoffs.",
+      "triangles": 2380,
+      "mesh_primitives": 3,
+      "bytes": 2302528,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.35499998927116394,
+          -0.04000001400709152,
+          0.0
+        ],
+        "max": [
+          0.35500001907348633,
+          0.2500001788139343,
+          3.0
+        ]
+      }
+    },
+    {
+      "id": "stairs",
+      "file": "models/stairs.glb",
+      "category": "environment",
+      "description": "Two-metre rise service stair with continuous rails and open tread profiles.",
+      "triangles": 3840,
+      "mesh_primitives": 3,
+      "bytes": 2407260,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.7750001549720764,
+          -0.15095838904380798,
+          -0.04546007513999939
+        ],
+        "max": [
+          0.7750001549720764,
+          2.700958490371704,
+          2.9230058193206787
+        ]
+      }
+    },
+    {
+      "id": "grated-bridge",
+      "file": "models/grated-bridge.glb",
+      "category": "environment",
+      "description": "Four-metre service bridge with open metal grating and twin guardrails.",
+      "triangles": 6584,
+      "mesh_primitives": 4,
+      "bytes": 2601392,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.7649999856948853,
+          -2.012500047683716,
+          -0.23999999463558197
+        ],
+        "max": [
+          0.7649999260902405,
+          2.0124998092651367,
+          1.0260001420974731
+        ]
+      }
+    },
+    {
+      "id": "overhead-duct",
+      "file": "models/overhead-duct.glb",
+      "category": "environment",
+      "description": "Industrial rectangular duct with flange bands and corner fasteners.",
+      "triangles": 1404,
+      "mesh_primitives": 2,
+      "bytes": 2241676,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.5,
+          -0.5750000476837158,
+          -0.004999998956918716
+        ],
+        "max": [
+          1.5,
+          0.5750000476837158,
+          1.2049999237060547
+        ]
+      }
+    },
+    {
+      "id": "pipe-valve",
+      "file": "models/pipe-valve.glb",
+      "category": "machinery",
+      "description": "Flanged shutoff valve with rotating red handwheel.",
+      "triangles": 7288,
+      "mesh_primitives": 5,
+      "bytes": 2642060,
+      "clips": [
+        "turn"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.6399999856948853,
+          -0.4099999964237213,
+          0.13999995589256287
+        ],
+        "max": [
+          0.7065001130104065,
+          0.4099999964237213,
+          2.7300000190734863
+        ]
+      }
+    },
+    {
+      "id": "electrical-cabinet",
+      "file": "models/electrical-cabinet.glb",
+      "category": "machinery",
+      "description": "Service cabinet with breaker rows, vents, handle and hazard stripe.",
+      "triangles": 2588,
+      "mesh_primitives": 5,
+      "bytes": 2292652,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.5,
+          -0.3775000274181366,
+          0.0
+        ],
+        "max": [
+          0.5,
+          0.2750000059604645,
+          2.0
+        ]
+      }
+    },
+    {
+      "id": "warning-beacon",
+      "file": "models/warning-beacon.glb",
+      "category": "equipment",
+      "description": "Red rotating alarm beacon with mounting base.",
+      "triangles": 1272,
+      "mesh_primitives": 3,
+      "bytes": 2227756,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.12999999523162842,
+          -0.12999999523162842,
+          0.044999998062849045
+        ],
+        "max": [
+          0.12999999523162842,
+          0.12999999523162842,
+          0.3199999928474426
+        ]
+      }
+    },
+    {
+      "id": "coolant-tank",
+      "file": "models/coolant-tank.glb",
+      "category": "machinery",
+      "description": "Tall refrigeration tank with insulation seams, gauge, frost cap and service valves.",
+      "triangles": 7604,
+      "mesh_primitives": 6,
+      "bytes": 2637636,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.6869999766349792,
+          -0.7489999532699585,
+          0.0
+        ],
+        "max": [
+          0.6869999766349792,
+          0.6869999766349792,
+          3.1600000858306885
+        ]
+      }
+    },
+    {
+      "id": "refrigeration-unit",
+      "file": "models/refrigeration-unit.glb",
+      "category": "machinery",
+      "description": "Twin-fan chiller with cream insulated casing and coolant connections.",
+      "triangles": 7896,
+      "mesh_primitives": 5,
+      "bytes": 2605972,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.2000000476837158,
+          -0.6188124418258667,
+          0.0
+        ],
+        "max": [
+          1.2000000476837158,
+          0.44999998807907104,
+          1.7000000476837158
+        ]
+      }
+    },
+    {
+      "id": "cold-storage-door",
+      "file": "models/cold-storage-door.glb",
+      "category": "environment",
+      "description": "Heavy insulated sliding door with latch, gasket and open clip.",
+      "triangles": 1416,
+      "mesh_primitives": 5,
+      "bytes": 2222048,
+      "clips": [
+        "open"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.100000023841858,
+          -0.2549999952316284,
+          0.0
+        ],
+        "max": [
+          1.100000023841858,
+          0.25,
+          2.705000162124634
+        ]
+      }
+    },
+    {
+      "id": "chimney",
+      "file": "models/chimney.glb",
+      "category": "machinery",
+      "description": "Plant exhaust stack with ivory/red bands, rim and service collar.",
+      "triangles": 5468,
+      "mesh_primitives": 4,
+      "bytes": 2502904,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.35500001907348633,
+          -0.35500001907348633,
+          0.0
+        ],
+        "max": [
+          0.35500001907348633,
+          0.35500001907348633,
+          4.065000057220459
+        ]
+      }
+    },
+    {
+      "id": "foundry-furnace",
+      "file": "models/foundry-furnace.glb",
+      "category": "machinery",
+      "description": "Refractory furnace with glowing mouth, heavy shutters and exhaust collar.",
+      "triangles": 2476,
+      "mesh_primitives": 6,
+      "bytes": 2287064,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.149999976158142,
+          -1.1475000381469727,
+          0.0
+        ],
+        "max": [
+          1.149999976158142,
+          0.8999999761581421,
+          4.050000190734863
+        ]
+      }
+    },
+    {
+      "id": "foundry-crucible",
+      "file": "models/foundry-crucible.glb",
+      "category": "machinery",
+      "description": "Open refractory crucible with molten surface, trunnions and pouring clip.",
+      "triangles": 3432,
+      "mesh_primitives": 3,
+      "bytes": 2373660,
+      "clips": [
+        "pour"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0199999809265137,
+          -0.8499999642372131,
+          1.100000023841858
+        ],
+        "max": [
+          1.0199999809265137,
+          0.8499999642372131,
+          2.3999998569488525
+        ]
+      }
+    },
+    {
+      "id": "overhead-gantry",
+      "file": "models/overhead-gantry.glb",
+      "category": "machinery",
+      "description": "Foundry overhead crane with crossbeam, trolley, hoist drum and hook.",
+      "triangles": 3916,
+      "mesh_primitives": 5,
+      "bytes": 2386364,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -2.700000047683716,
+          -0.44999998807907104,
+          0.0
+        ],
+        "max": [
+          2.700000047683716,
+          0.44999998807907104,
+          5.189999580383301
+        ]
+      }
+    },
+    {
+      "id": "casting-trough",
+      "file": "models/casting-trough.glb",
+      "category": "machinery",
+      "description": "Molten-metal casting channel with refractory walls and end stops.",
+      "triangles": 648,
+      "mesh_primitives": 3,
+      "bytes": 2190044,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.800000011920929,
+          -1.399999976158142,
+          0.0
+        ],
+        "max": [
+          0.800000011920929,
+          1.399999976158142,
+          0.5199999809265137
+        ]
+      }
+    },
+    {
+      "id": "overseer-housing",
+      "file": "models/overseer-housing.glb",
+      "category": "machinery",
+      "description": "Title-screen monumental overseer housing with recessed red observation slit.",
+      "triangles": 2316,
+      "mesh_primitives": 5,
+      "bytes": 2252096,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.7999999523162842,
+          -1.0699999332427979,
+          0.0
+        ],
+        "max": [
+          1.7999999523162842,
+          0.8999999761581421,
+          6.400000095367432
+        ]
+      }
+    },
+    {
+      "id": "core-spindle",
+      "file": "models/core-spindle.glb",
+      "category": "machinery",
+      "description": "Central calculating spindle with sensor band, ivory casing, toothed base and external service pipes.",
+      "triangles": 10244,
+      "mesh_primitives": 6,
+      "bytes": 2814632,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.15500009059906,
+          -1.15500009059906,
+          0.0
+        ],
+        "max": [
+          1.15500009059906,
+          1.15500009059906,
+          5.699999809265137
+        ]
+      }
+    },
+    {
+      "id": "core-ring-inner",
+      "file": "models/core-ring-inner.glb",
+      "category": "core",
+      "description": "Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.",
+      "triangles": 7092,
+      "mesh_primitives": 5,
+      "bytes": 2615700,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.021000195294618607,
+          -0.07051679491996765,
+          -0.39499998092651367
+        ],
+        "max": [
+          3.473987102508545,
+          3.473987579345703,
+          0.8140000104904175
+        ]
+      }
+    },
+    {
+      "id": "core-ring-middle",
+      "file": "models/core-ring-middle.glb",
+      "category": "core",
+      "description": "Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.",
+      "triangles": 7092,
+      "mesh_primitives": 5,
+      "bytes": 2615720,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.021000288426876068,
+          -0.059935957193374634,
+          -0.39499998092651367
+        ],
+        "max": [
+          5.67398738861084,
+          5.673987865447998,
+          0.8140000104904175
+        ]
+      }
+    },
+    {
+      "id": "core-ring-outer",
+      "file": "models/core-ring-outer.glb",
+      "category": "core",
+      "description": "Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.",
+      "triangles": 7092,
+      "mesh_primitives": 5,
+      "bytes": 2615704,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.021000143140554428,
+          -0.049355119466781616,
+          -0.39499998092651367
+        ],
+        "max": [
+          7.873987197875977,
+          7.873988151550293,
+          0.8140000104904175
+        ]
+      }
+    },
+    {
+      "id": "core-retracting-segment",
+      "file": "models/core-retracting-segment.glb",
+      "category": "core",
+      "description": "Movable 30-degree outer ring deck segment with retract clip and red edge lamps.",
+      "triangles": 1728,
+      "mesh_primitives": 3,
+      "bytes": 2256336,
+      "clips": [
+        "retract"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          5.715767860412598,
+          -0.054999999701976776,
+          -0.30000001192092896
+        ],
+        "max": [
+          7.849999904632568,
+          3.924999952316284,
+          0.22499999403953552
+        ]
+      }
+    },
+    {
+      "id": "core-kill-switch",
+      "file": "models/core-kill-switch.glb",
+      "category": "core",
+      "description": "Finale kill-switch station with red/amber status lenses and animated activation lever.",
+      "triangles": 1520,
+      "mesh_primitives": 7,
+      "bytes": 2246568,
+      "clips": [
+        "activate"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.375,
+          -0.8600000143051147,
+          0.0
+        ],
+        "max": [
+          0.375,
+          0.32499998807907104,
+          1.5699999332427979
+        ]
+      }
+    },
+    {
+      "id": "water-tile",
+      "file": "models/water-tile.glb",
+      "category": "effect",
+      "description": "Eight-metre water surface. Runtime water material supplies animated ripples.",
+      "triangles": 12,
+      "mesh_primitives": 1,
+      "bytes": 2316,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -4.0,
+          -4.0,
+          -0.09999999403953552
+        ],
+        "max": [
+          4.0,
+          4.0,
+          -0.019999999552965164
+        ]
+      }
+    },
+    {
+      "id": "waterfall",
+      "file": "models/waterfall.glb",
+      "category": "effect",
+      "description": "Two-metre falling water ribbon with layered foam ribbons. Runtime scroll/pulse material supported.",
+      "triangles": 2912,
+      "mesh_primitives": 2,
+      "bytes": 201924,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.5289999842643738,
+          -0.6790000200271606,
+          -0.0016714187804609537
+        ],
+        "max": [
+          0.5289999842643738,
+          0.3789999783039093,
+          2.0052249431610107
+        ]
+      }
+    },
+    {
+      "id": "vision-cone",
+      "file": "models/vision-cone.glb",
+      "category": "effect",
+      "description": "Flat triangular enemy vision field with alpha material; visibility and occlusion are controlled by gameplay.",
+      "triangles": 1,
+      "mesh_primitives": 1,
+      "bytes": 1464,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.5,
+          -4.0,
+          0.02500000037252903
+        ],
+        "max": [
+          1.5,
+          0.0,
+          0.02500000037252903
+        ]
+      }
+    },
+    {
+      "id": "molten-stream",
+      "file": "models/molten-stream.glb",
+      "category": "effect",
+      "description": "Pouring molten-metal stream with separately modeled hot droplets.",
+      "triangles": 1660,
+      "mesh_primitives": 1,
+      "bytes": 122084,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.14470864832401276,
+          -0.3400578498840332,
+          -0.005333167500793934
+        ],
+        "max": [
+          0.17484596371650696,
+          0.051729392260313034,
+          2.0077593326568604
+        ]
+      }
+    }
+  ]
+}

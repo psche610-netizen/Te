@@ -1,0 +1,596 @@
+{
+  "id": "core-arena",
+  "description": "Three concentric supported walkways, four kill switches, four bridges and a retractable gap.",
+  "coordinates": "Blender Z up; rotation radians around Z",
+  "instances": [
+    {
+      "asset": "core-spindle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0.0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0.0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-outer",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0.0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-outer",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-outer",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-outer",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        3.8,
+        0.0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        2.326828918379971e-16,
+        3.8,
+        0
+      ],
+      "rotation": 3.141592653589793,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        -3.8,
+        4.653657836759942e-16,
+        0
+      ],
+      "rotation": 4.71238898038469,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        -6.980486755139912e-16,
+        -3.8,
+        0
+      ],
+      "rotation": 6.283185307179586,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        6.0,
+        0.0,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        3.6739403974420594e-16,
+        6.0,
+        0
+      ],
+      "rotation": 3.141592653589793,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        -6.0,
+        7.347880794884119e-16,
+        0
+      ],
+      "rotation": 4.71238898038469,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        -1.102182119232618e-15,
+        -6.0,
+        0
+      ],
+      "rotation": 6.283185307179586,
+      "scale": [
+        0.65,
+        0.24,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        4.82444927008431,
+        1.4923770436397648,
+        0.04
+      ],
+      "rotation": -1.2707963267948965,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        -1.4923770436397648,
+        4.82444927008431,
+        0.04
+      ],
+      "rotation": 0.30000000000000004,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        -4.824449270084311,
+        -1.4923770436397632,
+        0.04
+      ],
+      "rotation": 1.8707963267948964,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        1.492377043639763,
+        -4.824449270084311,
+        0.04
+      ],
+      "rotation": 3.441592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        7.0,
+        0.0,
+        -0.35
+      ],
+      "rotation": 0.0,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        6.062177826491071,
+        3.4999999999999996,
+        -0.35
+      ],
+      "rotation": 0.5235987755982988,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        3.500000000000001,
+        6.06217782649107,
+        -0.35
+      ],
+      "rotation": 1.0471975511965976,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        4.286263797015736e-16,
+        7.0,
+        -0.35
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -3.4999999999999982,
+        6.062177826491071,
+        -0.35
+      ],
+      "rotation": 2.0943951023931953,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -6.062177826491071,
+        3.4999999999999996,
+        -0.35
+      ],
+      "rotation": 2.6179938779914944,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -7.0,
+        8.572527594031472e-16,
+        -0.35
+      ],
+      "rotation": 3.141592653589793,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -6.062177826491071,
+        -3.4999999999999982,
+        -0.35
+      ],
+      "rotation": 3.665191429188092,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -3.500000000000003,
+        -6.062177826491069,
+        -0.35
+      ],
+      "rotation": 4.1887902047863905,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -1.2858791391047208e-15,
+        -7.0,
+        -0.35
+      ],
+      "rotation": 4.71238898038469,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        3.500000000000001,
+        -6.06217782649107,
+        -0.35
+      ],
+      "rotation": 5.235987755982989,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        6.062177826491069,
+        -3.500000000000003,
+        -0.35
+      ],
+      "rotation": 5.759586531581287,
+      "scale": [
+        0.24,
+        0.24,
+        1.2
+      ]
+    },
+    {
+      "asset": "operator-amber",
+      "position": [
+        0,
+        -4.95,
+        0.04
+      ],
+      "rotation": -0.6,
+      "scale": [
+        1,
+        1,
+        1
+      ],
+      "pose": "run"
+    },
+    {
+      "asset": "warden",
+      "position": [
+        -4.5,
+        2.2,
+        0.04
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "warden",
+      "position": [
+        3.6,
+        3.8,
+        0.04
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "vision-cone",
+      "position": [
+        -4.5,
+        2.2,
+        0.08
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "vision-cone",
+      "position": [
+        3.6,
+        3.8,
+        0.08
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

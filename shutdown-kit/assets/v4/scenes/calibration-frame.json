@@ -1,0 +1,63 @@
+{
+  "id": "calibration-frame",
+  "description": "Physical microphone and rotary control framing a clear central UI region.",
+  "coordinates": "Blender Z up; rotation radians around Z",
+  "instances": [
+    {
+      "asset": "wall-microphone",
+      "position": [
+        -2,
+        0,
+        0.7
+      ],
+      "rotation": 0,
+      "scale": [
+        1.8,
+        1.8,
+        1.8
+      ]
+    },
+    {
+      "asset": "rotary-control",
+      "position": [
+        2,
+        0,
+        0.7
+      ],
+      "rotation": 0,
+      "scale": [
+        1.8,
+        1.8,
+        1.8
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        0,
+        0.3,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1.5,
+        1,
+        1.1
+      ]
+    },
+    {
+      "asset": "pipe-straight",
+      "position": [
+        2.7,
+        -0.1,
+        1.8
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

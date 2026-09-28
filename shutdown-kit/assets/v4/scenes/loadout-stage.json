@@ -1,0 +1,105 @@
+{
+  "id": "loadout-stage",
+  "description": "Character plinth, background wall, equipment cases and warm practical lamp.",
+  "coordinates": "Blender Z up; rotation radians around Z",
+  "instances": [
+    {
+      "asset": "operator-plinth",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "operator-amber",
+      "position": [
+        0,
+        0,
+        0.3
+      ],
+      "rotation": -0.25,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        0,
+        1.5,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        -0.8,
+        1.3,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "supply-crate",
+      "position": [
+        -1.3,
+        0.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "supply-crate",
+      "position": [
+        1.3,
+        0.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "pipe-straight",
+      "position": [
+        1.4,
+        1.1,
+        1.3
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  ]
+}

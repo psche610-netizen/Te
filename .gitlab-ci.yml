@@ -1,0 +1,51 @@
+# SHUTDOWN: debug APK build for this GitLab repo (the game lives in shutdown-kit/game).
+# The GitHub Actions equivalent is shutdown-kit/game/.github/workflows/android.yml.
+# Optional CI/CD variable: REVENUECAT_ANDROID_KEY (masked). Without it the APK uses the mock store.
+
+stages:
+  - build
+
+android-apk:
+  stage: build
+  image: eclipse-temurin:21-jdk
+  variables:
+    APP_DIR: shutdown-kit/game
+    ANDROID_HOME: /opt/android-sdk
+    ANDROID_SDK_ROOT: /opt/android-sdk
+    GRADLE_USER_HOME: $CI_PROJECT_DIR/.gradle
+    COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+  cache:
+    key: shutdown-android
+    paths:
+      - .gradle/caches
+      - .gradle/wrapper
+      - .pnpm-store
+  before_script:
+    - apt-get update -qq && apt-get install -y -qq curl unzip git ca-certificates > /dev/null
+    - curl -fsSL https://deb.nodesource.com/setup_22.x | bash - > /dev/null
+    - apt-get install -y -qq nodejs > /dev/null
+    - corepack enable
+    - mkdir -p "$ANDROID_HOME/cmdline-tools"
+    - curl -fsSLo /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+    - unzip -q /tmp/cmdline-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+    - mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+    - export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
+    - yes | sdkmanager --licenses > /dev/null
+    - sdkmanager "platform-tools" > /dev/null
+  script:
+    - cd "$APP_DIR"
+    - pnpm config set store-dir "$CI_PROJECT_DIR/.pnpm-store"
+    - pnpm install --no-frozen-lockfile
+    - pnpm typecheck
+    - NEXT_PUBLIC_REVENUECAT_ANDROID_KEY="${REVENUECAT_ANDROID_KEY:-}" pnpm build
+    - pnpm android:prepare
+    - cd android && ./gradlew assembleDebug --no-daemon
+  artifacts:
+    name: shutdown-debug-apk
+    paths:
+      - shutdown-kit/game/android/app/build/outputs/apk/debug/app-debug.apk
+    expire_in: 30 days
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "web"
