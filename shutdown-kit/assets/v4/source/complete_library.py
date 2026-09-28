@@ -1,21 +1,38 @@
 """Build the complete V4 visual library. Blender 5 / bpy 5, metres, Z up.
 Existing environment authoring is reused; every source object remains editable.
-Run: blender -b --python source/complete_library.py
-Optional: V4_ONLY_EXPORT=1 skips review renders.
+Run:  blender -b --python source/complete_library.py -- [--only id,id] [--group category]
+      (or: python -c "import bpy" env)  python source/complete_library.py -- --only warden
+All geometry is always rebuilt (fast); only the selected assets are exported and merged into
+manifest.json. A full build (no filter) also saves the .blend files and v4-shared-library.glb.
+GLBs are exported WITHOUT images: every painted material samples textures/v4-atlas.png at
+runtime by material name (see manifest.json "materials" and textures/atlas-layout.json).
 """
 from pathlib import Path
-import os, math, json, random
+import os, sys, math, json, random
 import bpy
 from mathutils import Vector, Matrix
 ROOT=Path(__file__).resolve().parents[1]
 # Reuse the authored environment geometry, before its export/render stage.
 exec(compile((ROOT/'source/build_assets.py').read_text().split('# Save editable source')[0],str(ROOT/'source/build_assets.py'),'exec'))
 scene.render.fps=24
+ARGS=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
+def _arg(flag):
+    return set(ARGS[ARGS.index(flag)+1].split(',')) if flag in ARGS else None
+ONLY,GROUP=_arg('--only'),_arg('--group')
+FULL=ONLY is None and GROUP is None
+BUDGET={'character':6000,'machinery':4000,'core':4000,'environment':2000,'equipment':1500,'effect':1500}
+def concept_for(name,category):
+    table={'operator-amber':'04-loadout','crew-teal':'07-crew','crew-ivory':'07-crew','warden':'06-locker','weaver':'10-paywall',
+      'containment-capsule':'07-crew','locker-interior-frame':'06-locker','wall-microphone':'02-mic','rotary-control':'02-mic',
+      'operator-plinth':'04-loadout','overseer-housing':'01-title','chimney':'03-sectors','coolant-tank':'09-results',
+      'refrigeration-unit':'09-results','cold-storage-door':'09-results','water-tile':'01-title','waterfall':'01-title'}
+    if name in table:return table[name]
+    if category=='core' or name.startswith('core-'):return '08-core'
+    if name.startswith(('foundry-','overhead-gantry','casting-','molten-')):return '10-paywall'
+    if category=='equipment':return '09-results'
+    return '05-shift'
 for a in ASSETS.values():a.update(category='environment',clips=[])
-CLOTH=bpy.data.images.load(str(ROOT/'textures/painted-workwear-atlas.png'));CLOTH.pack()
-for name,quad in [('cloth-amber',(0,.5)),('cloth-teal',(.5,.5)),('cloth-ivory',(0,0)),('cloth-black',(.5,0))]:
-    QUADS[name]=quad;material(name,(.5,.3,.1),0,.94)
-    MATS[name].node_tree.nodes.get('Image Texture').image=CLOTH
+# Workwear cloth cells live in the shared atlas (row 1); materials were created in build_assets.py.
 material('visor',(.004,.014,.02),.3,.18)
 material('frost',(.57,.72,.72),0,.9)
 material('molten',(1,.19,.008),0,.5,3)
@@ -500,8 +517,13 @@ for a in ASSETS.values():
     for obj in [a.get('rig'),*a.get('nodes',[])]:
         if obj and obj.animation_data:
             for t in obj.animation_data.nla_tracks:t.mute=True
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'source/shutdown-v4-complete.blend'))
-manifest={'version':2,'status':'complete-concept-asset-inventory','visual_match':'Requires scene-level comparison; no pixel-identical claim.','authoring':'Blender '+bpy.app.version_string,'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion','textures':['textures/painted-enamel-atlas.png','textures/painted-workwear-atlas.png'],'assets':[]}
+if FULL:bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'source/shutdown-v4-complete.blend'))
+GLTF=dict(export_format='GLB',use_selection=True,export_extras=True,export_yup=True,export_image_format='NONE')
+selected=[n for n,a in ASSETS.items() if FULL or (ONLY and n in ONLY) or (GROUP and a['category'] in GROUP)]
+unknown=(ONLY or set())-set(ASSETS)
+if unknown:raise SystemExit(f'Unknown asset ids: {sorted(unknown)}')
+old_manifest=json.loads((ROOT/'manifest.json').read_text()) if (ROOT/'manifest.json').exists() else {'assets':[]}
+entries={e['id']:e for e in old_manifest.get('assets',[]) if e['id'] in ASSETS}
 for name,a in ASSETS.items():
     groups={}
     for o in a['objects']:groups.setdefault((o.parent.name,o.data.materials[0].name),[]).append(o)
@@ -513,20 +535,32 @@ for name,a in ASSETS.items():
         if len(items)>1:bpy.ops.object.join()
         o=bpy.context.object;o.name=name+'__'+parent+'__'+mat;result.append(o)
     a['objects']=result
+    if name not in selected:continue
     bpy.ops.object.select_all(action='DESELECT')
     selection=[a['root'],*result,*a.get('nodes',[]),*([a['rig']] if 'rig' in a else [])]
     for o in selection:o.select_set(True)
     path=ROOT/'models'/f'{name}.glb'
-    bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,export_extras=True,export_yup=True,export_apply=False,export_animations=bool(a['clips']),export_animation_mode='NLA_TRACKS',export_nla_strips=True,export_force_sampling=True,export_frame_range=False,export_anim_slide_to_zero=True)
+    bpy.ops.export_scene.gltf(filepath=str(path),export_apply=False,export_animations=bool(a['clips']),export_animation_mode='NLA_TRACKS',export_nla_strips=True,export_force_sampling=True,export_frame_range=False,export_anim_slide_to_zero=True,**GLTF)
     triangles=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in result)
     bounds=[o.matrix_world@Vector(v) for o in result for v in o.bound_box]
     mins=[min(v[i] for v in bounds) for i in range(3)];maxs=[max(v[i] for v in bounds) for i in range(3)]
-    manifest['assets'].append({'id':name,'file':f'models/{name}.glb','category':a['category'],'description':a['description'],'triangles':triangles,'mesh_primitives':len(result),'bytes':path.stat().st_size,'clips':a['clips'],'rigged':'rig' in a,'bounds_blender':{'min':mins,'max':maxs}})
+    budget=BUDGET.get(a['category'],1500)
+    entries[name]={'id':name,'file':f'models/{name}.glb','category':a['category'],'description':a['description'],'concept':f"concepts/v4/{concept_for(name,a['category'])}.png",'triangles':triangles,'budget':budget,'over_budget':triangles>budget,'mesh_primitives':len(result),'materials':sorted({o.data.materials[0].name for o in result}),'bytes':path.stat().st_size,'clips':a['clips'],'rigged':'rig' in a,'bounds_blender':{'min':mins,'max':maxs}}
+    print('EXPORTED',name,triangles,'tris',('OVER BUDGET '+str(budget)) if triangles>budget else 'ok',flush=True)
+materials={}
+for n,m in MATS.items():
+    materials[n]={'atlas_cell':n if n in QUADS else None,'fallback_color':[round(c,4) for c in m.get('fallback_color',m.diffuse_color[:3])],'emission':m.get('emission',0),'roughness':.9 if n in QUADS else round(m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value,3)}
+manifest={'version':3,'status':'v4-library','visual_match':'Requires scene-level comparison; no pixel-identical claim.','authoring':'Blender '+bpy.app.version_string,
+ 'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion',
+ 'textures':{'atlas':'textures/v4-atlas.png','atlas_layout':'textures/atlas-layout.json','decals':'textures/decals-atlas.png','decals_layout':'textures/decals-layout.json'},
+ 'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0).',
+ 'budgets':BUDGET,'materials':materials,'assets':[entries[n] for n in ASSETS if n in entries]}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-# Shared-texture transport library. Roots named by asset ID, arranged only for browsing.
-for i,a in enumerate(ASSETS.values()):a['root'].location=((i%8)*12,(i//8)*12,0)
-bpy.ops.object.select_all(action='SELECT')
-bpy.ops.export_scene.gltf(filepath=str(ROOT/'models/v4-shared-library.glb'),export_format='GLB',use_selection=True,export_extras=True,export_yup=True,export_animations=False)
-for a in ASSETS.values():a['root'].location=(0,0,0)
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'source/shutdown-v4-export-library.blend'))
-print('LIBRARY COMPLETE',len(ASSETS),'assets',sum(len(a['clips']) for a in ASSETS.values()),'clips',flush=True)
+if FULL:
+    for i,a in enumerate(ASSETS.values()):a['root'].location=((i%8)*12,(i//8)*12,0)
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.export_scene.gltf(filepath=str(ROOT/'models/v4-shared-library.glb'),export_animations=False,**GLTF)
+    for a in ASSETS.values():a['root'].location=(0,0,0)
+    bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'source/shutdown-v4-export-library.blend'))
+over=[e['id'] for e in manifest['assets'] if e.get('over_budget')]
+print('LIBRARY', 'FULL' if FULL else 'PARTIAL', len(selected),'exported /',len(ASSETS),'assets | over budget:',len(over),over,flush=True)

@@ -529,7 +529,7 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - Part B per asset: **integrate** (replace the primitive in code) → **log**. Keep the primitive as fallback until the GLB is checked in engine. The game must run after every phase.
 - Gameplay code (`lib/game/*`) does not change for art. Only views (`components/game/*`), materials, loader and lights. Colliders stay from the level grid, not from meshes.
 - Budgets: ≤150 draw calls per scene, props ≤1.5k tris, characters ≤6k tris, hero machines ≤4k tris. GLBs reference the shared atlas; no embedded duplicate textures.
-- Verification: Part A = script runs, manifest tri counts within budget, contact-sheet review (agent-browser OK for the contact sheet only). Part B = `npx tsc --noEmit` + headless checks. **Do not run the game in agent-browser**; the user playtests and sends screenshots. Add what to check to the Playtest checklist.
+- Verification: Part A = per phase, scripts only (`python -m py_compile`), no Blender runs. One full build + manifest tri-count check + contact-sheet review (agent-browser OK for the contact sheet only) after Phase 20, fixing all assets in one pass. Part B = `npx tsc --noEmit` + headless checks. **Do not run the game in agent-browser**; the user playtests and sends screenshots. Add what to check to the Playtest checklist.
 - Blender: not installed in the v0 sandbox. Try `pip install bpy==5.0.1` (needs Python 3.11) once; if that fails, write the script changes and ask the user to run `blender --background --python assets/v4/source/build_assets.py` locally, then commit the exported GLBs.
 
 ## Part A — Assets

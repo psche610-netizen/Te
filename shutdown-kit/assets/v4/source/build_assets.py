@@ -1,6 +1,7 @@
 """SHUTDOWN v4 environment assets. Run with Blender's Python or the bpy wheel.
 Geometry is authored in metres, Z up, front toward -Y. GLB export converts to Y up.
-All paint comes from the generated atlas; no Blender-only material nodes are required.
+All paint comes from ONE shared atlas (textures/v4-atlas.png); no Blender-only material nodes are required.
+This file only defines helpers + the first environment assets; build with source/complete_library.py.
 """
 from pathlib import Path
 import math, json, random, os
@@ -11,11 +12,16 @@ random.seed(7)
 bpy.ops.wm.read_factory_settings(use_empty=True)
 scene=bpy.context.scene
 scene.unit_settings.system='METRIC'
-img=bpy.data.images.load(str(ROOT/'textures/painted-enamel-atlas.png'))
-img.pack()
-QUADS={'petrol':(0,.5),'ivory':(.5,.5),'amber':(0,0),'steel':(.5,0)}
+# ONE shared atlas for every painted material (built by source/make_textures.py).
+# Not packed: GLBs are exported without images and the runtime applies the atlas by material name.
+LAYOUT=json.loads((ROOT/'textures/atlas-layout.json').read_text())
+img=bpy.data.images.load(str(ROOT/'textures/v4-atlas.png'));img.filepath_raw='//../textures/v4-atlas.png'
+CELL_UV=1/LAYOUT['grid'];PAD=LAYOUT['pad_uv']
+# Blender UV origin is bottom-left; the layout rows count from the top.
+QUADS={n:(c['col']*CELL_UV,1-(c['row']+1)*CELL_UV) for n,c in LAYOUT['cells'].items()}
 MATS={}
 def material(name,color,metallic=0,roughness=.8,emission=0):
+    if name in MATS:return MATS[name]
     m=bpy.data.materials.new(name);m.use_nodes=True
     bs=m.node_tree.nodes.get('Principled BSDF')
     bs.inputs['Base Color'].default_value=(*color,1)
@@ -25,8 +31,16 @@ def material(name,color,metallic=0,roughness=.8,emission=0):
         m.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
     if emission:
         bs.inputs['Emission Color'].default_value=(*color,1);bs.inputs['Emission Strength'].default_value=emission
+    m['emission']=emission;m['fallback_color']=list(color)
     MATS[name]=m
-for n,c in [('petrol',(.08,.23,.24)),('ivory',(.71,.69,.59)),('amber',(.72,.36,.05)),('steel',(.03,.06,.07))]:material(n,c,0,.88)
+    return m
+# Painted atlas materials: matte, metalness 0 (V4 rule). Colors are only the untextured fallback.
+ATLAS_FALLBACK={'petrol':(.08,.23,.24),'ivory':(.71,.69,.59),'amber':(.72,.36,.05),'steel':(.03,.06,.07),
+ 'cloth-amber':(.72,.36,.05),'cloth-teal':(.05,.18,.2),'cloth-ivory':(.71,.69,.59),'cloth-black':(.02,.02,.02),
+ 'concrete':(.26,.26,.23),'teal':(.08,.2,.19),'indigo':(.007,.016,.02),'danger':(.69,.06,.02),
+ 'frost':(.4,.54,.53),'rust':(.16,.04,.016),'soot':(.024,.022,.02),'concrete-dark':(.07,.078,.074)}
+for n in LAYOUT['cells']:material(n,ATLAS_FALLBACK.get(n,(.5,.5,.5)),0,.9)
+# Flat (untextured) materials: small hardware, rubber, dials and the only emissives.
 material('hardware',(.16,.19,.18),.55,.62)
 material('rubber',(.008,.015,.019),0,.96)
 material('gauge-face',(.85,.76,.52),0,.9)
@@ -46,9 +60,9 @@ def finish_obj(o,name,mat='petrol',bevel=0):
         if not o.data.uv_layers:
             bpy.context.view_layer.objects.active=o
             bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT');bpy.ops.uv.smart_project(island_margin=.03);bpy.ops.object.mode_set(mode='OBJECT')
-        u,v=QUADS[mat]
+        u,v=QUADS[mat];span=CELL_UV-2*PAD
         for loop in o.data.uv_layers.active.data:
-            loop.uv=(u+.012+loop.uv.x*.476,v+.012+loop.uv.y*.476)
+            loop.uv=(u+PAD+loop.uv.x*span,v+PAD+loop.uv.y*span)
     if bevel:
         b=o.modifiers.new('Manufactured edge bevel','BEVEL');b.width=bevel;b.segments=2
         b.affect='EDGES'
@@ -247,67 +261,6 @@ for x in [-1.9,-.63,.63,1.9]:
 for z in [.54,1.08]:rod('Horizontal rail',(-1.98,0,z),(1.98,0,z),.027,'steel',8)
 
 # Save editable source before merging export meshes.
-for i,(name,a) in enumerate(ASSETS.items()):a['root'].location=((i%4)*6,(i//4)*5,0)
-world=bpy.data.worlds.new('Petrol studio');scene.world=world;world.use_nodes=True
-world.node_tree.nodes['Background'].inputs[0].default_value=(.055,.082,.092,1)
-world.node_tree.nodes['Background'].inputs[1].default_value=.55
-scene.render.engine='CYCLES';scene.cycles.samples=32;scene.cycles.use_denoising=True
-scene.render.resolution_x=1600;scene.render.resolution_y=1100;scene.render.resolution_percentage=100
-scene.view_settings.view_transform='AgX'
-scene.render.image_settings.file_format='PNG';scene.render.film_transparent=False
-bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'source/shutdown-v4-environment.blend'))
-
-# Export: merge by mechanical part and material, retaining UVs. A sliding panel stays independently movable.
-manifest={'version':1,'status':'first-article-environment-assets','authoring':'Blender '+bpy.app.version_string,'coordinates':'glTF Y up; metres; ground-level origin','texture':'textures/painted-enamel-atlas.png','assets':[]}
-for name,a in ASSETS.items():
-    a['root'].location=(0,0,0)
-    groups={}
-    for o in a['objects']:groups.setdefault((o.get('part','static'),o.data.materials[0].name),[]).append(o)
-    export_objs=[]
-    for (part,mat),items in groups.items():
-        bpy.ops.object.select_all(action='DESELECT')
-        for o in items:o.select_set(True)
-        bpy.context.view_layer.objects.active=items[0]
-        bpy.ops.object.join();o=bpy.context.object;o.name=f'{name}__{part}__{mat}';export_objs.append(o)
-    a['objects']=export_objs
-    bpy.ops.object.select_all(action='DESELECT');a['root'].select_set(True)
-    for o in export_objs:o.select_set(True)
-    path=ROOT/'models'/f'{name}.glb'
-    bpy.ops.export_scene.gltf(filepath=str(path),export_format='GLB',use_selection=True,export_extras=True,export_yup=True,export_apply=True,export_texcoords=True,export_normals=True,export_materials='EXPORT',export_animations=False)
-    tri=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in export_objs)
-    manifest['assets'].append({'id':name,'file':f'models/{name}.glb','description':a['description'],'triangles':tri,'mesh_primitives':len(export_objs),'bytes':path.stat().st_size,'parts':sorted(set(o.get('part','static') for o in export_objs))})
-    a['root'].location=((list(ASSETS).index(name)%4)*6,(list(ASSETS).index(name)//4)*5,0)
-(ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
-
-# Render a hero assembly; remaining assets are hidden without removing source geometry.
-for a in ASSETS.values():
-    for o in a['objects']:o.hide_render=True
-for name in ['turbine-generator','wall-lamp']:
-    a=ASSETS[name];a['root'].location=(0,0,0)
-    for o in a['objects']:o.hide_render=False
-ASSETS['wall-lamp']['root'].location=(-1.4,1.28,2.75)
-a=ASSETS['bulkhead-wall'];a['root'].location=(0,1.4,0)
-for o in a['objects']:o.hide_render=False
-# Staging floor is not an exported asset.
-bpy.ops.mesh.primitive_plane_add(size=200,location=(0,0,-.035));ground=bpy.context.object;ground.name='Studio backdrop';ground.data.materials.append(MATS['steel'])
-# A neutral studio floor avoids repeating the atlas outside its UV quadrant.
-ground.data.materials.clear();floor=bpy.data.materials.new('Studio floor');floor.diffuse_color=(.025,.046,.05,1);ground.data.materials.append(floor)
-def area(name,p,color,power,size):
-    d=bpy.data.lights.new(name,'AREA');d.energy=power;d.color=color;d.shape='DISK';d.size=size
-    o=bpy.data.objects.new(name,d);scene.collection.objects.link(o);o.location=p;o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler()
-area('Warm key',(-3,-4,7),(1,.76,.44),1100,4)
-area('Cool fill',(4,1,6),(.45,.68,.78),700,5)
-area('Rim',(-4,3,4),(1,.6,.28),900,3)
-d=bpy.data.lights.new('Wall practical','POINT');d.energy=45;d.color=(1,.48,.13);d.shadow_soft_size=.25
-o=bpy.data.objects.new('Wall practical',d);scene.collection.objects.link(o);o.location=(-1.4,.9,3.05)
-d=bpy.data.cameras.new('Asset review camera');camera=bpy.data.objects.new('Asset review camera',d);scene.collection.objects.link(camera)
-camera.location=(7,-10,7);target=Vector((0,-.1,1.35));camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();d.type='ORTHO';d.ortho_scale=7.8;scene.camera=camera
-scene.render.filepath=str(ROOT/'renders/turbine-generator-blender.png');bpy.ops.render.render(write_still=True)
-# A full kit review, in the same lighting.
-for i,(name,a) in enumerate(ASSETS.items()):
-    a['root'].location=((i%4)*6,(i//4)*5,0)
-    for o in a['objects']:o.hide_render=False
-camera.location=(29,-30,30);target=Vector((8.5,5,1));camera.rotation_euler=(target-camera.location).to_track_quat('-Z','Y').to_euler();d.ortho_scale=30
-scene.render.resolution_x=1800;scene.render.resolution_y=1300
-scene.render.filepath=str(ROOT/'renders/environment-kit-blender.png');bpy.ops.render.render(write_still=True)
-print('DONE',json.dumps(manifest))
+# Everything after this marker was the first-article export/render pass. The library entry point
+# is source/complete_library.py, which execs only the part above this marker.
+raise SystemExit('Run the library build instead: blender -b --python source/complete_library.py -- [--only id,id] [--group category]')
