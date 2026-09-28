@@ -11,7 +11,7 @@ Repo: `github.com/psche610-netizen/Te`. Everything lives in `shutdown-kit/`.
 ## Ground rules
 - **Self-contained.** No backend, databases, auth, or Marketplace integrations. Local save file only.
 - **Small phases.** Exactly one phase per turn, then stop. At the end of each phase:
-  - Part A (assets): check the script runs, tri counts are in budget, and review on `contact-sheet.html`. Part B (integration): run `npx tsc --noEmit` in `shutdown-kit/game` (and headless tsx checks for logic),
+  - Part A (assets): `python -m py_compile` on the changed scripts only (full build + tri counts + `contact-sheet.html` review happen once after Phase 20, see below). Part B (integration): run `npx tsc --noEmit` in `shutdown-kit/game` (and headless tsx checks for logic),
   - tick the boxes in `SHUTDOWN.md` section 17 (and 11 if relevant), update section 16 and `assets/v4/AUDIT.md`,
   - reply with a short report: what was built, what was checked, known issues, next phase, what the user should look at,
   - commit and push to GitHub (auth with `process.env.GITHUB_PAT`, e.g. `git push https://x-access-token:$GITHUB_PAT@github.com/psche610-netizen/Te.git HEAD:main`; never print or commit the token), then wait for "next".
