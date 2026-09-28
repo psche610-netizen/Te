@@ -4,55 +4,131 @@
 <title>V4 contact sheet</title>
 <style>
   body{margin:0;background:#111e23;color:#ded7bc;font:12px system-ui}
-  #grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;padding:4px}
+  header{padding:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:6px;padding:6px}
   figure{margin:0;background:#1b2b30}
-  img{display:block;width:100%}
-  figcaption{padding:2px 4px}
+  figure.over{outline:2px solid #d8452f}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+  img{display:block;width:100%;aspect-ratio:1;object-fit:cover;background:#0c1417}
+  figcaption{padding:3px 6px;display:flex;justify-content:space-between;gap:8px}
+  .bad{color:#ff7a5c;font-weight:600}
 </style>
-<div id="grid"></div>
-<script type="importmap">{"imports":{"three":"../../game/node_modules/three/build/three.module.js","three/addons/":"../../game/node_modules/three/examples/jsm/"}}</script>
+<header>
+  <strong>V4 contact sheet</strong>
+  <span>Left: game camera (ortho iso 45°, amber key + indigo fill). Right: matching concept.</span>
+  <span>Filters: <code>?only=id,id</code> <code>?group=category</code> <code>?view=free</code></span>
+  <span id="summary"></span>
+</header>
+<main id="grid"></main>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 
+const params = new URLSearchParams(location.search);
+const only = params.get('only')?.split(',');
+const group = params.get('group');
+const freeView = params.get('view') === 'free';
+
 const manifest = await (await fetch('manifest.json')).json();
-const filter = new URLSearchParams(location.search).get('only');
-const assets = manifest.assets.filter(a => !filter || filter.split(',').includes(a.id));
-const size = 320;
-const renderer = new THREE.WebGLRenderer({antialias:true, preserveDrawingBuffer:true});
+const assets = manifest.assets.filter(a => (!only || only.includes(a.id)) && (!group || a.category === group));
+
+const atlas = await new THREE.TextureLoader().loadAsync(manifest.textures?.atlas ?? 'textures/v4-atlas.png');
+atlas.flipY = false;
+atlas.colorSpace = THREE.SRGBColorSpace;
+const materialCache = new Map();
+function runtimeMaterial(name) {
+  if (materialCache.has(name)) return materialCache.get(name);
+  const spec = manifest.materials?.[name];
+  let mat = null;
+  if (spec) {
+    const color = new THREE.Color().fromArray(spec.fallback_color ?? [1, 1, 1]);
+    mat = spec.atlas_cell
+      ? new THREE.MeshStandardMaterial({map: atlas, roughness: 0.9, metalness: 0})
+      : new THREE.MeshStandardMaterial({color, roughness: spec.roughness ?? 0.8, metalness: 0});
+    if (spec.emission > 0) { mat.emissive = color; mat.emissiveIntensity = spec.emission; }
+    mat.name = name;
+  }
+  materialCache.set(name, mat);
+  return mat;
+}
+
+const size = 360;
+const renderer = new THREE.WebGLRenderer({antialias: true, preserveDrawingBuffer: true});
 renderer.setSize(size, size);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const loader = new GLTFLoader();
 const grid = document.getElementById('grid');
 
-for (const a of assets) {
+function gameScene() {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#1b2b30');
-  scene.add(new THREE.HemisphereLight('#c9d6d2', '#20302f', 1.4));
-  const sun = new THREE.DirectionalLight('#ffd9a0', 2.4);
-  sun.position.set(4, 8, 5);
-  scene.add(sun);
-  let label = a.id;
+  scene.background = new THREE.Color('#14232a');
+  scene.add(new THREE.AmbientLight('#2a3350', 0.6));
+  const key = new THREE.DirectionalLight('#ffb35c', 2.6);
+  key.position.set(5, 9, 4);
+  const fill = new THREE.DirectionalLight('#4a4fb8', 1.2);
+  fill.position.set(-6, 4, -5);
+  scene.add(key, fill);
+  return scene;
+}
+
+function cameraFor(box) {
+  const c = box.getCenter(new THREE.Vector3());
+  const s = box.getSize(new THREE.Vector3());
+  const r = Math.max(s.x, s.y, s.z) * 0.8 || 1;
+  const cam = new THREE.OrthographicCamera(-r, r, r, -r, 0.01, 1000);
+  const elevation = THREE.MathUtils.degToRad(freeView ? 35 : 45);
+  const azimuth = THREE.MathUtils.degToRad(45);
+  const d = r * 6;
+  cam.position.set(
+    c.x + d * Math.cos(elevation) * Math.sin(azimuth),
+    c.y + d * Math.sin(elevation),
+    c.z + d * Math.cos(elevation) * Math.cos(azimuth));
+  cam.lookAt(c);
+  return cam;
+}
+
+let over = 0, errors = 0;
+for (const a of assets) {
+  const scene = gameScene();
+  let dims = '';
   try {
     const gltf = await loader.loadAsync(a.file);
-    const root = gltf.scene;
-    scene.add(root);
-    const box = new THREE.Box3().setFromObject(root);
-    const c = box.getCenter(new THREE.Vector3());
+    gltf.scene.traverse(o => {
+      if (!o.isMesh) return;
+      const m = runtimeMaterial(o.material?.name);
+      if (m) o.material = m;
+    });
+    scene.add(gltf.scene);
+    const box = new THREE.Box3().setFromObject(gltf.scene);
     const s = box.getSize(new THREE.Vector3());
-    const r = Math.max(s.x, s.y, s.z) * 0.75 || 1;
-    const cam = new THREE.OrthographicCamera(-r, r, r, -r, 0.01, 1000);
-    cam.position.set(c.x + r * 2, c.y + r * 1.6, c.z + r * 2);
-    cam.lookAt(c);
-    renderer.render(scene, cam);
-    label += ` · ${s.x.toFixed(1)}×${s.y.toFixed(1)}×${s.z.toFixed(1)}m · ${gltf.animations.length} clips`;
-  } catch (e) {
-    label += ' · LOAD ERROR';
+    renderer.render(scene, cameraFor(box));
+    dims = `${s.x.toFixed(1)}×${s.y.toFixed(1)}×${s.z.toFixed(1)}m · ${gltf.animations.length} clips`;
+  } catch {
+    errors++;
+    dims = '<span class="bad">LOAD ERROR</span>';
+    renderer.clear();
   }
+  const tris = a.triangles ?? 0;
+  const budget = a.budget ?? manifest.budgets?.[a.category];
+  const isOver = budget != null && tris > budget;
+  if (isOver) over++;
+  const concept = a.concept ? `../../${a.concept}` : '';
   const fig = document.createElement('figure');
-  fig.innerHTML = `<img alt="${a.id}" src="${renderer.domElement.toDataURL()}"><figcaption>${label}</figcaption>`;
+  if (isOver) fig.className = 'over';
+  fig.innerHTML = `
+    <div class="pair">
+      <img alt="${a.id} at game camera" src="${renderer.domElement.toDataURL()}">
+      ${concept ? `<img alt="Concept for ${a.id}" src="${concept}">` : '<img alt="">'}
+    </div>
+    <figcaption>
+      <span><strong>${a.id}</strong> · ${a.category} · ${dims}</span>
+      <span class="${isOver ? 'bad' : ''}">${tris} / ${budget ?? '?'} tris</span>
+    </figcaption>`;
   grid.append(fig);
 }
+document.getElementById('summary').textContent = `${assets.length} assets · ${over} over budget · ${errors} load errors`;
 document.body.dataset.done = '1';
 </script>
 </html>

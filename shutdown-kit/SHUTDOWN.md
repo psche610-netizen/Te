@@ -352,7 +352,7 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 13. Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 14 (Phase 13 scripts done; build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
@@ -535,10 +535,10 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 ## Part A — Assets
 
 ### Phase 13 — Asset pipeline + shared atlas
-- [ ] `build_assets.py`: build one asset or a group (`-- --only <id>` / `--group <name>`), so later phases re-export only what changed.
-- [ ] Shared materials by name (petrol, teal, ivory, amber, indigo, danger, concrete, dark, emissive-*) all sampling ONE atlas; GLBs reference `textures/painted-enamel-atlas.png` externally (no embedded copy). Fallback: `assets/v4/source/pack.mjs` strips embedded images with `@gltf-transform/cli` (~165 MB → a few MB).
-- [ ] Decal/stencil atlas `textures/decals-atlas.png` (SECTOR B, TURBINE HALL A, B-1, C1, G-02, 01–07, room names, OVERSEER slogans) + hazard-stripe strip; UV layout documented in `manifest.json`.
-- [ ] `contact-sheet.html`: add a game-camera view (ortho iso ~45°, amber key + indigo fill) and show the matching concept next to each asset; `manifest.json` lists tris + budget per asset.
+- [x] `build_assets.py`: build one asset or a group (`-- --only <id>` / `--group <name>`), so later phases re-export only what changed.
+- [x] Shared materials by name (petrol, teal, ivory, amber, indigo, danger, concrete, dark, emissive-*) all sampling ONE atlas; GLBs reference `textures/painted-enamel-atlas.png` externally (no embedded copy). Fallback: `assets/v4/source/pack.mjs` strips embedded images with `@gltf-transform/cli` (~165 MB → a few MB).
+- [x] Decal/stencil atlas `textures/decals-atlas.png` (SECTOR B, TURBINE HALL A, B-1, C1, G-02, 01–07, room names, OVERSEER slogans) + hazard-stripe strip; UV layout documented in `manifest.json`.
+- [x] `contact-sheet.html`: add a game-camera view (ortho iso ~45°, amber key + indigo fill) and show the matching concept next to each asset; `manifest.json` lists tris + budget per asset.
 
 ### Phase 14 — Environment shell assets (screen 05)
 - [ ] FIX walkway-floor → worn grey concrete tiles, amber edge lines, hazard dashes, drain grate variant.
