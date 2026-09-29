@@ -1270,8 +1270,16 @@ manifest={'version':3,'status':'v4-library','visual_match':'Requires scene-level
  'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion',
  'textures':{'atlas':'textures/v4-atlas.png','atlas_layout':'textures/atlas-layout.json','decals':'textures/decals-atlas.png','decals_layout':'textures/decals-layout.json'},
  'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == "decals": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind "mask" -> color = fallback_color with the atlas as alpha, "color" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json. Characters: clip_meta[clip] = {loop, drive, frames, seconds}; drive "walkPhase" -> time = ((walkPhase / 2pi) mod 1) * seconds, "time" -> play normally (one-shots hold the last frame). tint_slots {suit, trim} name the materials to clone + recolor per instance; meshes carry extras.tint_slot.',
- 'budgets':BUDGET,'materials':materials,'effects':EFFECTS,'assets':[entries[n] for n in ASSETS if n in entries]}
-(ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+ 'budgets':BUDGET,'materials':materials,'effects':EFFECTS}
+# Partial builds may run in parallel (one Blender per --group): merge with whatever the others wrote.
+import fcntl
+with open(ROOT/'.manifest.lock','w') as lock:
+    fcntl.flock(lock,fcntl.LOCK_EX)
+    on_disk=json.loads((ROOT/'manifest.json').read_text()) if (ROOT/'manifest.json').exists() else {'assets':[]}
+    for e in on_disk.get('assets',[]):
+        if e['id'] in ASSETS and e['id'] not in selected:entries[e['id']]=e
+    manifest['assets']=[entries[n] for n in ASSETS if n in entries]
+    (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 if FULL:
     for i,a in enumerate(ASSETS.values()):a['root'].location=((i%8)*12,(i//8)*12,0)
     bpy.ops.object.select_all(action='SELECT')
