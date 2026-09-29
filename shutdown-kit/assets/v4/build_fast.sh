@@ -4,10 +4,12 @@
 set -u
 cd "$(dirname "$0")"
 BLENDER="${1:-$HOME/Downloads/blender-5.2.2-linux-x64/blender}"
-GROUPS=(machinery environment core equipment effect character)
-mkdir -p /tmp/v4-build
+# Not "GROUPS": that is a read-only bash builtin (the user's group ids) and silently ignores assignment.
+CATEGORIES=(machinery environment core equipment effect character)
+[ -x "$BLENDER" ] || { echo "Blender not found at $BLENDER"; exit 1; }
+rm -rf /tmp/v4-build && mkdir -p /tmp/v4-build
 start=$(date +%s)
-for g in "${GROUPS[@]}"; do
+for g in "${CATEGORIES[@]}"; do
   "$BLENDER" -b --factory-startup --python-exit-code 1 -P source/complete_library.py -- --group "$g" \
     > "/tmp/v4-build/$g.log" 2>&1 &
 done

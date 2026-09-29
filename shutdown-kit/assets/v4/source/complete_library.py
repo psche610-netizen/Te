@@ -1205,6 +1205,8 @@ for a in ASSETS.values():
 if FULL:bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'source/shutdown-v4-complete.blend'))
 GLTF=dict(export_format='GLB',use_selection=True,export_extras=True,export_yup=True,export_image_format='NONE')
 selected=[n for n,a in ASSETS.items() if FULL or (ONLY and n in ONLY) or (GROUP and a['category'] in GROUP)]
+if not selected:
+    sys.exit('ERROR: --only/--group matched no assets (categories: %s)'%', '.join(sorted({a['category'] for a in ASSETS.values()})))
 unknown=(ONLY or set())-set(ASSETS)
 if unknown:raise SystemExit(f'Unknown asset ids: {sorted(unknown)}')
 old_manifest=json.loads((ROOT/'manifest.json').read_text()) if (ROOT/'manifest.json').exists() else {'assets':[]}
