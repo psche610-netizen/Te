@@ -21,6 +21,9 @@ def _arg(flag):
 ONLY,GROUP=_arg('--only'),_arg('--group')
 FULL=ONLY is None and GROUP is None
 BUDGET={'character':6000,'machinery':4000,'core':4000,'environment':2000,'equipment':1500,'effect':1500}
+# Hero pieces that anchor a whole room: collapsing a 5 m generator to 2k tris shattered its round shells.
+ASSET_BUDGET={'turbine-generator':6000}
+def budget_for(name,category):return ASSET_BUDGET.get(name,BUDGET.get(category,1500))
 def concept_for(name,category):
     table={'operator-amber':'04-loadout','crew-teal':'07-crew','crew-ivory':'07-crew','warden':'06-locker','weaver':'10-paywall',
       'containment-capsule':'07-crew','locker-interior-frame':'06-locker','wall-microphone':'02-mic','rotary-control':'02-mic',
@@ -1231,7 +1234,7 @@ def enforce_budget(name,objs,budget):
     after=sum(_tris(o) for o in objs)
     if after!=before:print('DECIMATED',name,before,'->',after,'tris (budget',budget,')',flush=True)
 for name,a in ASSETS.items():
-    if name in selected:enforce_budget(name,a['objects'],BUDGET.get(a['category'],1500))
+    if name in selected:enforce_budget(name,a['objects'],budget_for(name,a['category']))
     groups={}
     for o in a['objects']:groups.setdefault((o.parent.name,o.data.materials[0].name),[]).append(o)
     result=[]
@@ -1251,7 +1254,7 @@ for name,a in ASSETS.items():
     triangles=sum(sum(len(p.vertices)-2 for p in o.data.polygons) for o in result)
     bounds=[o.matrix_world@Vector(v) for o in result for v in o.bound_box]
     mins=[min(v[i] for v in bounds) for i in range(3)];maxs=[max(v[i] for v in bounds) for i in range(3)]
-    budget=BUDGET.get(a['category'],1500)
+    budget=budget_for(name,a['category'])
     entries[name]={'id':name,'file':f'models/{name}.glb','category':a['category'],'description':a['description'],'concept':f"concepts/v4/{concept_for(name,a['category'])}.png",'triangles':triangles,'budget':budget,'over_budget':triangles>budget,'mesh_primitives':len(result),'materials':sorted({o.data.materials[0].name for o in result}),'bytes':path.stat().st_size,'clips':a['clips'],'rigged':'rig' in a,'bounds_blender':{'min':mins,'max':maxs}}
     if a['root'].get('decal_item'):entries[name]['decal_item']=a['root']['decal_item']
     if a['root'].get('decal_variants'):entries[name]['decal_variants']=list(a['root']['decal_variants'])
@@ -1272,7 +1275,7 @@ manifest={'version':3,'status':'v4-library','visual_match':'Requires scene-level
  'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion',
  'textures':{'atlas':'textures/v4-atlas.png','atlas_layout':'textures/atlas-layout.json','decals':'textures/decals-atlas.png','decals_layout':'textures/decals-layout.json'},
  'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == "decals": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind "mask" -> color = fallback_color with the atlas as alpha, "color" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json. Characters: clip_meta[clip] = {loop, drive, frames, seconds}; drive "walkPhase" -> time = ((walkPhase / 2pi) mod 1) * seconds, "time" -> play normally (one-shots hold the last frame). tint_slots {suit, trim} name the materials to clone + recolor per instance; meshes carry extras.tint_slot.',
- 'budgets':BUDGET,'materials':materials,'effects':EFFECTS}
+ 'budgets':BUDGET,'asset_budgets':ASSET_BUDGET,'materials':materials,'effects':EFFECTS}
 # Partial builds may run in parallel (one Blender per --group): merge with whatever the others wrote.
 import fcntl
 with open(ROOT/'.manifest.lock','w') as lock:

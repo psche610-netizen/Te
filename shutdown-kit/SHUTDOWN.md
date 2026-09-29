@@ -408,44 +408,45 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - `build_ui.py`: 51 icons; `tokens.json` `lucideIcons` maps every current `lucide-react` import in `game/` to its V4 icon for the Part B swap.
 - For review: 35 of 86 assets are over their triangle budget (e.g. turbine-generator 37.9k vs 2k, characters ~16k vs 6k). Pre-existing (budgets were never enforced in earlier phases); decimation/LOD pass needed before Part B wiring. The redundant `v0-project.zip` (and its LFS `.gitattributes`) were removed from the repo.
 
-**Phase 20b (Triangle budget pass) — scripts done, awaiting local build:** decimate (Blender Decimate modifier / fewer bevel segments + cylinder verts) each asset below to its budget in `complete_library.py`/`build_assets.py`, re-run `complete_library.py` (bpy 5.0.1, ~20 min), confirm 0 OVER BUDGET lines, then Part B.
+**Phase 20b (Triangle budget pass) — 85/86 done; turbine-generator rebuild pending:** Local parallel build (`build_fast.sh`, Blender 5.2.2) exported 86/86, 0 over budget, 94k tris total (was 35 over). Contact sheet (three.js, game camera) reviewed for all 86: 85 read cleanly. `turbine-generator` was collapsed 37.9k -> 1.8k and shattered its stator shells, so it now has a per-asset hero budget of 6000 (`ASSET_BUDGET`, also written to `manifest.json` `asset_budgets`); rebuild only it with `--only turbine-generator` and re-check before Part B.
+Original task: decimate (Blender Decimate modifier / fewer bevel segments + cylinder verts) each asset below to its budget in `complete_library.py`/`build_assets.py`, re-run `complete_library.py` (bpy 5.0.1, ~20 min), confirm 0 OVER BUDGET lines, then Part B.
 - Script changes: `build_assets.py` bevels capped at 1 segment and skipped under 4 mm / on cylinders r < 5 cm; `circle_verts(r)` caps cylinder/cone/rod/tube sides by radius (6 / 8 / 12 / 16 / 24); rod default 8; text `resolution_u` 2. `complete_library.py`: ellipsoids ≤16 segments, torus rings 12–24 x 4, cloth segments 10 x 6. Safety net `enforce_budget()` at export: collapse-decimates the heaviest source parts (Decimate moved before the Armature modifier) until each asset is ≤95% of its budget; decals and `Marking` text are never decimated. Logs `DECIMATED id before -> after`. Ids, pivots, materials, rigs, anchors unchanged.
 - To do after the user's local build: tick the list below from `/tmp/build.log`, check `renders/` for decimation artefacts (characters, turbine, scrap-bundle are the most reduced).
-  - [ ] EXPORTED turbine-generator 37856 tris OVER BUDGET 2000
-  - [ ] EXPORTED control-console 10776 tris OVER BUDGET 2000
-  - [ ] EXPORTED locker-bank 8784 tris OVER BUDGET 2000
-  - [ ] EXPORTED supply-crate 3196 tris OVER BUDGET 2000
-  - [ ] EXPORTED pipe-elbow 4576 tris OVER BUDGET 2000
-  - [ ] EXPORTED pipe-straight 6052 tris OVER BUDGET 2000
-  - [ ] EXPORTED operator-amber 16244 tris OVER BUDGET 6000
-  - [ ] EXPORTED crew-teal 16244 tris OVER BUDGET 6000
-  - [ ] EXPORTED crew-ivory 16244 tris OVER BUDGET 6000
-  - [ ] EXPORTED warden 15408 tris OVER BUDGET 6000
-  - [ ] EXPORTED weaver 13028 tris OVER BUDGET 6000
-  - [ ] EXPORTED containment-capsule 5164 tris OVER BUDGET 4000
-  - [ ] EXPORTED locker-interior-frame 2762 tris OVER BUDGET 2000
-  - [ ] EXPORTED wall-microphone 3224 tris OVER BUDGET 1500
-  - [ ] EXPORTED rotary-control 3464 tris OVER BUDGET 1500
-  - [ ] EXPORTED scrap-bundle 8676 tris OVER BUDGET 1500
-  - [ ] EXPORTED operator-plinth 2636 tris OVER BUDGET 2000
-  - [ ] EXPORTED ladder 2380 tris OVER BUDGET 2000
-  - [ ] EXPORTED stairs 3840 tris OVER BUDGET 2000
-  - [ ] EXPORTED grated-bridge 6584 tris OVER BUDGET 2000
-  - [ ] EXPORTED pipe-valve 9532 tris OVER BUDGET 4000
-  - [ ] EXPORTED pipe-tee 9092 tris OVER BUDGET 4000
-  - [ ] EXPORTED pipe-riser 4308 tris OVER BUDGET 4000
-  - [ ] EXPORTED coat-hook-workwear 2616 tris OVER BUDGET 2000
-  - [ ] EXPORTED warning-beacon 2952 tris OVER BUDGET 1500
-  - [ ] EXPORTED coolant-tank 6138 tris OVER BUDGET 4000
-  - [ ] EXPORTED refrigeration-unit 4708 tris OVER BUDGET 4000
-  - [ ] EXPORTED frost-silo 4482 tris OVER BUDGET 4000
-  - [ ] EXPORTED chimney 4902 tris OVER BUDGET 4000
-  - [ ] EXPORTED foundry-crucible 4120 tris OVER BUDGET 4000
-  - [ ] EXPORTED sea-rock 4308 tris OVER BUDGET 2000
-  - [ ] EXPORTED cliff-stack 3532 tris OVER BUDGET 2000
-  - [ ] EXPORTED forklift 2618 tris OVER BUDGET 1500
-  - [ ] EXPORTED core-spindle 9132 tris OVER BUDGET 4000
-  - [ ] EXPORTED tall-smokestack 4754 tris OVER BUDGET 4000
+  - [ ] turbine-generator 37856 -> 1788 / 2000 but visually broken; rebuild at hero budget 6000
+  - [x] control-console 10776 -> 1928 / 2000
+  - [x] locker-bank 8784 -> 1840 / 2000
+  - [x] supply-crate 3196 -> 892 / 2000
+  - [x] pipe-elbow 4576 -> 1232 / 2000
+  - [x] pipe-straight 6052 -> 1188 / 2000
+  - [x] operator-amber 16244 -> 4896 / 6000
+  - [x] crew-teal 16244 -> 4896 / 6000
+  - [x] crew-ivory 16244 -> 4896 / 6000
+  - [x] warden 15408 -> 3768 / 6000
+  - [x] weaver 13028 -> 4932 / 6000
+  - [x] containment-capsule 5164 -> 1536 / 4000
+  - [x] locker-interior-frame 2762 -> 642 / 2000
+  - [x] wall-microphone 3224 -> 600 / 1500
+  - [x] rotary-control 3464 -> 624 / 1500
+  - [x] scrap-bundle 8676 -> 1412 / 1500
+  - [x] operator-plinth 2636 -> 956 / 2000
+  - [x] ladder 2380 -> 356 / 2000
+  - [x] stairs 3840 -> 944 / 2000
+  - [x] grated-bridge 6584 -> 1832 / 2000
+  - [x] pipe-valve 9532 -> 2044 / 4000
+  - [x] pipe-tee 9092 -> 1900 / 4000
+  - [x] pipe-riser 4308 -> 1044 / 4000
+  - [x] coat-hook-workwear 2616 -> 900 / 2000
+  - [x] warning-beacon 2952 -> 516 / 1500
+  - [x] coolant-tank 6138 -> 2074 / 4000
+  - [x] refrigeration-unit 4708 -> 1092 / 4000
+  - [x] frost-silo 4482 -> 2090 / 4000
+  - [x] chimney 4902 -> 3046 / 4000
+  - [x] foundry-crucible 4120 -> 1704 / 4000
+  - [x] sea-rock 4308 -> 1812 / 2000
+  - [x] cliff-stack 3532 -> 1516 / 2000
+  - [x] forklift 2618 -> 1338 / 1500
+  - [x] core-spindle 9132 -> 3764 / 4000
+  - [x] tall-smokestack 4754 -> 1762 / 4000
   - [ ] LIBRARY FULL 86 exported / 86 assets | over budget: 35 ['turbine-generator', 'co
 
 **Phase 17 (Water + Cold Storage) — scripts only, not built yet (`complete_library.py`, `effects/v4-effects.js`):**
