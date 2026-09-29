@@ -217,6 +217,21 @@ for x,r in [(-1.65,1.04),(-.75,1.045),(.55,1.045),(1.45,.77),(1.91,.73)]:flange(
 cylinder('End shadow recess',(1.96,0,1.45),.56,.045,'rubber','X',40)
 cylinder('End cover',(1.994,0,1.45),.41,.04,'petrol','X',32)
 cylinder('Drive shaft',(2.12,0,1.45),.16,.25,'hardware','X',24)
+# Shaft coupling: two bolted half-flanges and a guard hoop, sized to read at gameplay distance.
+for x in [2.27,2.37]:cylinder('Coupling half',(x,0,1.45),.36,.09,'steel','X',32)
+for j in range(8):
+    a=j*math.tau/8;cylinder('Coupling bolt',(2.32,math.cos(a)*.29,1.45+math.sin(a)*.29),.032,.24,'hardware','X',6)
+cylinder('Output shaft',(2.52,0,1.45),.14,.22,'hardware','X',24)
+box('Coupling guard',(2.35,0,1.9),(.34,.86,.05),'amber',.01,1)
+for y in [-.41,.41]:box('Guard strut',(2.35,y,1.07),(.05,.05,1.66),'steel',.006,1)
+# Cooling pipe run: stator top -> elbow -> along -X -> down to the floor saddle behind the machine.
+PIPE_R=.1
+run=[(-1.25,.35,2.42),(-1.25,.35,2.78),(-1.4,.5,2.92),(-2.2,.9,2.92),(-2.45,1.0,2.7),(-2.45,1.0,.35)]
+tube('Cooling pipe',run,PIPE_R,'petrol',16)
+for p in [(-1.25,.35,2.5),(-2.45,1.0,.45)]:cylinder('Pipe flange',p,PIPE_R*1.6,.06,'steel','Z',16)
+cylinder('Pipe flange',(-1.8,.7,2.92),PIPE_R*1.6,.06,'steel','X',16)
+for z in [.9,1.8]:box('Pipe clamp',(-2.45,1.0,z),(.26,.26,.05),'hardware',.01,1)
+box('Floor pipe saddle',(-2.45,1.0,.15),(.34,.34,.3),'steel',.02,1)
 for j in range(9):
     a=math.radians(15+j*18);y=math.cos(a)*1.008;z=1.45+math.sin(a)*1.008
     o=box('Stator reinforcing rib',(-.32,y,z),(1.8,.085,.10),'steel',.012);o.rotation_euler[0]=a-math.pi/2

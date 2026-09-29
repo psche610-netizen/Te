@@ -359,10 +359,23 @@ def pivot_part(name,p,objects,clip,axis='Z',amount=1.4,translation=False):
     return node
 
 def lamp_beacon(p):
-    x,y,z=p;cylinder('Beacon foot',(x,y,z),.13,.07,'steel');cylinder('Red beacon',(x,y,z+.13),.095,.22,'danger-red');ring('Beacon guard',(x,y,z+.22),.11,.012,'hardware')
+    """Compact caged alarm beacon, 0.26 m tall. p = bottom of the base (sits exactly on the surface)."""
+    x,y,z=p
+    cylinder('Beacon base',(x,y,z+.025),.085,.05,'steel',16)
+    cylinder('Lens collar',(x,y,z+.06),.064,.02,'hardware',16)
+    cylinder('Red lens',(x,y,z+.12),.055,.1,'danger-red',16)
+    ellipsoid('Red lens dome',(x,y,z+.17),(.055,.055,.035),'danger-red',12)
+    for j in range(4):
+        a=j*math.pi/2+math.pi/4;cx,cy=x+.068*math.cos(a),y+.068*math.sin(a)
+        rod('Cage bar',(cx,cy,z+.06),(cx*.7+x*.3,cy*.7+y*.3,z+.235),.006,'hardware',6)
+    ring('Cage hoop',(x,y,z+.14),.07,.006,'hardware');cylinder('Cage cap',(x,y,z+.24),.03,.014,'hardware',8)
 
-begin('containment-capsule','Crew rescue capsule with transparent window, animated lifting door, red beacon and release lever.','machinery')
+begin('containment-capsule','Crew rescue capsule (07): transparent window, lifting door, roof beacon seated on the body, feed pipes, hazard-striped sill and C-1 stencil.','machinery')
 box('Capsule body',(0,.18,1.37),(1.22,.75,2.74),'petrol',.12)
+for x in [-.38,.38]:
+    tube('Feed pipe',[(x,.555,2.3),(x,.66,2.2),(x,.66,.35),(x,.66,.1)],.055,'steel',10)
+    for z in [.8,1.7]:box('Pipe clamp',(x,.62,z),(.13,.1,.04),'hardware',.006,1)
+    cylinder('Pipe foot',(x,.66,.04),.09,.08,'hardware','Z',12)
 box('Recess',(0,-.225,1.43),(.94,.1,2.25),'rubber',.07)
 box('Interior back',(0,-.12,1.43),(.85,.04,2.17),'steel')
 for x in [-.52,.52]:box('Ivory frame',(x,-.35,1.38),(.18,.22,2.63),'ivory',.035)
@@ -370,10 +383,12 @@ for z in [.17,2.6]:box('Ivory lintel',(0,-.35,z),(1.18,.22,.28),'ivory',.04)
 idx=len(ASSETS[CURRENT]['objects']);box('Capsule glazing',(0,-.40,1.39),(.84,.025,2.05),'glass',.018)
 for x in [-.435,.435]:box('Door rail',(x,-.42,1.39),(.035,.055,2.14),'hardware',.008)
 pivot_part('capsule-door',(0,0,0),ASSETS[CURRENT]['objects'][idx:],'open','Z',2.16,True)
-lamp_beacon((0,.04,2.8));box('Release box',(-.83,-.2,.94),(.3,.34,.68),'petrol')
+lamp_beacon((0,.18,2.74));box('Release box',(-.83,-.2,.94),(.3,.34,.68),'petrol')
+decal('hazard-strip',(0,-.463,.17),1.1,.16,'decal-hazard','-Y',name='Sill hazard stripe')
+for x in [-.52,.52]:decal('hazard-strip',(x,-.463,.62),.12,.6,'decal-hazard','-Y',vertical=True,name='Frame hazard stripe')
 idx=len(ASSETS[CURRENT]['objects']);rod('Release lever',(-.83,-.4,1),(-.83,-.52,1.3),.028,'hardware');rod('Red grip',(-.94,-.52,1.3),(-.72,-.52,1.3),.046,'danger-red')
 pivot_part('release-lever',(-.83,-.4,1),ASSETS[CURRENT]['objects'][idx:],'release','X',-.9)
-label('C-1',(0,-.477,.12),.14,'steel')
+decal('code-c-1',(0,-.463,2.6),.26,mat='decal-indigo')
 
 begin('locker-single','Functional hiding locker with hollow interior, front vent openings and a hinged door clip.','environment')
 for x in [-.39,.39]:box('Side',(x,0,1.1),(.045,.7,2.2),'petrol')
@@ -390,6 +405,16 @@ for z,h in [(.43,.86),(1.2,.18),(1.91,.78)]:box('Interior panel',(0,0,z),(1.6,.0
 for x in [-.79,.79]:box('Frame side',(x,0,1.1),(.065,.09,2.2),'steel')
 for x in [-.65,.65]:
     for z in [.25,1.02,1.4,2.1]:cylinder('Rivet',(x,-.055,z),.018,.023,'hardware','Y',8)
+# Worn inner door face (-Y, the side the hidden player sees). Slits stay clear: z .86-1.11 and 1.29-1.52.
+IN=-.029
+for z in [.55,1.75]:box('Stiffener rib',(0,IN-.012,z),(1.3,.024,.05),'steel',.006,1)
+rod('Rusted latch bar',(.55,IN-.03,.35),(.55,IN-.03,.8),.014,'hardware',8)
+box('Latch keeper',(.55,IN-.02,.6),(.08,.03,.06),'hardware',.004,1)
+for x,z,w,h in [(-.35,.4,.34,.22),(.28,1.95,.3,.16),(.05,.7,.18,.1)]:box('Scuffed paint',(x,IN-.001,z),(w,.002,h),'soot',0)
+for x in [-.42,-.1,.3]:box('Rust streak',(x,IN-.0015,.7),(.035,.002,.3),'rust',0)
+for x in [-.2,.35]:box('Rust streak',(x,IN-.0015,1.18),(.03,.002,.12),'rust',0)
+box('Dent seam',(-.1,IN-.004,1.92),(.5,.008,.012),'steel',0)
+decal('code-07',(-.45,IN-.003,1.72),.16,mat='decal-ivory',name='Scratched locker number')
 
 begin('wall-microphone','Ivory wall microphone, slotted grille, conduit connection and red detection lamp.','equipment')
 box('Microphone enclosure',(0,0,.47),(.62,.22,.94),'ivory',.06)
@@ -420,8 +445,16 @@ for name in ['battery-pack','hand-radio','repair-tool','scrap-bundle','breathing
     elif name=='repair-tool':
         rod('Wrench shank',(0,0,.04),(0,0,.32),.027,'hardware');ring('Wrench socket',(0,0,.38),.062,.023,'hardware','Y');box('Grip',(0,0,.11),(.08,.055,.17),'cloth-black')
     elif name=='scrap-bundle':
-        for x in [-.14,0,.14]:cylinder('Salvage cell',(x,0,.15),.05,.3,'hardware')
-        box('Binding',(0,0,.16),(.42,.13,.04),'amber');ring('Salvage washer',(.13,-.13,.035),.095,.021,'hardware')
+        # Stack of salvaged plates with rebar lengths, tied with two straps.
+        for k,(mat,dz,rz) in enumerate([('steel',0,0),('rust',.028,.05),('hardware',.056,-.04),('rust',.084,.08)]):
+            o=box('Salvage plate',(0,0,.014+dz),(.5,.3,.024),mat,.004,1);o.rotation_euler[2]=rz
+        for k,y in enumerate([-.08,0,.08]):
+            rod('Rebar',(-.34,y,.118+.012*(k%2)),(.34,y+.02,.118+.012*(k%2)),.013,'rust',8)
+            for j in range(5):ring('Rebar rib',(-.25+j*.125,y+.004*j,.118+.012*(k%2)),.014,.003,'rust','X')
+        for x in [-.17,.17]:
+            box('Tie strap top',(x,0,.14),(.05,.34,.008),'amber',0)
+            for y in [-.168,.168]:box('Tie strap side',(x,y,.075),(.05,.008,.14),'amber',0)
+            box('Strap buckle',(x,-.172,.1),(.06,.012,.035),'hardware',.003,1)
     else:
         cylinder('Canister',(0,0,.28),.10,.5,'ivory');cylinder('Cap',(0,0,.55),.08,.065,'steel');tube('Air hose',[(0,0,.58),(.12,0,.64),(.2,0,.5),(.2,0,.12)],.012,'rubber')
 
@@ -472,13 +505,81 @@ for x in [-1.45,0,1.45]:
     for z in [.035,1.165]:box('Duct flange',(x,0,z),(.08,1.1,.08),'hardware')
     for y in [-.535,.535]:box('Duct flange',(x,y,.6),(.08,.08,1.2),'hardware')
 
-begin('pipe-valve','Flanged shutoff valve with rotating red handwheel.','machinery')
-cylinder('Valve body',(0,0,.55),.33,1.2,'petrol','X')
-for x in [-.57,.57]:flange(x,.41,.55)
-cylinder('Valve stem',(0,0,.99),.08,.5,'hardware')
-idx=len(ASSETS[CURRENT]['objects']);ring('Wheel',(0,0,1.29),.32,.035,'amber')
-for j in range(4):a=j*math.pi/2;rod('Spoke',(0,0,1.29),(.30*math.cos(a),.30*math.sin(a),1.29),.023,'steel')
-pivot_part('valve-wheel',(0,0,1.29),ASSETS[CURRENT]['objects'][idx:],'turn','Z',math.tau)
+# Pipe kit shares pipe-straight's run: axis at z=PIPE_Z, radius PIPE_RAD, flange radius .37.
+PIPE_Z=.42;PIPE_RAD=.28
+begin('pipe-valve','Inline shutoff valve on the pipe-straight axis (z .42): bonnet, stem through a hub, red handwheel physically on the stem.','machinery')
+cylinder('Valve body',(0,0,PIPE_Z),PIPE_RAD+.04,1.0,'petrol','X')
+ellipsoid('Valve bulge',(0,0,PIPE_Z),(.38,.36,.36),'petrol',20)
+for x in [-.5,.5]:flange(x,.37,PIPE_Z)
+for x in [-.3,.3]:box('Pipe saddle',(x,0,.1),(.14,.6,.2),'steel',.02,1)
+cylinder('Bonnet',(0,0,PIPE_Z+.42),.16,.14,'steel','Z',20)
+for j in range(6):a=j*math.tau/6;cylinder('Bonnet bolt',(.12*math.cos(a),.12*math.sin(a),PIPE_Z+.5),.018,.03,'hardware','Z',6)
+cylinder('Yoke',(0,0,PIPE_Z+.6),.06,.22,'hardware','Z',12)
+WHEEL_Z=PIPE_Z+.73
+idx=len(ASSETS[CURRENT]['objects'])
+cylinder('Valve stem',(0,0,WHEEL_Z+.02),.032,.3,'hardware','Z',10)
+cylinder('Wheel hub',(0,0,WHEEL_Z),.065,.06,'hardware','Z',12)
+ring('Wheel',(0,0,WHEEL_Z),.3,.03,'danger-red')
+for j in range(4):a=j*math.pi/2;rod('Spoke',(.06*math.cos(a),.06*math.sin(a),WHEEL_Z),(.28*math.cos(a),.28*math.sin(a),WHEEL_Z),.018,'danger-red',8)
+pivot_part('valve-wheel',(0,0,WHEEL_Z),ASSETS[CURRENT]['objects'][idx:],'turn','Z',math.tau)
+
+begin('pipe-tee','Pipe tee on the pipe-straight axis: 2 m run along X with a vertical branch to a flange at z 1.3.','machinery')
+cylinder('Pipe run',(0,0,PIPE_Z),PIPE_RAD,2,'petrol','X',32)
+for x in [-.94,.94]:flange(x,.37,PIPE_Z)
+ellipsoid('Tee body',(0,0,PIPE_Z),(.36,.34,.34),'petrol',20)
+cylinder('Branch',(0,0,PIPE_Z+.45),PIPE_RAD,.8,'petrol','Z',32)
+cylinder('Branch flange',(0,0,1.28),.37,.1,'steel','Z',32)
+for j in range(12):a=j*math.tau/12;cylinder('Hex flange bolt',(.31*math.cos(a),.31*math.sin(a),1.35),.03,.05,'hardware','Z',6)
+for x in [-.6,.6]:box('Pipe saddle',(x,0,.1),(.15,.66,.2),'steel',.02,1)
+
+begin('pipe-riser','Vertical 3 m riser pipe, flanges both ends, two wall clamps (wall at +Y .45).','machinery')
+cylinder('Riser pipe',(0,0,1.5),PIPE_RAD,3,'petrol','Z',32)
+for z in [.07,2.93]:cylinder('Riser flange',(0,0,z),.37,.12,'steel','Z',32)
+for j in range(12):a=j*math.tau/12;cylinder('Hex flange bolt',(.31*math.cos(a),.31*math.sin(a),.15),.03,.05,'hardware','Z',6)
+for z in [1.0,2.2]:
+    ring('Riser clamp',(0,0,z),PIPE_RAD+.02,.022,'hardware')
+    box('Clamp arm',(0,.37,z),(.08,.16,.06),'hardware',.008,1);box('Wall plate',(0,.44,z),(.24,.02,.18),'steel',.006,1)
+
+begin('pipe-bracket','Wall bracket for a 0.28 m pipe: wall plate at y 0 (wall behind, +Y), pipe centre at (0,-.5,0).','machinery')
+box('Wall plate',(0,-.01,0),(.3,.02,.36),'steel',.008,1)
+for x in [-.1,.1]:
+    for z in [-.13,.13]:cylinder('Anchor bolt',(x,-.025,z),.018,.02,'hardware','Y',6)
+box('Bracket arm',(0,-.12,-.3),(.1,.22,.07),'hardware',.01,1)
+o=box('Arm brace',(0,-.08,-.17),(.06,.05,.3),'hardware',.006,1);o.rotation_euler[0]=.6
+box('Pipe cradle',(0,-.5,-.3),(.12,.62,.05),'hardware',.01,1)
+ring('U-bolt',(0,-.5,0),PIPE_RAD+.015,.012,'hardware','X')
+
+begin('junction-box','Wall-mounted electrical junction box with screwed lid, conduit glands and E1 stencil. Back on y 0, faces -Y.','machinery')
+box('Junction body',(0,-.09,0),(.46,.18,.46),'petrol',.02,1)
+box('Junction lid',(0,-.186,0),(.42,.015,.42),'steel',.008,1)
+for x in [-.18,.18]:
+    for z in [-.18,.18]:cylinder('Lid screw',(x,-.196,z),.012,.01,'hardware','Y',6)
+for x in [-.12,.12]:
+    cylinder('Conduit gland',(x,-.09,-.26),.035,.06,'hardware','Z',10)
+    rod('Conduit',(x,-.09,-.29),(x,-.09,-.9),.022,'rubber',8)
+cylinder('Top gland',(0,-.09,.26),.035,.06,'hardware','Z',10);rod('Conduit',(0,-.09,.29),(0,-.09,.9),.022,'rubber',8)
+decal('code-e1',(0,-.195,.04),.2,mat='decal-indigo')
+box('Warning band',(0,-.195,-.15),(.3,.002,.04),'amber',0)
+
+begin('floor-drain-grate','Standalone slotted drain grate for floor tiles; top at z .012, origin at the tile surface.','environment')
+box('Drain frame',(0,0,.004),(.62,.62,.008),'steel',0)
+box('Drain well',(0,0,.002),(.52,.52,.004),'rubber',0)
+for k in range(6):box('Grate bar',(( k-2.5)*.085,0,.008),(.034,.52,.008),'hardware',0)
+
+begin('coat-hook-workwear','Wall coat rail (back on y 0) with three hooks, hanging amber work jacket and breathing hose. Jacket uses tint slot suit.','environment')
+box('Hook rail',(0,-.02,1.75),(1.1,.04,.08),'steel',.008,1)
+for x in [-.4,0,.4]:
+    rod('Hook',(x,-.04,1.75),(x,-.14,1.72),.012,'hardware',6);rod('Hook tip',(x,-.14,1.72),(x,-.15,1.78),.01,'hardware',6)
+# Jacket hangs from the middle hook: collar at the hook, body draping to z ~1.05, sleeves hanging.
+cloth_segment('Hanging jacket',(0,-.13,1.08),(0,-.14,1.68),.24,.08,'cloth-amber')
+ellipsoid('Collar fold',(0,-.15,1.68),(.12,.07,.04),'cloth-amber',12)
+for s in [-1,1]:
+    cloth_segment('Hanging sleeve',(s*.22,-.13,1.6),(s*.26,-.16,1.1),.06,.05,'cloth-amber')
+    ellipsoid('Cuff',(s*.26,-.16,1.09),(.055,.045,.03),'cloth-black',10)
+    box('Reflective band',(s*.245,-.19,1.3),(.1,.006,.035),'ivory',0)
+rod('Jacket zip',(0,-.215,1.12),(0,-.22,1.64),.006,'hardware',6)
+tube('Hanging hose',[(.4,-.15,1.72),(.43,-.18,1.45),(.38,-.16,1.2),(.42,-.15,1.0)],.022,'rubber',8)
+tag_tints({'suit':'cloth-amber'})
 
 begin('electrical-cabinet','Service cabinet with breaker rows, vents, handle and hazard stripe.','machinery')
 box('Cabinet',(0,0,1),(1,.55,2),'petrol',.035);box('Door reveal',(0,-.29,1),(.9,.03,1.87),'steel')
@@ -487,7 +588,7 @@ for x in [-.22,.22]:
 for z in [.3,.38,.46]:box('Vent',(0,-.32,z),(.62,.028,.032),'rubber')
 label('POWER',(0,-.327,1.77),.12,'ivory');box('Warning band',(0,-.324,.85),(.78,.025,.07),'amber')
 
-begin('warning-beacon','Red rotating alarm beacon with mounting base.','equipment');lamp_beacon((0,0,.08))
+begin('warning-beacon','Compact caged red alarm beacon (0.26 m), base on z 0. Runtime pulses the danger-red emission.','equipment');lamp_beacon((0,0,0))
 
 # Cold storage and foundry ------------------------------------------------------
 begin('coolant-tank','Tall refrigeration tank with insulation seams, gauge, frost cap and service valves.','machinery')
@@ -595,6 +696,19 @@ box('Switch plinth',(0,0,.08),(.75,.65,.16),'steel');box('Switch body',(0,0,.82)
 cylinder('Status rim',(0,-.275,1.18),.15,.06,'hardware','Y');cylinder('Red status',(0,-.316,1.18),.115,.025,'danger-red','Y');label('KILL',(0,-.256,.78),.1,'steel')
 idx=len(ASSETS[CURRENT]['objects']);rod('Switch lever',(0,-.31,.52),(0,-.51,.74),.025,'hardware');rod('Switch grip',(-.12,-.51,.74),(.12,-.51,.74),.04,'amber')
 pivot_part('activation-lever',(0,-.31,.52),ASSETS[CURRENT]['objects'][idx:],'activate','X',1.1)
+def number_plate(p,item,size=.22):
+    """Shared screwed number plate facing -Y; p = centre on the mounting surface (plate back at p.y).
+    The digit is a decal quad (extras.decal_slot = number) the runtime re-UVs per instance."""
+    x,y,z=p;f=y-.012;k=size*.39
+    box('Number plate',(x,y-.006,z),(size,.012,size),'steel',.004,1)
+    for dx in [-k,k]:
+        for dz in [-k,k]:cylinder('Plate screw',(x+dx,f-.002,z+dz),size*.045,.006,'hardware','Y',6)
+    o=decal(item,(x,f-.0015,z),size*.75,mat='decal-ivory',name='Plate number');o['decal_slot']='number';return o
+# On the ivory face between the status lens (bottom z 1.03) and the KILL stencil.
+number_plate((0,-.2475,.95),'code-01',.12);ASSETS[CURRENT]['root']['decal_item']='code-01'
+ASSETS[CURRENT]['root']['decal_variants']=['code-01','code-02','code-03','code-04']
+begin('number-plate','Shared screwed number plate (kill switches 1-4, lockers, bays). Decal item swapped per instance.','core')
+number_plate((0,0,0),'code-01');ASSETS[CURRENT]['root']['decal_item']='code-01'
 
 # Effects meshes; time-dependent rendering is supplied separately in effects/v4-effects.js.
 begin('water-tile','Eight-metre water surface. Runtime water material supplies animated ripples.','effect')
@@ -660,6 +774,7 @@ for name,a in ASSETS.items():
     budget=BUDGET.get(a['category'],1500)
     entries[name]={'id':name,'file':f'models/{name}.glb','category':a['category'],'description':a['description'],'concept':f"concepts/v4/{concept_for(name,a['category'])}.png",'triangles':triangles,'budget':budget,'over_budget':triangles>budget,'mesh_primitives':len(result),'materials':sorted({o.data.materials[0].name for o in result}),'bytes':path.stat().st_size,'clips':a['clips'],'rigged':'rig' in a,'bounds_blender':{'min':mins,'max':maxs}}
     if a['root'].get('decal_item'):entries[name]['decal_item']=a['root']['decal_item']
+    if a['root'].get('decal_variants'):entries[name]['decal_variants']=list(a['root']['decal_variants'])
     if a.get('clip_meta'):entries[name]['clip_meta']=a['clip_meta']
     if a.get('tint_slots'):entries[name]['tint_slots']=a['tint_slots']
     print('EXPORTED',name,triangles,'tris',('OVER BUDGET '+str(budget)) if triangles>budget else 'ok',flush=True)

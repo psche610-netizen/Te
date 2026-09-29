@@ -19,13 +19,13 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes |
 |---|---|---|
-| turbine-generator | OK | Minor: bigger coupling flange + pipe run into wall. |
+| turbine-generator | OK (P16 script) | Bolted shaft coupling + guard, cooling pipe run to floor saddle. |
 | control-console | OK | |
 | locker-bank, locker-single | OK | |
-| locker-interior-frame | OK | Needs worn inner-door texture for 06. |
+| locker-interior-frame | OK (P16 script) | Worn inner face: ribs, latch, scuffs, rust streaks, dent, scratched 07. |
 | supply-crate | OK | |
 | pipe-straight, pipe-elbow | OK | |
-| pipe-valve | FIX | Handwheel floats detached above the body (bug). |
+| pipe-valve | OK (P16 script) | Inline on pipe axis; bonnet/yoke/stem through hub, red handwheel attached. |
 | sliding-bulkhead | OK (P14 script) | Hazard stripes on uprights/header/leaf, B-1 + KEEP CLEAR decals. Height (3 m) vs 2 m wall kit to check in review. |
 | service-door | OK | |
 | wall-lamp | OK | |
@@ -36,7 +36,7 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | wall-corner | OK (P14 script) | Rebuilt as grid kit piece. New: wall-post, wall-end, wall-straight, wall-t, wall-cross (2 m cell, 2.0 m tall). |
 | foundation-pier | OK (P14 script) | Dark concrete block, coping, pilasters, pour seams, waterline stain at z=-1. |
 | decal-wall-stencil, decal-floor-stencil, decal-hazard-edge | OK (P14 script) | Decal quads on `decals-atlas.png`; runtime sets the UV rect from `decal_item` / decals-layout. |
-| warning-beacon | FIX | Oversized flat red cylinder; needs lens + cage, smaller. |
+| warning-beacon | OK (P16 script) | 0.26 m caged beacon, red lens + dome. |
 | wall-microphone, rotary-control | OK | Matches 02. |
 
 ## C. Cold Storage / Sector 2 (03, 09)
@@ -67,7 +67,7 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | **core-support-pillar** | NEW | Pillars under rings into the void. |
 | core-spindle | FIX | Too short/stubby; needs tall modular column, red sensor band, "CORE" stencil. |
 | core-retracting-segment | OK | |
-| core-kill-switch | OK | Add big number plate 1–4. |
+| core-kill-switch | OK (P16 script) | Shared number plate, decal variants code-01..04. |
 
 ## F. Title / Sector map / Overseer (01, 03, 11)
 
@@ -85,13 +85,13 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status |
 |---|---|
-| scrap-bundle | FIX – unreadable blob; make tied plate/rebar bundle. |
+| scrap-bundle | OK (P16 script) – stacked plates, ribbed rebar, two tie straps. |
 | hand-radio, battery-pack, breathing-canister, repair-tool | OK |
-| containment-capsule | FIX – red beacon floats detached (bug); needs pipes + hazard stripes (07). |
-| **pipe-tee / vertical riser / pipe bracket** | NEW |
-| **junction-box / small wall box** | NEW |
-| **floor-drain-grate** | NEW |
-| **hanging workwear / coat hook** | NEW (04) |
+| containment-capsule | OK (P16 script) – beacon seated, feed pipes, hazard stripes, C-1 decal. |
+| pipe-tee / pipe-riser / pipe-bracket | OK (P16 script) |
+| junction-box | OK (P16 script) |
+| floor-drain-grate | OK (P16 script) |
+| coat-hook-workwear | OK (P16 script) |
 | stencil decal sheet | OK – `textures/decals-atlas.png` (P13) + decal quads (P14). |
 | hazard-stripe decals | OK – `hazard-strip` item + `decal-hazard-edge` quad (P14). |
 

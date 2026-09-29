@@ -352,7 +352,7 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 16 (Phases 13–15 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 17 (Phases 13–16 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
@@ -371,6 +371,17 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - Bug fixed: hips bob/crouch wrote `location.z`, which on an up-pointing bone is world forward, not up; now `location.y`. Head yaw likewise moved to `rotation_euler[1]`.
 - Tints: `tag_tints()` → manifest `tint_slots` {suit, trim} (operator: suit cloth / cloth-black; warden: petrol / ivory) and `extras.tint_slot` on meshes.
 - For review: finger curl sign (+X assumed = close) and arm reach sign follow the old repair clip; check grab/hide-enter visually. Operator triangle count vs 6000 budget unverified (single-chamfer on small parts to help).
+
+**Phase 16 (Sector 1 plant props) — scripts only, not built yet:**
+- `pipe-valve`: now inline on the pipe-straight axis (`PIPE_Z` .42, `PIPE_RAD` .28, flange r .37) with saddles, bulge, bolted bonnet, yoke; stem runs through the hub so the red handwheel sits on it (was floating 5 cm above). `valve-wheel` pivot/`turn` clip kept.
+- `lamp_beacon()` rewritten: 0.26 m caged beacon (base, collar, red lens + dome, 4 cage bars, hoop, cap); `p` = base bottom. `warning-beacon` base at z 0. Capsule beacon now sits on the roof (z 2.74, was floating).
+- `containment-capsule`: two steel feed pipes down the back with clamps/feet, hazard stripes on sill + lower frame, `C-1` label → `code-c-1` decal.
+- `scrap-bundle`: 4 stacked plates (steel/rust), 3 ribbed rebar lengths, two amber tie straps with buckles.
+- `turbine-generator` (build_assets.py): bolted shaft coupling (2 half-flanges r .36, 8 bolts, output shaft), amber guard on struts, cooling pipe run stator top → along -X → down to a floor saddle, with flanges + clamps.
+- `locker-interior-frame`: worn -Y face (assumed viewer side, where the rivets are): stiffener ribs, latch bar, soot scuffs, rust streaks under the slits, dent seam, scratched `code-07`. Slits left clear.
+- `core-kill-switch`: shared `number_plate(p, item, size)` (steel plate, 4 screws, decal with `extras.decal_slot = "number"`); root `decal_item` code-01 + `decal_variants` code-01..04 (exported to the manifest). Separate `number-plate` asset.
+- NEW: `pipe-tee`, `pipe-riser` (3 m, wall clamps), `pipe-bracket` (pipe centre (0,-.5,0)), `junction-box` (E1 decal, conduits), `floor-drain-grate`, `coat-hook-workwear` (tint slot suit).
+- For review: `scene_recipes.py` places four kill switches but every instance shows `code-01` until the runtime (or `put()`) sets the variant. Locker interior viewer side assumed -Y.
 
 **Phase 12 (Ship) — done (edited via GitLab, no local build):**
 - `capacitor.config.ts` (appId `com.hideogroup.shutdown`, webDir `out`, ink background). Deps added: `@capacitor/android`, `@capacitor/haptics`, dev `@capacitor/cli` (all ^8). **The lockfile was not regenerated**: CI uses `pnpm install --no-frozen-lockfile`; run `pnpm install` locally and commit `pnpm-lock.yaml`.
@@ -569,9 +580,9 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
   - [x] Skin-tintable material slots (suit, trim) named for recolor.
 
 ### Phase 16 — Plant props (Sector 1)
-- [ ] FIX pipe-valve (floating handwheel), containment-capsule (floating beacon; add pipes + stripes), warning-beacon (smaller, lens + cage), scrap-bundle (tied plates/rebar).
-- [ ] FIX turbine-generator minor (bigger coupling flange + pipe run), locker-interior-frame worn inner door, core-kill-switch number plates 1–4 (shared plate mesh).
-- [ ] NEW pipe-tee, vertical riser, pipe bracket, junction box, floor drain grate, coat hook + hanging workwear.
+- [x] FIX pipe-valve (floating handwheel), containment-capsule (floating beacon; add pipes + stripes), warning-beacon (smaller, lens + cage), scrap-bundle (tied plates/rebar).
+- [x] FIX turbine-generator minor (bigger coupling flange + pipe run), locker-interior-frame worn inner door, core-kill-switch number plates 1–4 (shared plate mesh).
+- [x] NEW pipe-tee, vertical riser, pipe bracket, junction box, floor drain grate, coat hook + hanging workwear. (ids: `pipe-tee`, `pipe-riser`, `pipe-bracket`, `junction-box`, `floor-drain-grate`, `coat-hook-workwear`, + shared `number-plate`)
 
 ### Phase 17 — Water + Cold Storage assets (Sector 2)
 - [ ] FIX water-tile → mesh + shader spec (dark water, ripple normal/UV scroll, no reflections); FIX waterfall → volume, foam, splash ring.
