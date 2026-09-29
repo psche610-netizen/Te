@@ -84,14 +84,23 @@ def tag_since(idx,bone):
 def section(bone,fn):
     idx=len(ASSETS[CURRENT]['objects']);fn();tag_since(idx,bone)
 
-def hand(p,robot=False):
-    x,y,z=p;mat='hardware' if robot else 'cloth-black'
-    box('Palm',(x,y,z),(.12,.07,.16),mat,.025)
+def glove(p,sign):
+    """Padded dark work glove; thumb on the inner (body) side."""
+    x,y,z=p
+    box('Glove palm',(x,y,z),(.135,.085,.17),'cloth-black',.03,1)
+    box('Knuckle pad',(x,y-.046,z-.03),(.12,.018,.05),'rubber',.008,1)
     for j in range(4):
-        xx=x-.046+j*.031
-        rod('Finger proximal',(xx,y,z-.055),(xx,y-.014,z-.12),.012,mat,8)
-        rod('Finger tip',(xx,y-.014,z-.12),(xx,y-.038,z-.155),.01,mat,8)
-    rod('Thumb',(x-.065,y,z),(x-.1,y-.035,z-.06),.02,mat,8)
+        xx=x-.05+j*.034
+        rod('Glove finger',(xx,y,z-.06),(xx,y-.016,z-.128),.015,'cloth-black',8)
+        rod('Glove fingertip',(xx,y-.016,z-.128),(xx,y-.04,z-.165),.013,'cloth-black',8)
+    ix=x-sign*.072;rod('Glove thumb',(ix,y-.01,z+.01),(ix-sign*.035,y-.04,z-.06),.022,'cloth-black',8)
+
+def tag_tints(slots):
+    """Mark tintable meshes; glTF extras carry tint_slot so the runtime can recolor per instance."""
+    a=ASSETS[CURRENT];a['tint_slots']=slots;by_mat={m:s for s,m in slots.items()}
+    for o in a['objects']:
+        m=o.data.materials[0].name if o.type=='MESH' and o.data.materials else None
+        if m in by_mat:o['tint_slot']=by_mat[m]
 
 def make_rig(specs,kind):
     a=ASSETS[CURRENT];root=a['root'];bpy.ops.object.select_all(action='DESELECT')
@@ -107,13 +116,24 @@ def make_rig(specs,kind):
     a['rig']=rig;a['kind']=kind
     return rig
 
+# Clip table: (name, loop, drive). Loop clips are one 2 s cycle (48 frames @ 24 fps, last key == first key)
+# with phase 0 at t=0, the same convention as sin(walkPhase) in the game: drive 'walkPhase' clips with
+#   time = ((walkPhase / 2pi) mod 1) * cycle_seconds
+# One-shots ('time') play once over 1 s and hold the last frame.
+CYCLE_FRAMES=48;ONESHOT_FRAMES=24
+CLIPS={
+ 'operator':[('idle',True,'time'),('walk',True,'walkPhase'),('run',True,'walkPhase'),('crouch',True,'walkPhase'),('hide-enter',False,'time'),
+             ('repair',True,'time'),('hide',True,'time'),('hold-breath',True,'time'),('rescue',True,'time'),('caught',False,'time'),('sit-exhausted',True,'time')],
+ 'warden':[('idle',True,'time'),('walk',True,'walkPhase'),('scan',True,'time'),('chase',True,'walkPhase'),('grab',False,'time'),('stunned',True,'time')],
+ 'weaver':[('idle',True,'time'),('scuttle',True,'walkPhase'),('chase',True,'walkPhase'),('scan',True,'time'),('strike',True,'time'),('stunned',True,'time')]}
+def smooth(t):t=min(max(t,0),1);return t*t*(3-2*t)
 def animate_character(rig,kind):
-    a=ASSETS[CURRENT]
-    clips=['idle','walk','run','crouch','repair','hide','hold-breath','rescue','caught','sit-exhausted'] if kind=='operator' else (['idle','patrol','chase','search','capture','stunned'] if kind=='warden' else ['idle','scuttle','chase','scan','strike','stunned'])
-    for clip in clips:
+    a=ASSETS[CURRENT];a['clip_meta']={}
+    for clip,loop,drive in CLIPS[kind]:
         action=bpy.data.actions.new(CURRENT+'_'+clip);rig.animation_data_create();rig.animation_data.action=action
-        for frame in range(1,50,3):
-            t=(frame-1)/48;phase=t*math.tau;s=math.sin(phase);c=math.cos(phase)
+        length=CYCLE_FRAMES if loop else ONESHOT_FRAMES
+        for frame in range(1,length+2,3):
+            t=(frame-1)/length;phase=t*math.tau if loop else 0;s=math.sin(phase);c=math.cos(phase);e=smooth(t)
             for b in rig.pose.bones:b.rotation_mode='XYZ';b.rotation_euler=(0,0,0);b.location=(0,0,0)
             def rot(n,x=0,y=0,z=0):
                 if n in rig.pose.bones:rig.pose.bones[n].rotation_euler=(x,y,z)
@@ -129,66 +149,123 @@ def animate_character(rig,kind):
                 if clip=='strike':rot('hips',-.18*max(s,0));rot('head',-.2*max(s,0))
                 if clip=='stunned':rot('hips',.2,0,.12*s)
             else:
-                moving=clip in ['walk','run','patrol','chase'];fast=clip in ['run','chase'];amp=.7 if fast else .32
+                # Up-pointing bones (hips/spine/head): local Y = world up, local Z = world -Y (forward).
+                # So vertical offset is location.y, yaw is rotation_euler[1].
+                moving=clip in ['walk','run','chase','crouch'];fast=clip in ['run','chase']
+                amp=.7 if fast else (.22 if clip=='crouch' else .32)
                 for side,sign in [('L',1),('R',-1)]:
                     q=s*sign
                     rot('thigh.'+side,amp*q if moving else .015*s)
                     rot('shin.'+side,max(-q,0)*amp*.8 if moving else .03)
                     rot('upper_arm.'+side,-amp*q*.75 if moving else -.08,0,.05*sign)
                     rot('forearm.'+side,-.65 if fast else -.12)
-                hips.location.z=.035*abs(s) if moving else .007*s
+                    rot('fingers.'+side,.45 if fast else .15);rot('fingertips.'+side,.35 if fast else .1);rot('thumb.'+side,.1)
+                hips.location.y=.035*abs(s) if moving else .007*s
                 rot('spine',-.14 if fast else .025*s)
-                if clip in ['crouch','hide','hold-breath','caught','sit-exhausted']:
-                    hips.location.z=-.43 if clip!='sit-exhausted' else -.55
+                if clip=='crouch':
+                    hips.location.y=-.3+.02*abs(s)
+                    for side,sign in [('L',1),('R',-1)]:
+                        q=s*sign;rot('thigh.'+side,-.95+amp*q);rot('shin.'+side,1.25+max(-q,0)*.3);rot('upper_arm.'+side,-.3-amp*q*.5);rot('forearm.'+side,-.7)
+                    rot('spine',.3);rot('head',-.12)
+                if clip in ['hide','hold-breath','caught','sit-exhausted']:
+                    hips.location.y=-.43 if clip!='sit-exhausted' else -.55
                     for side in ['L','R']:rot('thigh.'+side,-1.1);rot('shin.'+side,1.5);rot('upper_arm.'+side,-.35);rot('forearm.'+side,-.85)
                     rot('spine',.28 if clip=='sit-exhausted' else .2);rot('head',.22)
-                if clip in ['repair','rescue','capture']:
+                    if clip=='hold-breath':rot('spine',.2+.03*s);rot('head',.3)
+                if clip=='hide-enter':
+                    # Turn 180 deg, back 0.35 m into the locker, settle into the hide crouch.
+                    hips.rotation_euler[1]=math.pi*smooth(t*1.6)
+                    hips.location.z=-.35*smooth((t-.3)/.5);hips.location.y=-.43*smooth((t-.5)/.5)
+                    for side in ['L','R']:
+                        rot('thigh.'+side,-1.1*smooth((t-.5)/.5));rot('shin.'+side,1.5*smooth((t-.5)/.5))
+                        rot('upper_arm.'+side,-.35*e);rot('forearm.'+side,-.85*e)
+                    rot('spine',.2*e);rot('head',.22*e)
+                if clip in ['repair','rescue']:
                     for side,sign in [('L',1),('R',-1)]:rot('upper_arm.'+side,-1.15+.08*s*sign);rot('forearm.'+side,-.5+.14*s)
                     rot('head',.17);rot('spine',.08)
-                if clip in ['search','idle']:rot('head',0,0,.25*s if clip=='search' else .035*s)
+                if clip=='grab':
+                    # Reach (0-0.5 s, hand open), then clamp shut and pull in (0.5-1 s).
+                    reach=smooth(t/.5);clamp=smooth((t-.5)/.35)
+                    for side in ['L','R']:
+                        rot('upper_arm.'+side,-1.45*reach+.4*clamp);rot('forearm.'+side,-.2-.5*clamp)
+                        rot('fingers.'+side,-.45*reach+1.3*clamp);rot('fingertips.'+side,-.2*reach+1.0*clamp);rot('thumb.'+side,-.3*reach+.9*clamp)
+                    rot('spine',.28*reach-.1*clamp);rot('head',.2*reach)
+                if clip=='idle':rot('head',0,.035*s,0)
+                if clip=='scan':
+                    rot('head',.1,.65*s,0);rot('spine',.03,.18*math.sin(phase-.6),0)
+                    for side in ['L','R']:rot('upper_arm.'+side,-.12);rot('fingers.'+side,.2)
                 if clip=='stunned':rot('spine',.35,0,.1*s);rot('head',.2)
             for b in rig.pose.bones:
                 b.keyframe_insert('rotation_euler',frame=frame);b.keyframe_insert('location',frame=frame)
         track=rig.animation_data.nla_tracks.new();track.name=clip;track.strips.new(clip,1,action);track.mute=True
-        a['clips'].append(clip)
+        a['clips'].append(clip);a['clip_meta'][clip]={'loop':loop,'drive':drive,'frames':length,'seconds':length/scene.render.fps}
     rig.animation_data.action=None
     for track in rig.animation_data.nla_tracks:track.mute=False
     for b in rig.pose.bones:b.rotation_euler=(0,0,0);b.location=(0,0,0)
 
 def operator(name,suit):
-    begin(name,'Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.','character')
-    section('hips',lambda: (ellipsoid('Trouser seat',(0,0,.91),(.22,.145,.19),suit),box('Webbing belt',(0,-.005,1.025),(.43,.30,.058),'cloth-black',.022),box('Buckle',(0,-.167,1.025),(.075,.025,.057),'hardware',.006)))
+    begin(name,'Bulky protective operator (04/07): padded workwear, knee pads, dark gloves and boots, large battery backpack with canisters, chest radio, opaque visor. Skinned rig; suit/trim tint slots; walk/run/crouch loop on walkPhase.','character')
+    def pelvis():
+        ellipsoid('Trouser seat',(0,0,.91),(.255,.17,.2),suit)
+        box('Webbing belt',(0,-.005,1.025),(.5,.36,.065),'cloth-black',.025,1)
+        box('Buckle',(0,-.19,1.025),(.08,.025,.06),'hardware',.006,1)
+        for side in [-1,1]:box('Belt pouch',(side*.2,-.14,.99),(.1,.09,.12),'cloth-black',.02,1)
+    section('hips',pelvis)
     def torso():
-        cloth_segment('Work jacket',(0,0,1.02),(0,.01,1.48),.25,.15,suit)
+        cloth_segment('Padded work jacket',(0,0,1.02),(0,.01,1.5),.29,.19,suit)
         for side in [-1,1]:
-            rod('Harness',(side*.16,-.153,1.1),(side*.2,-.12,1.46),.024,'cloth-black')
-            box('Chest pocket',(side*.11,-.162,1.28),(.12,.027,.135),suit,.014)
-            box('Harness buckle',(side*.175,-.177,1.31),(.052,.032,.066),'hardware',.008)
-        rod('Jacket zip',(0,-.164,1.06),(0,-.162,1.43),.007,'hardware',6)
-        box('Battery pack',(0,.205,1.26),(.37,.19,.48),'petrol',.038)
-        box('Pack inset',(0,.308,1.26),(.29,.025,.32),'steel')
-        for x in [-.145,.145]:box('Pack rail',(x,.33,1.25),(.033,.04,.43),'hardware',.008)
-        tube('Breathing hose',[(.12,.32,1.43),(.23,.28,1.53),(.23,.1,1.56)],.023,'rubber')
+            ellipsoid('Shoulder pad',(side*.27,0,1.45),(.11,.13,.075),suit,14)
+            rod('Harness strap',(side*.17,-.195,1.08),(side*.2,-.15,1.49),.026,'cloth-black',8)
+            box('Harness buckle',(side*.185,-.215,1.3),(.056,.034,.07),'hardware',.008,1)
+        box('Chest pocket',(-.11,-.205,1.27),(.12,.03,.14),suit,.014,1)
+        rod('Jacket zip',(0,-.207,1.06),(0,-.2,1.44),.007,'hardware',6)
+        # Chest radio (left chest) with grille, PTT button, antenna and coiled lead to the collar.
+        box('Chest radio',(.12,-.23,1.35),(.1,.055,.15),'petrol',.015,1)
+        box('Radio grille',(.12,-.259,1.37),(.07,.006,.07),'rubber',0)
+        box('Radio PTT',(.175,-.23,1.39),(.018,.03,.04),'amber',.004,1)
+        rod('Radio antenna',(.15,-.23,1.425),(.165,-.215,1.6),.008,'hardware',6)
+        tube('Radio lead',[(.09,-.23,1.42),(.06,-.2,1.47),(.08,-.14,1.52)],.009,'rubber',6)
+        # Large battery backpack.
+        box('Battery pack',(0,.33,1.24),(.46,.28,.6),'petrol',.045)
+        box('Pack top cap',(0,.33,1.56),(.42,.24,.06),'hardware',.015,1)
+        box('Pack inset',(0,.474,1.23),(.34,.02,.42),'steel',.01,1)
+        for x in [-.19,.19]:box('Pack rail',(x,.48,1.23),(.035,.04,.52),'hardware',.008,1)
+        for side in [-1,1]:
+            cylinder('Side canister',(side*.27,.32,1.2),.065,.44,'steel','Z',12)
+            for z in [1.04,1.36]:ring('Canister band',(side*.27,.32,z),.067,.008,'hardware')
+        box('Pack warning plate',(0,.487,1.4),(.2,.006,.06),'amber',0)
+        tube('Breathing hose',[(.15,.46,1.5),(.27,.38,1.62),(.24,.12,1.67)],.025,'rubber',10)
     section('spine',torso)
     def helmet():
-        cylinder('Neck seal',(0,0,1.49),.11,.12,'cloth-black')
-        ellipsoid('Cream helmet',(0,-.005,1.68),(.205,.207,.235),'ivory',32)
-        ellipsoid('Visor gasket',(0,-.162,1.675),(.161,.098,.184),'rubber',28)
-        ellipsoid('Opaque visor',(0,-.191,1.68),(.139,.073,.16),'visor',32)
-        for x in [-.191,.191]:cylinder('Helmet hinge',(x,-.018,1.68),.054,.024,'hardware','X',16)
-        tube('Helmet rim',[(-.155,-.156,1.8),(-.1,-.19,1.872),(0,-.2,1.897),(.1,-.19,1.872),(.155,-.156,1.8)],.013,'ivory')
+        cylinder('Neck seal',(0,0,1.5),.12,.12,'cloth-black',16)
+        ellipsoid('Cream helmet',(0,-.005,1.7),(.215,.217,.245),'ivory',32)
+        ellipsoid('Visor gasket',(0,-.168,1.695),(.168,.102,.19),'rubber',28)
+        ellipsoid('Opaque visor',(0,-.198,1.7),(.145,.076,.166),'visor',32)
+        for x in [-.2,.2]:cylinder('Helmet hinge',(x,-.018,1.7),.056,.026,'hardware','X',16)
+        tube('Helmet rim',[(-.162,-.162,1.83),(-.105,-.198,1.905),(0,-.208,1.93),(.105,-.198,1.905),(.162,-.162,1.83)],.014,'ivory')
     section('head',helmet)
-    specs=[('hips',(0,0,.91),(0,0,1.04),None),('spine',(0,0,1.04),(0,0,1.47),'hips'),('head',(0,0,1.47),(0,0,1.88),'spine')]
+    specs=[('hips',(0,0,.91),(0,0,1.04),None),('spine',(0,0,1.04),(0,0,1.49),'hips'),('head',(0,0,1.49),(0,0,1.92),'spine')]
     for side,sign in [('L',1),('R',-1)]:
-        hip=(sign*.13,0,.9);knee=(sign*.155,-.025,.53);ankle=(sign*.155,0,.16)
-        sh=(sign*.245,0,1.43);el=(sign*.33,-.015,1.12);wr=(sign*.37,-.045,.87)
-        section('thigh.'+side,lambda:cloth_segment('Trouser thigh',hip,knee,.132,.14,suit))
-        section('shin.'+side,lambda:(cloth_segment('Trouser calf',knee,ankle,.1,.11,suit),box('Knee patch',(sign*.155,-.122,.52),(.13,.035,.14),'cloth-black',.025)))
-        section('foot.'+side,lambda:(box('Boot',(sign*.155,-.075,.115),(.18,.35,.20),'cloth-black',.035),box('Boot sole',(sign*.155,-.09,.032),(.19,.36,.047),'rubber',.015),*[rod('Boot lace',(sign*.155-.055,-.1,.213+k*.016),(sign*.155+.055,-.13,.213+k*.016),.006,'hardware',6) for k in range(3)]))
-        section('upper_arm.'+side,lambda:cloth_segment('Jacket sleeve',sh,el,.1,.1,suit))
-        section('forearm.'+side,lambda:(cloth_segment('Forearm sleeve',el,wr,.086,.085,suit),ellipsoid('Cuff',wr,(.077,.075,.049),'cloth-black')))
-        section('hand.'+side,lambda:hand((wr[0],wr[1],wr[2]-.08)))
-        specs += [('thigh.'+side,hip,knee,'hips'),('shin.'+side,knee,ankle,'thigh.'+side),('foot.'+side,ankle,(sign*.155,-.24,.08),'shin.'+side),('upper_arm.'+side,sh,el,'spine'),('forearm.'+side,el,wr,'upper_arm.'+side),('hand.'+side,wr,(wr[0],wr[1],wr[2]-.18),'forearm.'+side)]
+        hip=(sign*.14,0,.9);knee=(sign*.165,-.025,.53);ankle=(sign*.165,0,.17)
+        sh=(sign*.3,0,1.43);el=(sign*.37,-.015,1.12);wr=(sign*.4,-.045,.87)
+        section('thigh.'+side,lambda:cloth_segment('Trouser thigh',hip,knee,.15,.155,suit))
+        def shin():
+            cloth_segment('Trouser calf',knee,ankle,.115,.125,suit)
+            box('Knee pad',(sign*.165,-.16,.53),(.15,.05,.18),'rubber',.02,1)
+            box('Knee pad plate',(sign*.165,-.187,.54),(.09,.008,.09),'hardware',.004,1)
+            for z in [.47,.6]:box('Knee strap',(sign*.165,-.03,z),(.2,.24,.022),'cloth-black',0)
+        section('shin.'+side,shin)
+        def boot():
+            box('Work boot',(sign*.165,-.08,.125),(.2,.38,.23),'cloth-black',.04)
+            box('Toe cap',(sign*.165,-.235,.085),(.19,.08,.13),'rubber',.025,1)
+            box('Boot sole',(sign*.165,-.095,.03),(.215,.4,.05),'rubber',.012,1)
+            for k in range(3):rod('Boot lace',(sign*.165-.06,-.12,.22+k*.017),(sign*.165+.06,-.15,.22+k*.017),.006,'hardware',6)
+        section('foot.'+side,boot)
+        section('upper_arm.'+side,lambda:cloth_segment('Jacket sleeve',sh,el,.115,.115,suit))
+        section('forearm.'+side,lambda:(cloth_segment('Forearm sleeve',el,wr,.098,.096,suit),cylinder('Glove gauntlet',(wr[0],wr[1],wr[2]-.005),.082,.09,'cloth-black',14)))
+        section('hand.'+side,lambda:glove((wr[0],wr[1],wr[2]-.1),sign))
+        specs += [('thigh.'+side,hip,knee,'hips'),('shin.'+side,knee,ankle,'thigh.'+side),('foot.'+side,ankle,(sign*.165,-.26,.08),'shin.'+side),('upper_arm.'+side,sh,el,'spine'),('forearm.'+side,el,wr,'upper_arm.'+side),('hand.'+side,wr,(wr[0],wr[1],wr[2]-.2),'forearm.'+side)]
+    tag_tints({'suit':suit,'trim':'cloth-black'})
     animate_character(make_rig(specs,'operator'),'operator')
 
 for name,suit in [('operator-amber','cloth-amber'),('crew-teal','cloth-teal'),('crew-ivory','cloth-ivory')]:operator(name,suit)
@@ -206,11 +283,44 @@ def machine_limb(a,b,r=.043):
     offset=Vector((.043,.025,0));rod('Hydraulic ram',aa+offset,aa.lerp(bb,.67)+offset,r*.55,'steel');rod('Piston',aa.lerp(bb,.67)+offset,bb+offset,r*.33,'hardware')
     ellipsoid('Ball joint',a,(r*1.65,)*3,'hardware',16)
 
-begin('warden','Tall asymmetric surveillance hunter with instrument head, red slit, articulated hands and six skeletal clips.','character')
+def warden_head(p):
+    """Large ivory instrument box with a full-width red sensor slit under a steel brow (06 close-up)."""
+    x,y,z=p;fy=y-.23
+    box('Instrument head',p,(.74,.46,.4),'ivory',.05)
+    box('Head brow',(x,fy-.02,z+.13),(.76,.06,.07),'steel',.015,1)
+    box('Sensor recess',(x,fy-.004,z),(.66,.024,.14),'rubber',.018,1)
+    box('Red sensor slit',(x,fy-.018,z),(.6,.012,.05),'danger-red',.004,1)
+    box('Chin vent',(x,fy-.006,z-.13),(.3,.014,.05),'steel',.006,1)
+    for k in range(4):box('Vent slat',(x-.105+k*.07,fy-.014,z-.13),(.014,.008,.04),'rubber',0)
+    for xx in [-.3,.3]:
+        for zz in [-.14,.14]:cylinder('Head screw',(x+xx,fy-.002,z+zz),.016,.012,'hardware','Y',6)
+        box('Head side port',(x+xx*1.3,y,z),(.04,.18,.09),'steel',.008,1)
+    box('Head hatch',(x,y,z+.203),(.34,.26,.012),'ivory',.004,1)
+
+def warden_hand(wr,side,sgn):
+    """Articulated steel hand: palm (hand bone), three two-joint claws (fingers/fingertips bones), thumb."""
+    x,y,z=wr;pz=z-.07
+    def palm():
+        box('Palm',(x,y,pz),(.15,.1,.13),'hardware',.02,1)
+        box('Palm guard',(x,y-.055,pz),(.13,.012,.1),'petrol',.006,1)
+        rod('Knuckle axle',(x-.07,y,z-.135),(x+.07,y,z-.135),.018,'steel',8)
+    section('hand.'+side,palm)
+    offs=[-.048,0,.048]
+    def prox():
+        for o in offs:rod('Claw proximal',(x+o,y,z-.135),(x+o,y-.01,z-.22),.017,'steel',8);ellipsoid('Claw knuckle',(x+o,y-.01,z-.22),(.02,.02,.02),'hardware',8)
+    def tips():
+        for o in offs:rod('Claw tip',(x+o,y-.01,z-.22),(x+o,y-.04,z-.29),.013,'hardware',8)
+    ix=x-sgn*.08
+    def thumb():rod('Thumb claw',(ix,y-.02,z-.09),(ix-sgn*.03,y-.065,z-.18),.018,'steel',8)
+    section('fingers.'+side,prox);section('fingertips.'+side,tips);section('thumb.'+side,thumb)
+    return [('fingers.'+side,(x,y,z-.135),(x,y-.01,z-.22),'hand.'+side),('fingertips.'+side,(x,y-.01,z-.22),(x,y-.04,z-.29),'fingers.'+side),
+            ('thumb.'+side,(ix,y-.02,z-.09),(ix-sgn*.03,y-.065,z-.18),'hand.'+side)]
+
+begin('warden','Tall asymmetric surveillance hunter (06): large ivory box head with wide red slit, articulated three-claw hands. Skinned rig; suit/trim tint slots; walk/chase loop on walkPhase.','character')
 section('hips',lambda:(box('Pelvis',(0,0,1.15),(.32,.21,.18),'steel'),ellipsoid('Hip joint',(0,0,1.25),(.14,.12,.17),'hardware')))
-section('spine',lambda:(box('Petrol torso',(0,0,1.62),(.48,.27,.48),'petrol',.06),box('Chest plate',(0,-.15,1.60),(.27,.025,.3),'ivory'),cylinder('Left shoulder',(.3,0,1.79),.16,.15,'petrol','X'),cylinder('Right shoulder',(-.29,0,1.74),.13,.14,'steel','X'),rod('Neck',(0,0,1.85),(0,0,2.05),.065,'hardware')))
-section('head',lambda:robot_head((0,-.015,2.13)))
-specs=[('hips',(0,0,1.15),(0,0,1.3),None),('spine',(0,0,1.3),(0,0,1.92),'hips'),('head',(0,0,1.92),(0,0,2.3),'spine')]
+section('spine',lambda:(box('Petrol torso',(0,0,1.62),(.48,.27,.48),'petrol',.06),box('Chest plate',(0,-.15,1.60),(.27,.025,.3),'ivory'),cylinder('Left shoulder',(.3,0,1.79),.16,.15,'petrol','X'),cylinder('Right shoulder',(-.29,0,1.74),.13,.14,'steel','X'),rod('Neck',(0,0,1.85),(0,0,2.03),.07,'hardware')))
+section('head',lambda:warden_head((0,-.03,2.22)))
+specs=[('hips',(0,0,1.15),(0,0,1.3),None),('spine',(0,0,1.3),(0,0,1.92),'hips'),('head',(0,0,1.92),(0,0,2.42),'spine')]
 for side,sgn in [('L',1),('R',-1)]:
     hip=(sgn*.15,0,1.15);knee=(sgn*.21,.08,.64);ankle=(sgn*.2,-.01,.15);sh=(sgn*.34,0,1.76);el=(sgn*.44,-.015,1.31);wr=(sgn*.48,-.05,.9)
     section('thigh.'+side,lambda:(machine_limb(hip,knee,.055),box('Thigh armour',(sgn*.19,-.055,.93),(.115,.11,.29),'petrol')))
@@ -218,8 +328,9 @@ for side,sgn in [('L',1),('R',-1)]:
     section('foot.'+side,lambda:box('Stability foot',(sgn*.2,-.1,.068),(.15,.34,.11),'hardware'))
     section('upper_arm.'+side,lambda:machine_limb(sh,el,.044))
     section('forearm.'+side,lambda:(machine_limb(el,wr,.035),box('Forearm guard',(sgn*.465,-.075,1.1),(.08,.08,.24),'petrol')))
-    section('hand.'+side,lambda:hand((wr[0],wr[1],wr[2]-.08),True))
-    specs += [('thigh.'+side,hip,knee,'hips'),('shin.'+side,knee,ankle,'thigh.'+side),('foot.'+side,ankle,(sgn*.2,-.24,.07),'shin.'+side),('upper_arm.'+side,sh,el,'spine'),('forearm.'+side,el,wr,'upper_arm.'+side),('hand.'+side,wr,(wr[0],wr[1],wr[2]-.2),'forearm.'+side)]
+    finger_specs=warden_hand(wr,side,sgn)
+    specs += [('thigh.'+side,hip,knee,'hips'),('shin.'+side,knee,ankle,'thigh.'+side),('foot.'+side,ankle,(sgn*.2,-.24,.07),'shin.'+side),('upper_arm.'+side,sh,el,'spine'),('forearm.'+side,el,wr,'upper_arm.'+side),('hand.'+side,wr,(wr[0],wr[1],wr[2]-.135),'forearm.'+side)]+finger_specs
+tag_tints({'suit':'petrol','trim':'ivory'})
 animate_character(make_rig(specs,'warden'),'warden')
 
 begin('weaver','Six-legged foundry maintenance hunter; independent three-joint legs, sensor head and six skeletal clips.','character')
@@ -549,6 +660,8 @@ for name,a in ASSETS.items():
     budget=BUDGET.get(a['category'],1500)
     entries[name]={'id':name,'file':f'models/{name}.glb','category':a['category'],'description':a['description'],'concept':f"concepts/v4/{concept_for(name,a['category'])}.png",'triangles':triangles,'budget':budget,'over_budget':triangles>budget,'mesh_primitives':len(result),'materials':sorted({o.data.materials[0].name for o in result}),'bytes':path.stat().st_size,'clips':a['clips'],'rigged':'rig' in a,'bounds_blender':{'min':mins,'max':maxs}}
     if a['root'].get('decal_item'):entries[name]['decal_item']=a['root']['decal_item']
+    if a.get('clip_meta'):entries[name]['clip_meta']=a['clip_meta']
+    if a.get('tint_slots'):entries[name]['tint_slots']=a['tint_slots']
     print('EXPORTED',name,triangles,'tris',('OVER BUDGET '+str(budget)) if triangles>budget else 'ok',flush=True)
 materials={}
 for n,m in MATS.items():
@@ -557,7 +670,7 @@ for n,m in MATS.items():
 manifest={'version':3,'status':'v4-library','visual_match':'Requires scene-level comparison; no pixel-identical claim.','authoring':'Blender '+bpy.app.version_string,
  'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion',
  'textures':{'atlas':'textures/v4-atlas.png','atlas_layout':'textures/atlas-layout.json','decals':'textures/decals-atlas.png','decals_layout':'textures/decals-layout.json'},
- 'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == "decals": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind "mask" -> color = fallback_color with the atlas as alpha, "color" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json.',
+ 'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == "decals": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind "mask" -> color = fallback_color with the atlas as alpha, "color" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json. Characters: clip_meta[clip] = {loop, drive, frames, seconds}; drive "walkPhase" -> time = ((walkPhase / 2pi) mod 1) * seconds, "time" -> play normally (one-shots hold the last frame). tint_slots {suit, trim} name the materials to clone + recolor per instance; meshes carry extras.tint_slot.',
  'budgets':BUDGET,'materials':materials,'assets':[entries[n] for n in ASSETS if n in entries]}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 if FULL:

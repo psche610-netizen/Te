@@ -10,9 +10,9 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes vs concept |
 |---|---|---|
-| operator-amber | FIX | Helmet good. Suit too thin; needs bulkier folds, dark knee pads, dark gloves/boots, bigger backpack + chest radio (04, 09). |
-| crew-teal / crew-ivory | FIX | Same body fixes as operator (07). |
-| warden | FIX | Head should be a larger ivory box with wide red slit; articulated hands needed for locker close-up (06). Limbs OK. |
+| operator-amber | OK (P15 script) | Bulkier suit + shoulder pads, rubber knee pads, dark gloves/gauntlets, toe-capped boots, larger pack with canisters, chest radio. Clips incl. hide-enter; tint slots suit/trim. |
+| crew-teal / crew-ivory | OK (P15 script) | Same body as operator (shared `operator()` builder). |
+| warden | OK (P15 script) | Larger ivory box head, brow, full-width red slit, chin vent; articulated three-claw hands (fingers/fingertips/thumb bones). Clips idle/walk/scan/chase/grab/stunned. |
 | weaver | FIX | Far too thin/spidery. Concept (10) is chunky: armored box torso "W-01", thick 3-joint hydraulic legs, hazard stripes, box head with red slit. |
 
 ## B. Plant / Sector 1 environment (05, 07, 01)

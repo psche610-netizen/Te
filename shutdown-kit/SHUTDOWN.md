@@ -352,7 +352,7 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 15 (Phases 13–14 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 16 (Phases 13–15 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
@@ -363,6 +363,14 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - `sliding-bulkhead`: vertical hazard stripes on both uprights, header stripe, leaf stripes, B-1 + KEEP CLEAR decals (on the moving leaf). Hydraulic rails moved outward.
 - `complete_library.py`: `foundation-pier` = dark concrete block, coping, pilasters on 4 faces, pour seams, waterline stain at z=-1; old thin `wall-corner` removed (now in the kit). Manifest: decal materials get `atlas: "decals"` + `decal_kind`, decal assets get `decal_item`; runtime note updated.
 - Known for the post-Phase-20 review: `sliding-bulkhead` (3 m tall, 2.6 m clear) and `bulkhead-wall`'s old 3 m height don't match the 2 m cell / 2.0 m wall kit; Part B scales the door or it gets resized in the review pass. Thick 0.8 m walls vs `GRID.wallThickness` 0.3 colliders: Part B (Phase 22) decides whether to widen colliders (gameplay-neutral check needed) or keep them thin.
+
+**Phase 15 (characters) — scripts only, not built yet (`complete_library.py`):**
+- `operator()` (operator-amber / crew-teal / crew-ivory): wider padded jacket + shoulder pads, belt pouches, rubber knee pads with plate + straps, `glove()` padded dark gloves + gauntlets, toe-capped boots, 0.46 x 0.28 x 0.6 m pack with side canisters/bands/warning plate, chest radio (grille, amber PTT, antenna, lead). Limb joints widened to match; bone names unchanged.
+- `warden`: `warden_head()` 0.74 x 0.46 x 0.4 m ivory box, steel brow, 0.6 m red slit, chin vent, hatch (head bone now 1.92→2.42). `warden_hand()` adds bones `fingers.L/R`, `fingertips.L/R`, `thumb.L/R` (three claws + thumb). Old `hand()` removed.
+- Clips: `CLIPS` table (name, loop, drive). Loops = 48 frames / 2 s, phase 0 at t=0 matching `sin(walkPhase)`; one-shots = 24 frames / 1 s. Operator: idle, walk, run, crouch (crouched walk loop), hide-enter (one-shot: turn 180°, back 0.35 m, settle), repair, hide, hold-breath, rescue, caught, sit-exhausted. Warden: idle, walk, scan (head sweep), chase, grab (one-shot: reach open → clamp), stunned (renamed from patrol/search/capture — no game code used the names). Manifest `clip_meta` + runtime note give the walkPhase → time mapping.
+- Bug fixed: hips bob/crouch wrote `location.z`, which on an up-pointing bone is world forward, not up; now `location.y`. Head yaw likewise moved to `rotation_euler[1]`.
+- Tints: `tag_tints()` → manifest `tint_slots` {suit, trim} (operator: suit cloth / cloth-black; warden: petrol / ivory) and `extras.tint_slot` on meshes.
+- For review: finger curl sign (+X assumed = close) and arm reach sign follow the old repair clip; check grab/hide-enter visually. Operator triangle count vs 6000 budget unverified (single-chamfer on small parts to help).
 
 **Phase 12 (Ship) — done (edited via GitLab, no local build):**
 - `capacitor.config.ts` (appId `com.hideogroup.shutdown`, webDir `out`, ink background). Deps added: `@capacitor/android`, `@capacitor/haptics`, dev `@capacitor/cli` (all ^8). **The lockfile was not regenerated**: CI uses `pnpm install --no-frozen-lockfile`; run `pnpm install` locally and commit `pnpm-lock.yaml`.
@@ -555,10 +563,10 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] sliding-bulkhead: hazard stripes on frame edges + "B-1" stencil. Decal quad meshes (wall stencil, floor stencil, hazard edge strip) using the decal atlas.
 
 ### Phase 15 — Characters + rigs + clips
-- [ ] FIX operator-amber (and crew-teal / crew-ivory) → bulkier suit, knee pads, dark gloves/boots, bigger backpack, chest radio.
-- [ ] FIX warden → larger ivory box head, wide red slit, articulated hands (locker close-up 06).
-- [ ] Armatures + clips in the GLB: operator idle / walk / run / crouch / hide-enter; warden idle / walk / scan / chase / grab. Walk/run clips loop on a known cycle so Part B can drive them from `walkPhase`.
-- [ ] Skin-tintable material slots (suit, trim) named for recolor.
+  - [x] FIX operator-amber (and crew-teal / crew-ivory) → bulkier suit, knee pads, dark gloves/boots, bigger backpack, chest radio.
+  - [x] FIX warden → larger ivory box head, wide red slit, articulated hands (locker close-up 06).
+  - [x] Armatures + clips in the GLB: operator idle / walk / run / crouch / hide-enter; warden idle / walk / scan / chase / grab. Walk/run clips loop on a known cycle so Part B can drive them from `walkPhase`.
+  - [x] Skin-tintable material slots (suit, trim) named for recolor.
 
 ### Phase 16 — Plant props (Sector 1)
 - [ ] FIX pipe-valve (floating handwheel), containment-capsule (floating beacon; add pipes + stripes), warning-beacon (smaller, lens + cage), scrap-bundle (tied plates/rebar).
