@@ -352,9 +352,20 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 18 (Phases 13–17 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 19 (Phases 13–18 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
+
+**Phase 18 (Foundry) — scripts only, not built yet (`complete_library.py`, `scene_recipes.py`, `effects/v4-effects.js`):**
+- `make_rig` specs take an optional 5th item (roll vector → `align_roll`, so local Z = leg-plane normal = flex axis). Helpers `frame_along`, `armor_seg`, `hydraulic`, `seg_decal`; the Phase 17 mesh helpers (`_uv_mesh`, `grid_plane`, `sweep`, `annulus` + `inward`, new `blob` ico droplet) and `EFFECTS` moved above the props so the Foundry assets can use them.
+- `weaver`: rebuilt as the chunky "W-01" (see AUDIT). `WEAVER_GAIT` (exported as manifest `gait`) mirrors `weaver-body.tsx`: hip (±.24, .98), rows game z .3/.02/-.26, splay ±.55 baked into the rest pose, knee (.4,.34), extra ankle (.62,-.6), foot (.58,-.98). Bones: `root`, `hips`, `head`, `hip{j}.{L|R}` (yaw = rotation_euler[1], lift = location.y, like the TSX group), `leg/shin/foot{j}.{L|R}`. Clips idle / scuttle / chase / scan / strike / stunned; tripod phase `(j + side) % 2`, legs swing forward while lifted.
+- `foundry-crucible` = hanging ladle; origin = bail eye, goes at gantry `anchors_blender.hook` (0,0,3.3). `pour` clip tilts 1.05 rad about the trunnions (z -1.3); `anchors_blender.pour_lip` = spout lip at full tilt (0,-.904,-1.669).
+- `overhead-gantry`: hazard-strip decals replace the amber boxes, knee braces, `code-f-03` + rail stripes (0.002 m proud so they don't z-fight), hook block/sheave/hook at 3.3.
+- `molten-stream`: origin on the receiving surface, lip (0,0,1.25), ballistic path, 0.5 m/s out along -Y. New materials `molten-core` (opaque, emissive 5) and `molten-glow` (alpha .5, BLENDED). `EFFECTS` `molten` (flicker), `molten-core` (scroll), `molten-glow` (additive scroll). `v4-effects.js`: `createMoltenMaterial({glow})`, `updateAssetEffects` flicker now follows the spec (3 ± 15 %, 5 Hz).
+- NEW `tall-smokestack` (machinery, ~9 m, concept 03).
+- `scene_recipes.py`: foundry-floor hangs the ladle at the hook and scales the stream Z so its lip meets the tilted spout (trough surface z .333); stack added. Sector-foundry miniature uses the stack instead of the chimney.
+- Manifest: `anchors_blender` and `gait` per asset.
+- For review: the Weaver's 3-joint legs have 25+ parts each; tri count vs 6000 is unverified. The `molten-glow` sheath is additive at alpha .5. Check at the game camera that it reads as a hot core, not bloom haze (section 2); drop to 0.3 or make it opaque if it looks hazy. `hip{j}` yaw sign relative to the TSX `-side * (SPLAY + swing)`: splay is baked into the rest pose, so the clip only applies `-side * swing`. The strike clip reach sign is unverified. Part B: `weaver-body.tsx` does not move the ankle; the GLB adds one knee flex.
 
 **Phase 14 (environment shell) — scripts only, not built yet:**
 - `build_assets.py`: `box(..., seg=1)` single-chamfer option (repeated tiles/blocks stay in budget). Decal system: `DECALS` (from `textures/decals-layout.json`), materials `decal-ivory` / `decal-indigo` / `decal-amber` (mask, tinted) + `decal-hazard` (color), all `BLENDED` with custom props `decal_atlas`/`decal_kind`; `decal(item, p, w, h, mat, facing, vertical)` builds a UV-mapped quad (`-Y/+Y/+X/-X/+Z`, `vertical` runs stripes up the quad). Stencil text on the rebuilt pieces uses decals instead of `label()` text meshes.
@@ -599,9 +610,9 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] NEW frost-silo. Review coolant-tank, refrigeration-unit, cold-storage-door against 03/09.
 
 ### Phase 18 — Foundry assets (Sector 3)
-- [ ] FIX weaver → chunky armored "W-01": box torso, thick 3-joint hydraulic legs, hazard stripes, box head with red slit. Leg bones/pivots named to match the tripod gait in `weaver-body.tsx` (KNEE/FOOT).
-- [ ] FIX foundry-crucible → hanging ladle on gantry hook. FIX molten-stream → width, orange core glow, splash.
-- [ ] NEW tall-smokestack. overhead-gantry + hazard stripes and "F-03" label.
+- [x] FIX weaver → chunky armored "W-01": box torso, thick 3-joint hydraulic legs, hazard stripes, box head with red slit. Leg bones/pivots named to match the tripod gait in `weaver-body.tsx` (KNEE/FOOT).
+- [x] FIX foundry-crucible → hanging ladle on gantry hook. FIX molten-stream → width, orange core glow, splash.
+- [x] NEW tall-smokestack. overhead-gantry + hazard stripes and "F-03" label.
 
 ### Phase 19 — Core assets (screen 08)
 - [ ] FIX core-ring-inner/middle/outer → amber edge lines, ring numbers 01/02/03, railing posts; export as per-segment pieces matching the `arena.ts` segment count.

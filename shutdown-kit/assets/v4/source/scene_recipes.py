@@ -39,7 +39,9 @@ for q in range(12):a=q*math.pi/6;put(out,'foundation-pier',(7*math.cos(a),7*math
 put(out,'operator-amber',(0,-4.95,.04),-.6,clip='run');put(out,'warden',(-4.5,2.2,.04));put(out,'warden',(3.6,3.8,.04));put(out,'vision-cone',(-4.5,2.2,.08));put(out,'vision-cone',(3.6,3.8,.08))
 
 out=scene('foundry-floor','Crucible suspended by foundry crane over casting trough, furnace, maintenance operator and Weaver.')
-room(out,0,0);put(out,'overhead-gantry',(2,3,0));put(out,'foundry-crucible',(2,3,1.1),clip='pour');put(out,'casting-trough',(2,2.5,0));put(out,'molten-stream',(2,2.8,.4));put(out,'foundry-furnace',(-.3,4.8,0));put(out,'control-console',(-.5,.8,0));put(out,'operator-amber',(-.5,-.2,0),math.pi,clip='repair');put(out,'weaver',(4.2,-.3,0));put(out,'overhead-duct',(3.6,5.1,3.2));put(out,'water-tile',(2,2,-3.8),s=(1.4,1.4,1))
+# Ladle hangs at overhead-gantry anchors.hook (0,0,3.3). Its pour_lip at full tilt is (0,-.904,-1.669), so the
+# lip is at world (2,2.096,1.631); molten-stream lip is (0,0,1.25) above its origin, trough surface z .333.
+room(out,0,0);put(out,'overhead-gantry',(2,3,0));put(out,'foundry-crucible',(2,3,3.3),clip='pour');put(out,'casting-trough',(2,2.5,0));put(out,'molten-stream',(2,2.096,.333),s=(1,1,(1.631-.333)/1.25));put(out,'tall-smokestack',(-1.6,5.6,0),s=(.8,.8,.8));put(out,'foundry-furnace',(-.3,4.8,0));put(out,'control-console',(-.5,.8,0));put(out,'operator-amber',(-.5,-.2,0),math.pi,clip='repair');put(out,'weaver',(4.2,-.3,0));put(out,'overhead-duct',(3.6,5.1,3.2));put(out,'water-tile',(2,2,-3.8),s=(1.4,1.4,1))
 
 for kind in ['plant','cold-storage','foundry','core']:
     out=scene('sector-'+kind,'Sector-selection miniature: '+kind)
@@ -51,7 +53,7 @@ for kind in ['plant','cold-storage','foundry','core']:
         for x,y in [(0,0),(2,0),(0,2),(2,2)]:put(out,'coolant-tank',(x,y,0))
         put(out,'refrigeration-unit',(3.6,4,0));put(out,'cold-storage-door',(4,5.8,0))
     elif kind=='foundry':
-        put(out,'foundry-furnace',(.5,4,0));put(out,'overhead-gantry',(2,1,0),s=(.8,.8,.8));put(out,'foundry-crucible',(2,1,1));put(out,'casting-trough',(2,0,0));put(out,'chimney',(.5,4,3.5),s=(1.2,1.2,.8))
+        put(out,'foundry-furnace',(.5,4,0));put(out,'overhead-gantry',(2,1,0),s=(.8,.8,.8));put(out,'foundry-crucible',(2,1,3.3*.8),s=(.8,.8,.8));put(out,'casting-trough',(2,0,0));put(out,'tall-smokestack',(-.6,4.8,0),s=(.9,.9,.9))
     else:put(out,'overseer-housing',(1.8,2,0));put(out,'electrical-cabinet',(-.2,1,0));put(out,'electrical-cabinet',(4,1,0))
     put(out,'water-tile',(2,2,-3.8),s=(1.3,1.3,1))
 

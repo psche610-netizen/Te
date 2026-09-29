@@ -26,7 +26,7 @@ def concept_for(name,category):
       'containment-capsule':'07-crew','locker-interior-frame':'06-locker','wall-microphone':'02-mic','rotary-control':'02-mic',
       'operator-plinth':'04-loadout','overseer-housing':'01-title','chimney':'03-sectors','coolant-tank':'09-results',
       'refrigeration-unit':'09-results','cold-storage-door':'09-results','water-tile':'01-title','waterfall':'01-title',
-      'outlet-pipe':'01-title','frost-silo':'03-sectors'}
+      'outlet-pipe':'01-title','frost-silo':'03-sectors','tall-smokestack':'03-sectors'}
     if name in table:return table[name]
     if category=='core' or name.startswith('core-'):return '08-core'
     if name.startswith(('foundry-','overhead-gantry','casting-','molten-')):return '10-paywall'
@@ -37,6 +37,10 @@ for a in ASSETS.values():a.update(category='environment',clips=[])
 material('visor',(.004,.014,.02),.3,.18)
 material('frost',(.57,.72,.72),0,.9)
 material('molten',(1,.19,.008),0,.5,3)
+material('molten-core',(1,.55,.12),0,.5,5)
+material('molten-glow',(1,.3,.03),0,.6,3)
+MATS['molten-glow'].node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.5
+MATS['molten-glow'].surface_render_method='BLENDED'
 # Water family is matte (V4: no reflections, no speculars); motion comes from EFFECTS shader specs.
 material('water',(.018,.08,.1),0,.9)
 material('fall-water',(.05,.16,.17),0,.9)
@@ -110,8 +114,11 @@ def make_rig(specs,kind):
     a=ASSETS[CURRENT];root=a['root'];bpy.ops.object.select_all(action='DESELECT')
     data=bpy.data.armatures.new(CURRENT+' skeleton');rig=bpy.data.objects.new(CURRENT+'-rig',data);scene.collection.objects.link(rig);rig.parent=root
     bpy.context.view_layer.objects.active=rig;rig.select_set(True);bpy.ops.object.mode_set(mode='EDIT')
-    for name,head,tail,parent in specs:
+    # Optional 5th spec item: roll vector; the bone's local Z is aligned to it (bend axis for rotation_euler[2]).
+    for spec in specs:
+        name,head,tail,parent=spec[:4]
         bone=data.edit_bones.new(name);bone.head=head;bone.tail=tail
+        if len(spec)>4:bone.align_roll(Vector(spec[4]))
         if parent:bone.parent=data.edit_bones[parent]
     bpy.ops.object.mode_set(mode='OBJECT')
     for o in a['objects']:
@@ -143,15 +150,23 @@ def animate_character(rig,kind):
                 if n in rig.pose.bones:rig.pose.bones[n].rotation_euler=(x,y,z)
             hips=rig.pose.bones['hips']
             if kind=='weaver':
-                moving=clip in ['scuttle','chase'];amp=.35 if clip=='scuttle' else .6
-                for side in ['L','R']:
+                # Mirrors weaver-body.tsx tripod gait. hip{row}.{side} are up-pointing (local Y = world up):
+                # yaw = rotation_euler[1] (= three rotation.y), lift = location.y. L = +X = game side +1.
+                # leg/shin bones are rolled so local Z is the leg-plane normal: +rotation_euler[2] lifts outward.
+                moving=clip in ['scuttle','chase'];chasing=clip=='chase';amp=.45 if chasing else .32
+                for side,sd in [('L',1),('R',-1)]:
                     for j in range(3):
-                        q=math.sin(phase+(j%2)*math.pi+(0 if side=='L' else math.pi))
-                        rot(f'leg{j}.{side}',0,0,amp*q if moving else .025*s)
-                        rot(f'shin{j}.{side}',.18*max(q,0) if moving else 0)
-                rot('head',0,0,.35*s if clip=='scan' else .04*s)
-                if clip=='strike':rot('hips',-.18*max(s,0));rot('head',-.2*max(s,0))
-                if clip=='stunned':rot('hips',.2,0,.12*s)
+                        tp=phase+((j+(1 if sd>0 else 0))%2)*math.pi
+                        swing=-math.cos(tp)*amp if moving else 0;lift=max(0,math.sin(tp)) if moving else 0
+                        hb=f'hip{j}.{side}';rot(hb,0,-sd*swing,0);rig.pose.bones[hb].location.y=.12*lift
+                        rot(f'leg{j}.{side}',0,0,.22*lift);rot(f'shin{j}.{side}',0,0,-.35*lift)
+                hips.location.y=((-.08 if chasing else 0)+abs(math.sin(2*phase))*.025) if moving else .008*s
+                if chasing:rot('hips',.08)
+                rot('head',0,.6*s if clip=='scan' else .04*s,0)
+                if clip=='strike':
+                    k=max(s,0);rot('hips',.14*k);rot('head',-.12*k)
+                    for side in ['L','R']:rot(f'leg0.{side}',0,0,.7*k);rot(f'shin0.{side}',0,0,-.5*k)
+                if clip=='stunned':rot('hips',.12,0,.1*s);hips.location.y=-.1
             else:
                 # Up-pointing bones (hips/spine/head): local Y = world up, local Z = world -Y (forward).
                 # So vertical offset is location.y, yaw is rotation_euler[1].
@@ -337,18 +352,128 @@ for side,sgn in [('L',1),('R',-1)]:
 tag_tints({'suit':'petrol','trim':'ivory'})
 animate_character(make_rig(specs,'warden'),'warden')
 
-begin('weaver','Six-legged foundry maintenance hunter; independent three-joint legs, sensor head and six skeletal clips.','character')
-section('hips',lambda:(box('Asymmetric carapace',(0,0,1.04),(.85,1.18,.37),'petrol',.07),box('Amber service stripe',(.13,0,1.238),(.17,1,.022),'amber'),box('Dorsal module',(-.27,.26,1.27),(.28,.4,.16),'steel'),*[cylinder('Spine fastener',(x,y,1.25),.03,.025,'hardware','Z',6) for x in [-.34,.34] for y in [-.45,.45]]))
-section('head',lambda:robot_head((0,-.72,1.06)))
-specs=[('hips',(0,0,1),(0,0,1.3),None),('head',(0,-.45,1.05),(0,-.85,1.05),'hips')]
+def frame_along(a,b,n):
+    """Matrix at the a-b midpoint: local Z along a->b, local X along n (made perpendicular), Y = Z x X."""
+    z=(Vector(b)-Vector(a)).normalized();x=(Vector(n)-z*Vector(n).dot(z)).normalized();y=z.cross(x)
+    M=Matrix((x,y,z)).transposed().to_4x4();M.translation=(Vector(a)+Vector(b))/2;return M
+def armor_seg(name,a,b,side_w,depth,mat,n):
+    """Chunky box sleeve from a to b; side_w is the width seen from the side (along n)."""
+    o=box(name,(0,0,0),(side_w,depth,(Vector(b)-Vector(a)).length),mat,.02,1);o.matrix_world=frame_along(a,b,n);return o
+def hydraulic(a,b,off):
+    a,b=Vector(a)+off,Vector(b)+off
+    rod('Hydraulic ram',a.lerp(b,.08),a.lerp(b,.6),.032,'steel',8);rod('Piston',a.lerp(b,.6),a.lerp(b,.94),.019,'hardware',8)
+def seg_decal(item,a,b,fn,offset,w,mat='decal-hazard'):
+    """Vertical-run decal on the face of a segment whose outward normal is fn."""
+    seg=(Vector(b)-Vector(a)).normalized();fn=Vector(fn);o=decal(item,(0,0,0),w,(Vector(b)-Vector(a)).length*.7,mat=mat,vertical=True)
+    M=Matrix(((-fn).cross(seg),-fn,seg)).transposed().to_4x4();M.translation=(Vector(a)+Vector(b))/2+fn*offset;o.matrix_world=M;return o
+
+# Rest pose matches weaver-body.tsx so Part B can swap the box legs for this GLB 1:1 (game z = -Blender y).
+WEAVER_GAIT={'hip_y':.98,'hip_x':.24,'rows_game_z':[.3,.02,-.26],'splay':[.55,0,-.55],
+  'knee':[.4,.34],'ankle':[.62,-.6],'foot':[.58,-.98],'splay_baked':True,
+  'bones':'hip{row}.{L|R} = game leg group (yaw rotation_euler[1], lift location.y); leg/shin/foot = knee/ankle flex about local Z; L = +X = game side +1; row 0 = front'}
+begin('weaver','Armored six-legged foundry hunter "W-01" (10): chunky petrol box hull with hazard stripes and W-01 stencils, ivory box head with red slit, thick three-joint hydraulic legs. Rest pose = weaver-body.tsx (KNEE/FOOT/SPLAY); tripod gait on walkPhase.','character')
+def hull():
+    box('Armored hull',(0,.2,1.0),(.66,.84,.4),'petrol',.05)
+    box('Hull skirt',(0,.2,.775),(.58,.76,.07),'steel',.02,1)
+    box('Front thorax',(0,-.27,1.02),(.54,.34,.32),'steel',.04)
+    box('Top armor plate',(0,.28,1.215),(.56,.56,.03),'petrol',.01,1)
+    box('Dorsal pack',(0,.44,1.3),(.36,.3,.14),'hardware',.03,1)
+    for x in [-.11,.11]:cylinder('Hydraulic reservoir',(x,.16,1.29),.055,.34,'steel','Y',12)
+    for x in [-.25,.25]:
+        for y in [-.18,.6]:cylinder('Hull rivet',(x,y,1.201),.018,.012,'hardware','Z',6)
+    for sgn,facing in [(1,'+X'),(-1,'-X')]:
+        decal('code-w-01',(sgn*.333,.2,1.03),.3,mat='decal-ivory',facing=facing)
+        decal('hazard-strip',(sgn*.332,.2,.86),.78,mat='decal-hazard',facing=facing)
+    decal('code-w-01',(0,.16,1.232),.3,mat='decal-ivory',facing='+Z')
+    decal('hazard-strip',(0,-.442,.9),.5,mat='decal-hazard')
+section('hips',hull)
+def head():
+    box('Sensor head',(0,-.52,1.06),(.4,.26,.26),'ivory',.04)
+    box('Head brow',(0,-.64,1.165),(.42,.05,.04),'steel',.01,1)
+    box('Sensor recess',(0,-.655,1.06),(.32,.02,.1),'rubber',.012,1)
+    box('Red sensor slit',(0,-.667,1.06),(.28,.012,.035),'danger-red',.004,1)
+    for x in [-.17,.17]:
+        for z in [.97,1.15]:cylinder('Head screw',(x,-.652,z),.014,.012,'hardware','Y',6)
+section('head',head)
+specs=[('root',(0,0,0),(0,0,.3),None),('hips',(0,0,.9),(0,0,1.25),'root'),('head',(0,-.52,.93),(0,-.52,1.19),'hips')]
+UP=Vector((0,0,1));G=WEAVER_GAIT
 for side,sgn in [('L',1),('R',-1)]:
-    for j,y in enumerate([-.43,0,.43]):
-        hip=(sgn*.41,y,1.04);knee=(sgn*.86,y*1.5,.86);ankle=(sgn*1.13,y*1.8,.12)
-        section(f'leg{j}.{side}',lambda:(machine_limb(hip,knee,.07),ellipsoid('Hip motor',hip,(.12,.12,.12),'hardware')))
-        section(f'shin{j}.{side}',lambda:(machine_limb(knee,ankle,.047),rod('Leg armour',Vector(knee).lerp(Vector(ankle),.2),Vector(knee).lerp(Vector(ankle),.6),.07,'petrol')))
-        section(f'foot{j}.{side}',lambda:box('Foot pad',(ankle[0],ankle[1],.06),(.2,.25,.09),'steel'))
-        specs += [(f'leg{j}.{side}',hip,knee,'hips'),(f'shin{j}.{side}',knee,ankle,f'leg{j}.{side}'),(f'foot{j}.{side}',ankle,(ankle[0],ankle[1]-.15,.06),f'shin{j}.{side}')]
+    for j,(gz,spl) in enumerate(zip(G['rows_game_z'],G['splay'])):
+        d=Vector((sgn*math.cos(spl),-math.sin(spl),0));H=Vector((sgn*G['hip_x'],-gz,G['hip_y']))
+        P=lambda rh:H+d*rh[0]+UP*rh[1]
+        K,A,F=P(G['knee']),P(G['ankle']),P(G['foot']);n=d.cross(UP).normalized();fn=n if n.y<0 else -n
+        inplane=lambda a,b:(Vector(b)-Vector(a)).normalized().cross(n)*.085
+        section(f'hip{j}.{side}',lambda:(cylinder('Hip motor',tuple(H+d*.1),.1,.22,'hardware','Z',12),cylinder('Motor cap',tuple(H+d*.1+UP*.12),.075,.03,'steel','Z',12)))
+        section(f'leg{j}.{side}',lambda:(armor_seg('Thigh armor',H.lerp(K,.14),K.lerp(H,.1),.15,.13,'petrol',n),hydraulic(H,K,inplane(H,K)),rod('Knee joint',K-n*.1,K+n*.1,.08,'hardware',12)))
+        section(f'shin{j}.{side}',lambda:(armor_seg('Shin armor',K.lerp(A,.1),A.lerp(K,.1),.14,.12,'petrol',n),seg_decal('hazard-strip',K.lerp(A,.16),A.lerp(K,.16),fn,.071,.1),hydraulic(K,A,inplane(K,A)),rod('Ankle joint',A-n*.085,A+n*.085,.065,'hardware',12)))
+        section(f'foot{j}.{side}',lambda:(rod('Foot strut',A,F+UP*.07,.05,'hardware',8),box('Foot pad',tuple(F+UP*.05),(.2,.24,.08),'steel',.02,1),box('Rubber sole',tuple(F+UP*.012),(.18,.22,.024),'rubber',0)))
+        specs += [(f'hip{j}.{side}',tuple(H),tuple(H+UP*.2),'root'),(f'leg{j}.{side}',tuple(H),tuple(K),f'hip{j}.{side}',tuple(n)),
+                  (f'shin{j}.{side}',tuple(K),tuple(A),f'leg{j}.{side}',tuple(n)),(f'foot{j}.{side}',tuple(A),tuple(F),f'shin{j}.{side}',tuple(n))]
+ASSETS[CURRENT]['gait']=WEAVER_GAIT
+tag_tints({'suit':'petrol','trim':'ivory'})
 animate_character(make_rig(specs,'weaver'),'weaver')
+
+# Runtime shader specs by material name (exported to manifest "effects"). Colors are V4 tokens.
+# Ripples use WORLD xz (not UV) so neighbouring water tiles line up; UVs drive scroll only.
+EFFECTS={
+ 'water':{'kind':'water','deep':'#142127','mid':'#23474C','crest':'#507C79','opaque':True,'reflections':False,'specular':0,
+   'wave':{'amp':.018,'freq':[3,2],'speed':[1,.7]},'ripple':{'freq':[7,8],'warp':1.8,'speed':[1,.8],'line':[.72,.91],'mix':.58},
+   'broad':{'freq':[.8,1.4],'speed':.3,'mix':.07},'scroll_uv':[.02,.035],
+   'contact_foam':{'color':'#DED7BC','width':.25,'alpha':.35,'note':'optional line where piers meet water; derive from level-grid pier AABBs, no depth texture'}},
+ 'fall-water':{'kind':'scroll','axis':'v','speed':1.6,'base':'#23474C','streak':'#507C79','streak_freq':[9,3],'streak_mix':.45,'side':'double'},
+ 'foam':{'kind':'scroll','axis':'v','speed':2.2,'base':'#DED7BC','alpha':.85,'breakup':.35,'side':'double'},
+ 'molten':{'kind':'flicker','base':'#FF3002','hot':'#FF8C1F','emissive':3,'hz':5,'depth':.15,'note':'furnace mouth, trough surface, splash crown, stack ember rim'},
+ 'molten-core':{'kind':'scroll','axis':'v','speed':1.4,'base':'#FF8C1F','hot':'#FFE0A0','emissive':5,'streak_freq':[6,2],'opaque':True},
+ 'molten-glow':{'kind':'scroll','axis':'v','speed':.9,'base':'#FF4D08','alpha':.5,'blend':'additive','emissive':3,'side':'double','depthWrite':False},
+ 'foam-splash':{'kind':'pulse','base':'#DED7BC','alpha':.7,'hz':1.2,'scale':[1,1.12],'fade':'v','side':'double','note':'rings: v 0 inner -> 1 outer; alpha fades toward the outer edge and dips with the pulse'}}
+
+def _uv_mesh(name,verts,faces,uvs,mat,recalc=False):
+    # Flat pieces are wound CCW from +Z already; only closed sweeps need normals recalculated outward.
+    mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+    uv=mesh.uv_layers.new(name='UVMap')
+    for poly in mesh.polygons:
+        for li in poly.loop_indices:uv.data[li].uv=uvs[mesh.loops[li].vertex_index]
+    o=bpy.data.objects.new(name,mesh);scene.collection.objects.link(o);o=finish_obj(o,name,mat)
+    if recalc:
+        bpy.context.view_layer.objects.active=o;bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT')
+    return o
+
+def grid_plane(name,size,n,z,mat):
+    """Subdivided square (n x n quads) so vertex waves bend it; UV 0..1 across the tile."""
+    verts=[((i/n-.5)*size,(j/n-.5)*size,z) for j in range(n+1) for i in range(n+1)]
+    uvs=[(i/n,j/n) for j in range(n+1) for i in range(n+1)]
+    faces=[(j*(n+1)+i,j*(n+1)+i+1,(j+1)*(n+1)+i+1,(j+1)*(n+1)+i) for j in range(n) for i in range(n)]
+    return _uv_mesh(name,verts,faces,uvs,mat)
+
+def sweep(name,points,half_w,half_t,mat,sides=12):
+    """Elliptical sweep along a path in the YZ plane; width on world X. u around, v 0 at the start -> 1 at the end."""
+    pts=[Vector(p) for p in points];X=Vector((1,0,0));L=[0]
+    for i in range(1,len(pts)):L.append(L[-1]+(pts[i]-pts[i-1]).length)
+    verts=[];uvs=[];faces=[];s=sides+1
+    for i,p in enumerate(pts):
+        t=(pts[min(i+1,len(pts)-1)]-pts[max(i-1,0)]).normalized();nrm=t.cross(X).normalized()
+        for j in range(s):
+            a=j*math.tau/sides;verts.append(p+X*(math.cos(a)*half_w[i])+nrm*(math.sin(a)*half_t[i]));uvs.append((j/sides,L[i]/L[-1]))
+    for i in range(len(pts)-1):
+        for j in range(sides):faces.append((i*s+j,i*s+j+1,(i+1)*s+j+1,(i+1)*s+j))
+    return _uv_mesh(name,verts,faces,uvs,mat,recalc=True)
+
+def annulus(name,c,r0,r1,mat,n=24,z1=None,inward=False):
+    """Flat ring facing +Z, or open frustum (z1 given: r0 at c.z, r1 at z1) facing outward
+    (inward=True flips it). v 0 inner/bottom -> 1 outer/top."""
+    x,y,z=c;s=n+1;verts=[];uvs=[]
+    for v,(r,zz) in enumerate([(r0,z),(r1,z if z1 is None else z1)]):
+        for k in range(s):a=k*math.tau/n;verts.append((x+r*math.cos(a),y+r*math.sin(a),zz));uvs.append((k/n,v))
+    outward=(z1 is not None)!=inward
+    faces=[(k,k+1,s+k+1,s+k) if outward else (k,s+k,s+k+1,k+1) for k in range(n)]
+    return _uv_mesh(name,verts,faces,uvs,mat)
+
+def blob(name,p,s,mat):
+    """20-tri ico blob for droplets/splash (UV spheres are too heavy for effects)."""
+    bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=p);o=bpy.context.object;o.scale=s
+    bpy.ops.object.transform_apply(location=False,rotation=False,scale=True);return finish_obj(o,name,mat)
+
 
 # Props and equipment ----------------------------------------------------------
 def pivot_part(name,p,objects,clip,axis='Z',amount=1.4,translation=False):
@@ -678,20 +803,49 @@ box('Molten interior',(0,-1.09,1.2),(1.12,.024,.68),'molten')
 for x in [-.43,-.14,.14,.43]:box('Grate bar',(x,-1.13,1.35),(.04,.035,1.15),'hardware')
 cylinder('Exhaust',(0,0,3.55),.46,1,'petrol');label('F-03',(0,-.925,2.67),.24,'ivory')
 
-begin('foundry-crucible','Open refractory crucible with molten surface, trunnions and pouring clip.','machinery')
-idx=len(ASSETS[CURRENT]['objects']);cylinder('Crucible body',(0,0,.8),.58,1.22,'steel',r2=.78);ring('Lip',(0,0,1.42),.78,.07,'hardware');cylinder('Molten metal',(0,0,1.38),.69,.025,'molten')
-for j in range(10):a=j*math.tau/10;rod('Reinforcing rib',(.52*math.cos(a),.52*math.sin(a),.22),(.74*math.cos(a),.74*math.sin(a),1.36),.039,'hardware')
-for x in [-.87,.87]:cylinder('Trunnion',(x,0,.91),.12,.3,'hardware','X')
-pivot_part('crucible-tilt',(0,0,.91),ASSETS[CURRENT]['objects'][idx:],'pour','X',1.05)
+begin('foundry-crucible','Hanging ladle (10/03) for the overhead-gantry hook. Origin = bail eye: place it at the gantry anchors.hook. Bail yoke with hazard arms, tapered banded drum with ribs, -Y pour spout, glowing melt, tilt gear. pour clip tilts the drum 1.05 rad about the trunnions; anchors.pour_lip = spout lip at full tilt.','machinery')
+TZ=-1.3;DR0,DR1,DZ0,DZ1=.52,.62,-1.9,-.8
+def drum_r(z):return DR0+(z-DZ0)/(DZ1-DZ0)*(DR1-DR0)
+ring('Bail eye',(0,0,-.09),.09,.03,'hardware','Y')
+box('Bail crossbar',(0,0,-.24),(1.62,.16,.14),'steel',.02,1)
+for sx in [-1,1]:
+    box('Bail arm',(sx*.76,0,-.8),(.1,.16,1.12),'petrol',.02,1)
+    decal('hazard-strip',(sx*.76,-.082,-.74),.08,.8,mat='decal-hazard',vertical=True)
+idx=len(ASSETS[CURRENT]['objects'])
+cylinder('Ladle drum',(0,0,(DZ0+DZ1)/2),DR0,DZ1-DZ0,'steel','Z',24,r2=DR1)
+for z in [-1.78,-1.3,-.9]:cylinder('Drum band',(0,0,z),drum_r(z)+.015,.07,'petrol','Z',24)
+for j in range(8):
+    a=j*math.tau/8+math.pi/8;ca,sa=math.cos(a),math.sin(a)
+    rod('Drum rib',((drum_r(-1.85)+.012)*ca,(drum_r(-1.85)+.012)*sa,-1.85),((drum_r(-.86)+.012)*ca,(drum_r(-.86)+.012)*sa,-.86),.022,'hardware',6)
+cylinder('Melt',(0,0,-.79),.56,.012,'molten-core','Z',20)
+annulus('Rim outer wall',(0,0,-.8),.665,.665,'hardware',24,-.72)
+annulus('Rim inner wall',(0,0,-.8),.56,.56,'hardware',24,-.72,inward=True)
+annulus('Rim top',(0,0,-.72),.56,.665,'hardware',24)
+box('Pour spout',(0,-.68,-.76),(.26,.2,.1),'hardware',.02,1);box('Spout melt',(0,-.68,-.705),(.16,.18,.012),'molten-core',0)
+for sx in [-1,1]:cylinder('Trunnion',(sx*.67,0,TZ),.1,.2,'hardware','X',12)
+cylinder('Tilt gear',(.86,0,TZ),.2,.06,'hardware','X',16)
+for j in range(10):a=j*math.tau/10;o=box('Gear tooth',(.86,.22*math.cos(a),TZ+.22*math.sin(a)),(.06,.05,.05),'steel',0);o.rotation_euler[0]=a
+pivot_part('ladle-tilt',(0,0,TZ),ASSETS[CURRENT]['objects'][idx:],'pour','X',1.05)
+LIP=Matrix.Rotation(1.05,4,'X')@Vector((0,-.77,-.7-TZ))+Vector((0,0,TZ))
+ASSETS[CURRENT]['anchors']={'pivot':[0,0,TZ],'pour_lip_rest':[0,-.77,-.7],'pour_lip':[round(v,4) for v in LIP]}
 
-begin('overhead-gantry','Foundry overhead crane with crossbeam, trolley, hoist drum and hook.','machinery')
+begin('overhead-gantry','Foundry overhead crane (10): petrol columns with vertical hazard stripes and knee braces, crossbeam with F-03 stencil and hazard rail, trolley, hoist drum, twin cables, striped hook block and hook. anchors.hook = where the foundry-crucible origin hangs.','machinery')
+HOOK_Z=3.3
 for x in [-2.3,2.3]:
     box('Column',(x,0,2.5),(.38,.48,5),'petrol');box('Foot',(x,0,.12),(.8,.9,.24),'steel')
-    for z in [.5,1.5,2.5,3.5,4.5]:box('Warning stripe',(x,-.249,z),(.36,.02,.13),'amber')
+    decal('hazard-strip',(x,-.242,2.4),.3,4.2,mat='decal-hazard',vertical=True)
+    rod('Knee brace',(x,0,4.1),(x-math.copysign(.75,x),0,4.72),.06,'petrol',8)
 box('Crossbeam',(0,0,4.95),(5.2,.66,.48),'petrol')
+# Code stencils are square atlas cells (aspect 1); nudged .002 proud so they never share a plane with the stripes.
+decal('code-f-03',(-1.1,-.334,4.98),.46,mat='decal-ivory')
+for x in [-1.73,-.58,.58,1.73]:decal('hazard-strip',(x,-.332,4.757),1.15,mat='decal-hazard')
 box('Trolley',(0,0,4.56),(.85,.8,.3),'steel');cylinder('Hoist drum',(0,0,4.25),.23,.64,'hardware','X')
-for x in [-.16,.16]:rod('Hoist cable',(x,0,4.25),(x,0,2.4),.015,'steel')
-ring('Hook',(0,0,2.29),.15,.045,'hardware','Y');label('F-03',(0,-.339,4.81),.21,'ivory')
+for x in [-.16,.16]:rod('Hoist cable',(x,0,4.25),(x,0,3.85),.015,'steel')
+box('Hook block',(0,0,3.72),(.42,.3,.3),'steel',.03,1);box('Block stripe',(0,-.152,3.72),(.4,.008,.07),'amber',0)
+cylinder('Sheave',(0,0,3.86),.12,.2,'hardware','X',12)
+rod('Hook shank',(0,0,3.57),(0,0,3.47),.04,'hardware',8)
+ring('Hook',(0,0,HOOK_Z+.1),.1,.035,'hardware','Y')
+ASSETS[CURRENT]['anchors']={'hook':[0,0,HOOK_Z]}
 
 begin('casting-trough','Molten-metal casting channel with refractory walls and end stops.','machinery')
 box('Bed',(0,0,.14),(1.6,2.8,.28),'steel')
@@ -762,57 +916,6 @@ begin('number-plate','Shared screwed number plate (kill switches 1-4, lockers, b
 number_plate((0,0,0),'code-01');ASSETS[CURRENT]['root']['decal_item']='code-01'
 
 # Effects meshes; time-dependent rendering is supplied separately in effects/v4-effects.js.
-# Runtime shader specs by material name (exported to manifest "effects"). Colors are V4 tokens.
-# Ripples use WORLD xz (not UV) so neighbouring water tiles line up; UVs drive scroll only.
-EFFECTS={
- 'water':{'kind':'water','deep':'#142127','mid':'#23474C','crest':'#507C79','opaque':True,'reflections':False,'specular':0,
-   'wave':{'amp':.018,'freq':[3,2],'speed':[1,.7]},'ripple':{'freq':[7,8],'warp':1.8,'speed':[1,.8],'line':[.72,.91],'mix':.58},
-   'broad':{'freq':[.8,1.4],'speed':.3,'mix':.07},'scroll_uv':[.02,.035],
-   'contact_foam':{'color':'#DED7BC','width':.25,'alpha':.35,'note':'optional line where piers meet water; derive from level-grid pier AABBs, no depth texture'}},
- 'fall-water':{'kind':'scroll','axis':'v','speed':1.6,'base':'#23474C','streak':'#507C79','streak_freq':[9,3],'streak_mix':.45,'side':'double'},
- 'foam':{'kind':'scroll','axis':'v','speed':2.2,'base':'#DED7BC','alpha':.85,'breakup':.35,'side':'double'},
- 'foam-splash':{'kind':'pulse','base':'#DED7BC','alpha':.7,'hz':1.2,'scale':[1,1.12],'fade':'v','side':'double','note':'rings: v 0 inner -> 1 outer; alpha fades toward the outer edge and dips with the pulse'}}
-
-def _uv_mesh(name,verts,faces,uvs,mat,recalc=False):
-    # Flat pieces are wound CCW from +Z already; only closed sweeps need normals recalculated outward.
-    mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
-    uv=mesh.uv_layers.new(name='UVMap')
-    for poly in mesh.polygons:
-        for li in poly.loop_indices:uv.data[li].uv=uvs[mesh.loops[li].vertex_index]
-    o=bpy.data.objects.new(name,mesh);scene.collection.objects.link(o);o=finish_obj(o,name,mat)
-    if recalc:
-        bpy.context.view_layer.objects.active=o;bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT')
-    return o
-
-def grid_plane(name,size,n,z,mat):
-    """Subdivided square (n x n quads) so vertex waves bend it; UV 0..1 across the tile."""
-    verts=[((i/n-.5)*size,(j/n-.5)*size,z) for j in range(n+1) for i in range(n+1)]
-    uvs=[(i/n,j/n) for j in range(n+1) for i in range(n+1)]
-    faces=[(j*(n+1)+i,j*(n+1)+i+1,(j+1)*(n+1)+i+1,(j+1)*(n+1)+i) for j in range(n) for i in range(n)]
-    return _uv_mesh(name,verts,faces,uvs,mat)
-
-def sweep(name,points,half_w,half_t,mat,sides=12):
-    """Elliptical sweep along a path in the YZ plane; width on world X. u around, v 0 at the start -> 1 at the end."""
-    pts=[Vector(p) for p in points];X=Vector((1,0,0));L=[0]
-    for i in range(1,len(pts)):L.append(L[-1]+(pts[i]-pts[i-1]).length)
-    verts=[];uvs=[];faces=[];s=sides+1
-    for i,p in enumerate(pts):
-        t=(pts[min(i+1,len(pts)-1)]-pts[max(i-1,0)]).normalized();nrm=t.cross(X).normalized()
-        for j in range(s):
-            a=j*math.tau/sides;verts.append(p+X*(math.cos(a)*half_w[i])+nrm*(math.sin(a)*half_t[i]));uvs.append((j/sides,L[i]/L[-1]))
-    for i in range(len(pts)-1):
-        for j in range(sides):faces.append((i*s+j,i*s+j+1,(i+1)*s+j+1,(i+1)*s+j))
-    return _uv_mesh(name,verts,faces,uvs,mat,recalc=True)
-
-def annulus(name,c,r0,r1,mat,n=24,z1=None):
-    """Flat ring (or open frustum when z1 is given: r0 at c.z, r1 at z1). v 0 inner/bottom -> 1 outer/top."""
-    x,y,z=c;s=n+1;verts=[];uvs=[]
-    for v,(r,zz) in enumerate([(r0,z),(r1,z if z1 is None else z1)]):
-        for k in range(s):a=k*math.tau/n;verts.append((x+r*math.cos(a),y+r*math.sin(a),zz));uvs.append((k/n,v))
-    faces=[(k,k+1,s+k+1,s+k) for k in range(n)]
-    return _uv_mesh(name,verts,faces,uvs,mat)
-
 begin('water-tile','Eight-metre dark water surface at z 0, 16x16 grid for vertex ripples. Matte, no reflections; see manifest effects.water.','effect')
 grid_plane('Water surface',8,16,0,'water')
 
@@ -852,9 +955,38 @@ ASSETS[CURRENT]['root']['waterfall_anchor']=[0,-PL,0]
 begin('vision-cone','Flat triangular enemy vision field with alpha material; visibility and occlusion are controlled by gameplay.','effect')
 material('vision-red',(.75,.035,.012),0,1,.3);MATS['vision-red'].node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.16
 mesh=bpy.data.meshes.new('Vision field');mesh.from_pydata([(0,0,.025),(-1.5,-4,.025),(1.5,-4,.025)],[],[(0,1,2)]);mesh.update();o=bpy.data.objects.new('Vision field',mesh);scene.collection.objects.link(o);finish_obj(o,'Vision field','vision-red')
-begin('molten-stream','Pouring molten-metal stream with separately modeled hot droplets.','effect')
-tube('Stream',[(0,0,2),(0,-.06,1.6),(.06,-.1,.8),(.12,-.15,0)],.055,'molten',10)
-for j in range(9):ellipsoid('Droplet',(.1+random.uniform(-.25,.25),-.15+random.uniform(-.2,.2),random.uniform(.08,.5)),(.018,.018,.045),'molten',8)
+MS_H=1.25;MS_V=.5
+def ms_point(s):d=MS_H*s;return Vector((0,-MS_V*math.sqrt(2*d/9.81),MS_H-d))
+MS_S=[0,.03,.08,.16,.28,.44,.62,.8,1];MS_LAND=ms_point(1)
+begin('molten-stream',f'Molten pour (10): origin on the receiving surface, lip at (0,0,{MS_H}) leaving along -Y (matches foundry-crucible anchors.pour_lip; scale Z to fit other drops). Bright core ribbon inside a translucent glow sheath, glow pool, splash crown and ico droplets. UV v runs down the pour (effects molten-core / molten-glow).','effect')
+sweep('Molten core',[ms_point(s) for s in MS_S],[.06+.03*s for s in MS_S],[.045+.02*s for s in MS_S],'molten-core',8)
+sweep('Glow sheath',[ms_point(s) for s in MS_S],[.11+.06*s for s in MS_S],[.085+.04*s for s in MS_S],'molten-glow',10)
+lx,ly,_=MS_LAND
+cylinder('Glow pool',(lx,ly,.006),.24,.012,'molten-core','Z',16)
+annulus('Splash crown',(lx,ly,0),.14,.3,'molten',16,.13)
+rng=random.Random(18)
+for j in range(10):
+    a=rng.uniform(0,math.tau);r=rng.uniform(.18,.42)
+    blob('Droplet',(lx+r*math.cos(a),ly+r*math.sin(a),rng.uniform(.04,.32)),(.022,.022,.034),'molten-core')
+ASSETS[CURRENT]['anchors']={'lip':[0,0,MS_H],'landing':[round(v,4) for v in MS_LAND]}
+
+begin('tall-smokestack','Foundry stack (03/10): ~9 m tapered rust-metal stack on a concrete plinth, flared base, steel bands, soot crown with ember-lit rim and dark flue, side flue inlet, cage ladder, red top lamp, F-03 stencil.','machinery')
+SK0,SK1,SR0,SR1=1.3,8.7,.62,.48
+def stack_r(z):return SR0+(z-SK0)/(SK1-SK0)*(SR1-SR0)
+box('Stack plinth',(0,0,.35),(1.9,1.9,.7),'concrete-dark',.03,1)
+cylinder('Base flare',(0,0,1.0),.85,.6,'rust','Z',20,r2=SR0)
+cylinder('Stack shell',(0,0,(SK0+SK1)/2),SR0,SK1-SK0,'rust','Z',20,r2=SR1)
+for z in [1.6,3.2,4.8,6.4,8.0]:cylinder('Stack band',(0,0,z),stack_r(z)+.018,.12,'steel','Z',20)
+cylinder('Soot crown',(0,0,8.85),.52,.3,'soot','Z',20)
+cylinder('Flue opening',(0,0,9.003),.37,.004,'rubber','Z',20)
+annulus('Ember rim',(0,0,9.007),.37,.5,'molten',20)
+cylinder('Top lamp',(.56,0,8.8),.045,.08,'danger-red','X',8)
+cylinder('Flue inlet',(0,-.85,2.4),.3,.6,'rust','Y',16);cylinder('Inlet flange',(0,-1.12,2.4),.36,.06,'steel','Y',16)
+la=-2.3;rd=Vector((math.cos(la),math.sin(la),0));td=Vector((-math.sin(la),math.cos(la),0))
+def sp(off,z):return tuple(rd*(stack_r(z)+.18)+td*off+Vector((0,0,z)))
+for off in [-.2,.2]:rod('Ladder rail',sp(off,SK0),sp(off,8.6),.022,'amber',6)
+for k in range(15):z=1.6+k*.47;rod('Ladder rung',sp(-.2,z),sp(.2,z),.016,'hardware',4)
+decal('code-f-03',(0,-(stack_r(4.2)+.02),4.2),.46,mat='decal-ivory')
 
 # Add a single transform parent to the original sliding door, retaining its parts.
 CURRENT='sliding-bulkhead';ASSETS[CURRENT]['clips']=[]
@@ -911,6 +1043,8 @@ for name,a in ASSETS.items():
     if a.get('tint_slots'):entries[name]['tint_slots']=a['tint_slots']
     for key in ['fall_lip','fall_landing','waterfall_anchor']:
         if a['root'].get(key) is not None:entries[name][key+'_blender']=[round(v,4) for v in a['root'][key]]
+    if a.get('anchors'):entries[name]['anchors_blender']=a['anchors']
+    if a.get('gait'):entries[name]['gait']=a['gait']
     fx=sorted(m for m in entries[name]['materials'] if m in EFFECTS)
     if fx:entries[name]['effects']=fx
     print('EXPORTED',name,triangles,'tris',('OVER BUDGET '+str(budget)) if triangles>budget else 'ok',flush=True)
