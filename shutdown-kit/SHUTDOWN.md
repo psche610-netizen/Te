@@ -408,6 +408,44 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - `build_ui.py`: 51 icons; `tokens.json` `lucideIcons` maps every current `lucide-react` import in `game/` to its V4 icon for the Part B swap.
 - For review: 35 of 86 assets are over their triangle budget (e.g. turbine-generator 37.9k vs 2k, characters ~16k vs 6k). Pre-existing (budgets were never enforced in earlier phases); decimation/LOD pass needed before Part B wiring. The redundant `v0-project.zip` (and its LFS `.gitattributes`) were removed from the repo.
 
+**Phase 20b (Triangle budget pass) — TODO:** decimate (Blender Decimate modifier / fewer bevel segments + cylinder verts) each asset below to its budget in `complete_library.py`/`build_assets.py`, re-run `complete_library.py` (bpy 5.0.1, ~20 min), confirm 0 OVER BUDGET lines, then Part B.
+  - [ ] EXPORTED turbine-generator 37856 tris OVER BUDGET 2000
+  - [ ] EXPORTED control-console 10776 tris OVER BUDGET 2000
+  - [ ] EXPORTED locker-bank 8784 tris OVER BUDGET 2000
+  - [ ] EXPORTED supply-crate 3196 tris OVER BUDGET 2000
+  - [ ] EXPORTED pipe-elbow 4576 tris OVER BUDGET 2000
+  - [ ] EXPORTED pipe-straight 6052 tris OVER BUDGET 2000
+  - [ ] EXPORTED operator-amber 16244 tris OVER BUDGET 6000
+  - [ ] EXPORTED crew-teal 16244 tris OVER BUDGET 6000
+  - [ ] EXPORTED crew-ivory 16244 tris OVER BUDGET 6000
+  - [ ] EXPORTED warden 15408 tris OVER BUDGET 6000
+  - [ ] EXPORTED weaver 13028 tris OVER BUDGET 6000
+  - [ ] EXPORTED containment-capsule 5164 tris OVER BUDGET 4000
+  - [ ] EXPORTED locker-interior-frame 2762 tris OVER BUDGET 2000
+  - [ ] EXPORTED wall-microphone 3224 tris OVER BUDGET 1500
+  - [ ] EXPORTED rotary-control 3464 tris OVER BUDGET 1500
+  - [ ] EXPORTED scrap-bundle 8676 tris OVER BUDGET 1500
+  - [ ] EXPORTED operator-plinth 2636 tris OVER BUDGET 2000
+  - [ ] EXPORTED ladder 2380 tris OVER BUDGET 2000
+  - [ ] EXPORTED stairs 3840 tris OVER BUDGET 2000
+  - [ ] EXPORTED grated-bridge 6584 tris OVER BUDGET 2000
+  - [ ] EXPORTED pipe-valve 9532 tris OVER BUDGET 4000
+  - [ ] EXPORTED pipe-tee 9092 tris OVER BUDGET 4000
+  - [ ] EXPORTED pipe-riser 4308 tris OVER BUDGET 4000
+  - [ ] EXPORTED coat-hook-workwear 2616 tris OVER BUDGET 2000
+  - [ ] EXPORTED warning-beacon 2952 tris OVER BUDGET 1500
+  - [ ] EXPORTED coolant-tank 6138 tris OVER BUDGET 4000
+  - [ ] EXPORTED refrigeration-unit 4708 tris OVER BUDGET 4000
+  - [ ] EXPORTED frost-silo 4482 tris OVER BUDGET 4000
+  - [ ] EXPORTED chimney 4902 tris OVER BUDGET 4000
+  - [ ] EXPORTED foundry-crucible 4120 tris OVER BUDGET 4000
+  - [ ] EXPORTED sea-rock 4308 tris OVER BUDGET 2000
+  - [ ] EXPORTED cliff-stack 3532 tris OVER BUDGET 2000
+  - [ ] EXPORTED forklift 2618 tris OVER BUDGET 1500
+  - [ ] EXPORTED core-spindle 9132 tris OVER BUDGET 4000
+  - [ ] EXPORTED tall-smokestack 4754 tris OVER BUDGET 4000
+  - [ ] LIBRARY FULL 86 exported / 86 assets | over budget: 35 ['turbine-generator', 'co
+
 **Phase 17 (Water + Cold Storage) — scripts only, not built yet (`complete_library.py`, `effects/v4-effects.js`):**
 - Materials: `water` now matte (metallic 0, rough .9; was .2/.27 glossy), new flat `fall-water` and `foam-splash`. `EFFECTS` dict (material name → runtime shader spec, V4 token colors) exported as manifest top-level `effects`; assets list the effect materials they use in `effects`.
 - Helpers: `_uv_mesh` (from_pydata + per-vertex UVs), `grid_plane`, `sweep` (elliptical section along a YZ path, u around / v down the path, normals recalculated), `annulus` (flat ring or open frustum, v inner→outer), `frost_drips`.
