@@ -19,6 +19,9 @@
     "equipment": 1500,
     "effect": 1500
   },
+  "asset_budgets": {
+    "turbine-generator": 6000
+  },
   "materials": {
     "petrol": {
       "atlas_cell": "petrol",
@@ -530,8 +533,8 @@
       "category": "environment",
       "description": "Hero horizontal generator with service console, removable end flanges and pipe connections.",
       "concept": "concepts/v4/05-shift.png",
-      "triangles": 1788,
-      "budget": 2000,
+      "triangles": 5998,
+      "budget": 6000,
       "over_budget": false,
       "mesh_primitives": 8,
       "materials": [
@@ -544,18 +547,18 @@
         "signal-amber",
         "steel"
       ],
-      "bytes": 108968,
+      "bytes": 400540,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -2.6543750762939453,
-          -1.7730000019073486,
-          -0.037499938160181046
+          -2.620000123977661,
+          -1.7790000438690186,
+          -3.2521274562213875e-08
         ],
         "max": [
           2.6307435035705566,
-          1.2043750286102295,
+          1.1699999570846558,
           3.0687255859375
         ]
       }
