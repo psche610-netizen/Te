@@ -62,12 +62,13 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes |
 |---|---|---|
-| core-ring-inner/middle/outer | FIX | Missing amber edge lines, ring numbers 01/02/03, outer railing posts. |
-| **core-radial-bridge** | NEW | Short grated bridges linking rings (clearly in 08). |
-| **core-shaft-wall** | NEW | Circular outer shaft wall with rows of amber lamps. |
-| **core-support-pillar** | NEW | Pillars under rings into the void. |
-| core-spindle | FIX | Too short/stubby; needs tall modular column, red sensor band, "CORE" stencil. |
-| core-retracting-segment | OK | |
+| core-ring-inner/middle/outer | OK (P19 script) | Now ONE 30° segment each (12 per ring = `CORE.segments`), radii from `config.ts` CORE (4.2–6.6 / 7.6–10 / 11–13.4), top z 0, 0.6 deep, seam 0.012 rad. Concrete slab + petrol girder, amber edge lines, hazard strips at both drop edges, ivory `code-ring-01/02/03`, fascia stanchions + rail below deck (nothing above z .006 so spokes pass over). |
+| **core-radial-bridge** | OK (P19 script) | Static spoke along +X, r 3.2 → 14.7, 1.8 m wide, grated deck z .012–.08, amber edges, hazard ends; deep trusses only over the 4 ring gaps. |
+| **core-shaft-wall** | OK (P19 script) | 30° panel, inner face r 17.6, z −12 → 3.5, pilaster, pour seams, 4 rows × 3 amber lamps. |
+| **core-support-pillar** | OK (P19 script) | 1.5 m concrete column under the rim (top −0.6 → −12.8), capital/footing, steel bands, hazard stripe, amber marker, conduit. Placed like the game's 10 rim columns (r 16.2, offset .2). |
+| **core-rim-segment** | NEW → OK (P19 script) | Static rim segment (14.4–17.2), void-edge amber line + hazard strips, wall-side kerb. |
+| core-spindle | OK (P19 script) | Pillar-scale (r 3.2 plinth, r 2.5 column): 5 stacked 2.2 m modules to ~13 m, ivory bands, red sensor band at z 6 (the game slit height), `code-core` stencils, conduits, crown lamp, void shaft below deck. |
+| core-retracting-segment | OK (P19 script) | Rebuilt as a ring-03 segment + red gap lamps; `retract` clip drops 1.8 m. |
 | core-kill-switch | OK (P16 script) | Shared number plate, decal variants code-01..04. |
 
 ## F. Title / Sector map / Overseer (01, 03, 11)

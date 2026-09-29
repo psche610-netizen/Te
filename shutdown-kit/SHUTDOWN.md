@@ -352,9 +352,17 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 19 (Phases 13–18 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 20 (Phases 13–19 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
+
+**Phase 19 (Core) — scripts only, not built yet (`complete_library.py`, `scene_recipes.py`, `scenes/core-arena.json`):**
+- All core geometry now comes from constants that mirror `config.ts` `CORE` (`CORE_PILLAR`, `CORE_RINGS`, `CORE_RIM`, `CORE_SPOKE_HALF`, `CORE_SEGMENTS`, `CORE_SEAM`, depth 0.6). The old pieces used different radii (2.2/4.4/6.6); if `CORE` changes, update both.
+- Angle rule: game angle a = atan2(z, x) in three = Blender angle −a. Segment pieces (`core-ring-*`, `core-retracting-segment`, `core-rim-segment`, `core-shaft-wall`) span game [0, SEG_ARC]. Part B: instance seg j at `rotation.y = -j * SEG_ARC` inside the ring group (`rotation.y = -ring.angle`), same as `RingView`; drop/warn animate the instance like the annulus now. `core-radial-bridge` runs along +X → `rotation.y = -spokeAngle` (same as the box now).
+- Spokes are static and overlap the rotating rings, so ring pieces keep everything at or below z .006 (the "railing posts" are fascia stanchions + rail below the deck edge). The spoke deck spans z .012–.08, and its trusses sit only in the ring gaps.
+- `core-spindle`: sensor band at z 6 = the game slit height (`anchors_blender.sensor_band`); Part B can drive the band from `useSlitMaterial` instead of the separate slit box. The pillar collider radius stays 3.2 (plinth).
+- `core-arena` recipe = full game layout: 12×3 ring segments (ring 3 seg 4 = retracting variant), 12 rim + 12 wall panels, 4 spokes, 10 support columns (r 16.2, offset .2), kill switches at `CORE.terminals` ring mids, operator at the spawn.
+- For review: shaft wall (top z 3.5) on the camera side may hide the rim at the iso camera. Part B: hide the near panels or cut them to deck height. Spindle ~2.6k tris estimated (32-sided cylinders). Kill-switch facing (outward tangent) is unchecked.
 
 **Phase 18 (Foundry) — scripts only, not built yet (`complete_library.py`, `scene_recipes.py`, `effects/v4-effects.js`):**
 - `make_rig` specs take an optional 5th item (roll vector → `align_roll`, so local Z = leg-plane normal = flex axis). Helpers `frame_along`, `armor_seg`, `hydraulic`, `seg_decal`; the Phase 17 mesh helpers (`_uv_mesh`, `grid_plane`, `sweep`, `annulus` + `inward`, new `blob` ico droplet) and `EFFECTS` moved above the props so the Foundry assets can use them.
@@ -615,9 +623,9 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] NEW tall-smokestack. overhead-gantry + hazard stripes and "F-03" label.
 
 ### Phase 19 — Core assets (screen 08)
-- [ ] FIX core-ring-inner/middle/outer → amber edge lines, ring numbers 01/02/03, railing posts; export as per-segment pieces matching the `arena.ts` segment count.
-- [ ] NEW core-radial-bridge (spokes), core-shaft-wall (lamp rows), core-support-pillar.
-- [ ] FIX core-spindle → tall modular column, red sensor band, "CORE" stencil.
+- [x] FIX core-ring-inner/middle/outer → amber edge lines, ring numbers 01/02/03, railing posts; export as per-segment pieces matching the `arena.ts` segment count.
+- [x] NEW core-radial-bridge (spokes), core-shaft-wall (lamp rows), core-support-pillar. (+ `core-rim-segment`)
+- [x] FIX core-spindle → tall modular column, red sensor band, "CORE" stencil.
 
 ### Phase 20 — Menu world + UI kit (screens 01, 02, 03, 04, 09, 10)
 - [ ] FIX overseer-housing → monumental monolith with red slit. FIX chimney → ~1.5 m, taller, red/ivory bands. FIX operator-plinth → square concrete block, "OPERATOR 07", hazard edge.

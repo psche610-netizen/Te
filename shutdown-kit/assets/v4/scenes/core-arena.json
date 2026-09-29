@@ -1,6 +1,6 @@
 {
   "id": "core-arena",
-  "description": "Three concentric supported walkways, four kill switches, four bridges and a retractable gap.",
+  "description": "Spindle, three rotating 12-segment rings, static rim + shaft wall, four spokes, rim support columns, four kill switches and one dropping segment (game CORE layout).",
   "coordinates": "Blender Z up; rotation radians around Z",
   "instances": [
     {
@@ -38,7 +38,7 @@
         0,
         0
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": -0.5235987755982988,
       "scale": [
         1,
         1,
@@ -52,7 +52,7 @@
         0,
         0
       ],
-      "rotation": 3.141592653589793,
+      "rotation": -1.0471975511965976,
       "scale": [
         1,
         1,
@@ -66,7 +66,119 @@
         0,
         0
       ],
-      "rotation": 4.71238898038469,
+      "rotation": -1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -2.0943951023931953,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -2.617993877991494,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.665191429188092,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.1887902047863905,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.235987755982988,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-inner",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.759586531581287,
       "scale": [
         1,
         1,
@@ -94,7 +206,7 @@
         0,
         0
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": -0.5235987755982988,
       "scale": [
         1,
         1,
@@ -108,7 +220,7 @@
         0,
         0
       ],
-      "rotation": 3.141592653589793,
+      "rotation": -1.0471975511965976,
       "scale": [
         1,
         1,
@@ -122,7 +234,119 @@
         0,
         0
       ],
-      "rotation": 4.71238898038469,
+      "rotation": -1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -2.0943951023931953,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -2.617993877991494,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.665191429188092,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.1887902047863905,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.235987755982988,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-ring-middle",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.759586531581287,
       "scale": [
         1,
         1,
@@ -150,7 +374,7 @@
         0,
         0
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": -0.5235987755982988,
       "scale": [
         1,
         1,
@@ -164,7 +388,7 @@
         0,
         0
       ],
-      "rotation": 3.141592653589793,
+      "rotation": -1.0471975511965976,
       "scale": [
         1,
         1,
@@ -178,7 +402,7 @@
         0,
         0
       ],
-      "rotation": 4.71238898038469,
+      "rotation": -1.5707963267948966,
       "scale": [
         1,
         1,
@@ -186,125 +410,112 @@
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-retracting-segment",
       "position": [
-        3.8,
-        0.0,
+        0,
+        0,
         0
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": -2.0943951023931953,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
-      ]
+      ],
+      "pose": "retract"
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        2.326828918379971e-16,
-        3.8,
+        0,
+        0,
         0
       ],
-      "rotation": 3.141592653589793,
+      "rotation": -2.617993877991494,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        -3.8,
-        4.653657836759942e-16,
+        0,
+        0,
         0
       ],
-      "rotation": 4.71238898038469,
+      "rotation": -3.141592653589793,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        -6.980486755139912e-16,
-        -3.8,
+        0,
+        0,
         0
       ],
-      "rotation": 6.283185307179586,
+      "rotation": -3.665191429188092,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        6.0,
-        0.0,
+        0,
+        0,
         0
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": -4.1887902047863905,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        3.6739403974420594e-16,
-        6.0,
+        0,
+        0,
         0
       ],
-      "rotation": 3.141592653589793,
+      "rotation": -4.71238898038469,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        -6.0,
-        7.347880794884119e-16,
+        0,
+        0,
         0
       ],
-      "rotation": 4.71238898038469,
+      "rotation": -5.235987755982988,
       "scale": [
-        0.65,
-        0.24,
+        1,
+        1,
         1
       ]
     },
     {
-      "asset": "grated-bridge",
+      "asset": "core-ring-outer",
       "position": [
-        -1.102182119232618e-15,
-        -6.0,
+        0,
+        0,
         0
       ],
-      "rotation": 6.283185307179586,
-      "scale": [
-        0.65,
-        0.24,
-        1
-      ]
-    },
-    {
-      "asset": "core-kill-switch",
-      "position": [
-        4.82444927008431,
-        1.4923770436397648,
-        0.04
-      ],
-      "rotation": -1.2707963267948965,
+      "rotation": -5.759586531581287,
       "scale": [
         1,
         1,
@@ -312,223 +523,601 @@
       ]
     },
     {
-      "asset": "core-kill-switch",
+      "asset": "core-rim-segment",
       "position": [
-        -1.4923770436397648,
-        4.82444927008431,
-        0.04
-      ],
-      "rotation": 0.30000000000000004,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "core-kill-switch",
-      "position": [
-        -4.824449270084311,
-        -1.4923770436397632,
-        0.04
-      ],
-      "rotation": 1.8707963267948964,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "core-kill-switch",
-      "position": [
-        1.492377043639763,
-        -4.824449270084311,
-        0.04
-      ],
-      "rotation": 3.441592653589793,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "foundation-pier",
-      "position": [
-        7.0,
-        0.0,
-        -0.35
+        0,
+        0,
+        0
       ],
       "rotation": 0.0,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-shaft-wall",
       "position": [
-        6.062177826491071,
-        3.4999999999999996,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 0.5235987755982988,
+      "rotation": 0.0,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-rim-segment",
       "position": [
-        3.500000000000001,
-        6.06217782649107,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 1.0471975511965976,
+      "rotation": -0.5235987755982988,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-shaft-wall",
       "position": [
-        4.286263797015736e-16,
-        7.0,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": -0.5235987755982988,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-rim-segment",
       "position": [
-        -3.4999999999999982,
-        6.062177826491071,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 2.0943951023931953,
+      "rotation": -1.0471975511965976,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-shaft-wall",
       "position": [
-        -6.062177826491071,
-        3.4999999999999996,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 2.6179938779914944,
+      "rotation": -1.0471975511965976,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-rim-segment",
       "position": [
-        -7.0,
-        8.572527594031472e-16,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 3.141592653589793,
+      "rotation": -1.5707963267948966,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-shaft-wall",
       "position": [
-        -6.062177826491071,
-        -3.4999999999999982,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 3.665191429188092,
+      "rotation": -1.5707963267948966,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-rim-segment",
       "position": [
-        -3.500000000000003,
-        -6.062177826491069,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 4.1887902047863905,
+      "rotation": -2.0943951023931953,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-shaft-wall",
       "position": [
-        -1.2858791391047208e-15,
-        -7.0,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 4.71238898038469,
+      "rotation": -2.0943951023931953,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-rim-segment",
       "position": [
-        3.500000000000001,
-        -6.06217782649107,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 5.235987755982989,
+      "rotation": -2.617993877991494,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "foundation-pier",
+      "asset": "core-shaft-wall",
       "position": [
-        6.062177826491069,
-        -3.500000000000003,
-        -0.35
+        0,
+        0,
+        0
       ],
-      "rotation": 5.759586531581287,
+      "rotation": -2.617993877991494,
       "scale": [
-        0.24,
-        0.24,
-        1.2
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-rim-segment",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-shaft-wall",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.141592653589793,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-rim-segment",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.665191429188092,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-shaft-wall",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.665191429188092,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-rim-segment",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.1887902047863905,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-shaft-wall",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.1887902047863905,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-rim-segment",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-shaft-wall",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -4.71238898038469,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-rim-segment",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.235987755982988,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-shaft-wall",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.235987755982988,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-rim-segment",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.759586531581287,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-shaft-wall",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.759586531581287,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-radial-bridge",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -0.7853981633974483,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-radial-bridge",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -2.356194490192345,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-radial-bridge",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -3.9269908169872414,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-radial-bridge",
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": -5.497787143782138,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        15.877078561028114,
+        -3.2184431588799916,
+        0
+      ],
+      "rotation": -0.2,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        10.95307295276662,
+        -11.936087838625028,
+        0
+      ],
+      "rotation": -0.8283185307179586,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        1.8453657578054503,
+        -16.094552656719575,
+        0
+      ],
+      "rotation": -1.4566370614359172,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        -7.967208434962199,
+        -14.105445393672161,
+        0
+      ],
+      "rotation": -2.084955592153876,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        -14.73657980102914,
+        -6.728537416697623,
+        0
+      ],
+      "rotation": -2.7132741228718347,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        -15.877078561028114,
+        3.2184431588799924,
+        0
+      ],
+      "rotation": -3.3415926535897933,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        -10.95307295276662,
+        11.93608783862503,
+        0
+      ],
+      "rotation": -3.969911184307752,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        -1.8453657578054488,
+        16.094552656719575,
+        0
+      ],
+      "rotation": -4.5982297150257105,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        7.967208434962197,
+        14.105445393672161,
+        0
+      ],
+      "rotation": -5.226548245743669,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-support-pillar",
+      "position": [
+        14.73657980102914,
+        6.728537416697625,
+        0
+      ],
+      "rotation": -5.854866776461628,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        11.784295080726633,
+        -3.157592350250753,
+        0
+      ],
+      "rotation": 1.3089969389957472,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        -11.784295080726634,
+        3.157592350250748,
+        0
+      ],
+      "rotation": -1.8325957145940457,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        -2.2776075969021816,
+        -8.500147271343803,
+        0
+      ],
+      "rotation": -0.26179938779914935,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "core-kill-switch",
+      "position": [
+        1.3976228435536098,
+        5.21599946196097,
+        0
+      ],
+      "rotation": -3.4033920413889422,
+      "scale": [
+        1,
+        1,
+        1
       ]
     },
     {
       "asset": "operator-amber",
       "position": [
-        0,
-        -4.95,
-        0.04
+        11.172287142747452,
+        -11.17228714274745,
+        0
       ],
-      "rotation": -0.6,
+      "rotation": -0.7853981633974483,
       "scale": [
         1,
         1,
@@ -539,9 +1128,23 @@
     {
       "asset": "warden",
       "position": [
-        -4.5,
-        2.2,
-        0.04
+        -5.178809831847044,
+        -7.114768353612393,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "vision-cone",
+      "position": [
+        -5.178809831847044,
+        -7.114768353612393,
+        0.05
       ],
       "rotation": 0,
       "scale": [
@@ -553,9 +1156,9 @@
     {
       "asset": "warden",
       "position": [
-        3.6,
-        3.8,
-        0.04
+        -7.012852147705884,
+        9.982980754985805,
+        0
       ],
       "rotation": 0,
       "scale": [
@@ -567,23 +1170,9 @@
     {
       "asset": "vision-cone",
       "position": [
-        -4.5,
-        2.2,
-        0.08
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "vision-cone",
-      "position": [
-        3.6,
-        3.8,
-        0.08
+        -7.012852147705884,
+        9.982980754985805,
+        0.05
       ],
       "rotation": 0,
       "scale": [

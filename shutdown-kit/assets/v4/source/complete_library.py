@@ -859,14 +859,35 @@ box('Monolith',(0,0,3.2),(3.6,1.8,6.4),'petrol',.09)
 for x in [-1.67,1.67]:box('Edge buttress',(x,-.94,3.15),(.21,.26,6.3),'steel')
 box('Eye recess',(0,-.94,4.6),(2.65,.14,.4),'rubber');box('Observation slit',(0,-1.023,4.6),(2.4,.025,.08),'danger-red');label('OVERSEER',(0,-.929,4.0),.23,'ivory')
 
-begin('core-spindle','Central calculating spindle with sensor band, ivory casing, toothed base and external service pipes.','machinery')
-cylinder('Base',(0,0,.3),1.08,.6,'steel','Z',48)
-for j in range(32):a=j*math.tau/32;o=box('Base tooth',(math.cos(a)*1.08,math.sin(a)*1.08,.38),(.15,.15,.23),'hardware');o.rotation_euler.z=a
-cylinder('Core column',(0,0,3),.67,5.4,'petrol','Z',48)
-for z in [.85,2.3,3.5,4.8,5.58]:ring('Collar',(0,0,z),.69,.065,'hardware')
-cylinder('Ivory sleeve',(0,0,2.2),.685,2.4,'ivory','Z',48);label('CORE',(0,-.695,2.1),.32,'petrol')
-cylinder('Sensor recess',(0,0,3.61),.71,.23,'rubber');cylinder('Sensor band',(0,0,3.61),.723,.075,'danger-red')
-for j in range(4):a=j*math.pi/2+.7;rod('External conduit',(.85*math.cos(a),.85*math.sin(a),.6),(.85*math.cos(a),.85*math.sin(a),5.55),.065,'steel')
+# Core geometry mirrors game/lib/game/config.ts CORE (metres). Game angle a = atan2(z, x) in three; glTF z = -Blender y,
+# so Blender angle = -a. Ring/rim/wall pieces span game angle [0, SEG_ARC] (Blender [-SEG_ARC, 0]); instance j at
+# three rotation.y = -j * SEG_ARC inside the ring group (rotation.y = -ring.angle), exactly like RingView's annulus.
+CORE_PILLAR=3.2;CORE_RINGS=[(4.2,6.6),(7.6,10.0),(11.0,13.4)];CORE_RIM=(14.4,17.2);CORE_SPOKE_HALF=.9
+CORE_SEGMENTS=12;SEG_ARC=math.tau/CORE_SEGMENTS;CORE_SEAM=.012;CORE_DEPTH=.6
+CORE_SLIT_Z=6.0;SPOKE_TOP=.08;SPOKE_BOTTOM=.012
+SEG_A0,SEG_A1=-SEG_ARC+CORE_SEAM,-CORE_SEAM
+
+begin('core-spindle','Tall modular calculating column (pillar r 3.2) with red sensor band at the slit height, ivory/petrol modules, CORE stencils and service conduits.','machinery')
+cylinder('Deck plinth',(0,0,-.175),CORE_PILLAR,.85,'concrete-dark','Z',32)
+annulus('Plinth hazard ring',(0,0,.256),2.92,3.1,'amber',32)
+cylinder('Void shaft',(0,0,-6.3),3.1,11.4,'concrete-dark','Z',32,2.2)
+for z in [-2.5,-6.5,-10.5]:cylinder('Void collar',(0,0,z),3.1-(-.6-z)*.079+.06,.18,'hardware','Z',32)
+MOD_H=2.2;MOD_R=2.5
+for k in range(5):
+    z0=.25+k*MOD_H
+    cylinder('Column module',(0,0,z0+MOD_H/2),MOD_R,MOD_H,'petrol','Z',32)
+    cylinder('Module collar',(0,0,z0+.07),MOD_R+.08,.14,'hardware','Z',32)
+    if k in (0,3):cylinder('Ivory casing band',(0,0,z0+MOD_H/2),MOD_R+.02,.9,'ivory','Z',32)
+cylinder('Sensor recess',(0,0,CORE_SLIT_Z),MOD_R+.06,.4,'rubber','Z',32)
+cylinder('Sensor band',(0,0,CORE_SLIT_Z),MOD_R+.1,.14,'danger-red','Z',32)
+for facing,p in [('-Y',(0,-MOD_R-.025,3.5)),('+X',(MOD_R+.025,0,3.5))]:decal('code-core',p,1.7,mat='decal-ivory',facing=facing)
+cylinder('Crown',(0,0,11.55),MOD_R,.6,'steel','Z',32,1.7);rod('Crown mast',(0,0,11.85),(0,0,13.1),.09,'hardware',8)
+cylinder('Crown lamp',(0,0,13.15),.16,.18,'danger-red','Z',8)
+for j in range(4):
+    a=j*math.pi/2+math.pi/4;x,y=2.72*math.cos(a),2.72*math.sin(a)
+    rod('External conduit',(x,y,.3),(x,y,11.1),.085,'steel',8)
+    for z in [2.4,6.8,10.2]:box('Conduit clamp',(x*.965,y*.965,z),(.2,.2,.1),'hardware',0)
+ASSETS[CURRENT]['anchors']={'sensor_band':[0,0,CORE_SLIT_Z],'slit_game_angle':round(math.pi/4,4)}
 
 def arc_mesh(name,r0,r1,a0,a1,z,depth,mat):
     n=max(3,round((a1-a0)*24));verts=[];faces=[]
@@ -878,23 +899,92 @@ def arc_mesh(name,r0,r1,a0,a1,z,depth,mat):
         faces.extend([(2*l+k,3*l+k,3*l+k+1,2*l+k+1),(k,k+1,l+k+1,l+k),(k,2*l+k,2*l+k+1,k+1),(l+k,l+k+1,3*l+k+1,3*l+k)])
     faces.extend([(0,l,3*l,2*l),(n,2*l+n,3*l+n,l+n)])
     mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update();o=bpy.data.objects.new(name,mesh);scene.collection.objects.link(o);return finish_obj(o,name,mat)
-for name,r in [('core-ring-inner',2.2),('core-ring-middle',4.4),('core-ring-outer',6.6)]:
-    begin(name,'Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.','core')
-    arc_mesh('Ring girder',r,r+1.25,0,math.pi/2,0,.3,'petrol')
-    for k in range(12):arc_mesh('Deck tile',r+.09,r+1.16,k*math.pi/24+.004,(k+1)*math.pi/24-.004,.04,.055,'ivory')
-    for rr in [r+.04,r+1.21]:arc_mesh('Safety edge',rr,rr+.035,0,math.pi/2,.056,.014,'amber')
-    for k in range(9):
-        a=k*math.pi/16
-        for rr in [r,r+1.25]:rod('Rail post',(rr*math.cos(a),rr*math.sin(a),0),(rr*math.cos(a),rr*math.sin(a),.78),.021,'steel')
-    for rr in [r,r+1.25]:
-        for z in [.4,.79]:tube('Curved rail',[(rr*math.cos(k*math.pi/48),rr*math.sin(k*math.pi/48),z) for k in range(25)],.024,'steel',8)
-    for k in range(16):a=(k+.5)*math.pi/32;o=box('Rail tooth',((r+.6)*math.cos(a),(r+.6)*math.sin(a),-.32),(.12,.16,.15),'hardware');o.rotation_euler.z=a
+def deck_decal(item,r,ang,w,rot,z=.006,mat='decal-ivory'):
+    """Flat +Z decal centred at polar (r, ang); rot turns its width axis (local X) about Z."""
+    o=decal(item,(0,0,z),w,mat=mat,facing='+Z');o.rotation_euler.z=rot;o.location=(r*math.cos(ang),r*math.sin(ang),0);return o
+def pol(r,a,z):return (r*math.cos(a),r*math.sin(a),z)
 
-begin('core-retracting-segment','Movable 30-degree outer ring deck segment with retract clip and red edge lamps.','core')
-idx=len(ASSETS[CURRENT]['objects']);arc_mesh('Sliding deck',6.6,7.85,0,math.pi/6,0,.3,'petrol');arc_mesh('Ivory walking surface',6.68,7.77,.01,math.pi/6-.01,.03,.03,'ivory')
-for a in [0,math.pi/6]:
-    for rr in [6.7,7.7]:cylinder('Gap lamp',(rr*math.cos(a),rr*math.sin(a),.14),.055,.17,'danger-red')
+def ring_segment(r0,r1,number=None,deck='concrete',posts=True):
+    """One 30-degree deck segment, top at z 0, CORE_DEPTH deep. Nothing rises above z .006 because the static spokes
+    (deck bottom SPOKE_BOTTOM) pass over the rotating rings; the guard posts are on the outer fascia instead."""
+    rm=(r0+r1)/2;a0,a1=SEG_A0,SEG_A1;ac=(a0+a1)/2
+    arc_mesh('Deck slab',r0,r1,a0,a1,0,.12,deck)
+    arc_mesh('Ring girder',r0+.14,r1-.14,a0+.01,a1-.01,-.12,CORE_DEPTH-.12,'petrol')
+    arc_mesh('Fascia lip',r1-.05,r1,a0,a1,-.12,.22,'steel')
+    for rr in [r0+.08,r1-.2]:arc_mesh('Amber edge line',rr,rr+.12,a0+.02,a1-.02,.004,.004,'amber')
+    arc_mesh('Deck seam',rm-.012,rm+.012,a0+.03,a1-.03,.002,.002,'soot')
+    for a in [a0+SEG_ARC/3,a0+2*SEG_ARC/3]:o=box('Deck joint',pol(rm,a,.001),(r1-r0-.5,.024,.002),'soot',0);o.rotation_euler.z=a
+    hw=r1-r0-.5;hh=hw/DECALS['hazard-strip']['aspect']
+    for a,s in [(a0,1),(a1,-1)]:deck_decal('hazard-strip',rm,a+s*(hh/2+.04)/rm,hw,a+s*(hh/2+.04)/rm,mat='decal-hazard')
+    if number:deck_decal(number,rm,ac,.95,ac+math.pi/2)
+    if posts:
+        for k in range(4):
+            a=a0+(k+.5)*SEG_ARC/4;rod('Fascia stanchion',pol(r1+.04,a,-CORE_DEPTH+.04),pol(r1+.04,a,-.02),.035,'steel',8)
+        tube('Fascia rail',[pol(r1+.08,a0+(a1-a0)*k/8,-.3) for k in range(9)],.03,'steel',6)
+
+for i,(name,num) in enumerate([('core-ring-inner','code-ring-01'),('core-ring-middle','code-ring-02'),('core-ring-outer','code-ring-03')]):
+    r0,r1=CORE_RINGS[i]
+    begin(name,f'One 30-degree segment of core ring {i+1:02d} (r {r0}-{r1}); 12 instances per ring, seg j at three rotation.y = -j*SEG_ARC. Amber edge lines, hazard ends, ring number, fascia stanchions.','core')
+    ring_segment(r0,r1,num)
+    ASSETS[CURRENT]['anchors']={'segment_game_angles':[0,round(SEG_ARC,5)],'radii':[r0,r1],'top_z':0,'seam_rad':CORE_SEAM,'ring_index':i}
+
+begin('core-retracting-segment','Drop-away ring-03 segment variant with red gap lamps and a retract (fall) clip; use for dropped/warn segments.','core')
+idx=len(ASSETS[CURRENT]['objects']);r0,r1=CORE_RINGS[2];ring_segment(r0,r1,'code-ring-03')
+for a in [SEG_A0+.03,SEG_A1-.03]:
+    for rr in [r0+.35,r1-.35]:cylinder('Gap lamp',pol(rr,a,.004),.06,.008,'danger-red','Z',8)
 pivot_part('retracting-deck',(0,0,0),ASSETS[CURRENT]['objects'][idx:],'retract','Z',-1.8,True)
+ASSETS[CURRENT]['anchors']={'segment_game_angles':[0,round(SEG_ARC,5)],'radii':[r0,r1]}
+
+begin('core-rim-segment','Static outer rim walkway segment (r 14.4-17.2), 12 per ring, hazard lip on the void edge.','core')
+r0,r1=CORE_RIM;rm=(r0+r1)/2
+arc_mesh('Rim slab',r0,r1,SEG_A0-CORE_SEAM,SEG_A1+CORE_SEAM,0,CORE_DEPTH,'concrete-dark')
+arc_mesh('Void edge line',r0+.08,r0+.2,SEG_A0,SEG_A1,.004,.004,'amber')
+arc_mesh('Wall-side kerb',r1-.25,r1,SEG_A0-CORE_SEAM,SEG_A1+CORE_SEAM,.12,.12,'concrete')
+for k in range(3):a=SEG_A0+(k+.5)*SEG_ARC/3;deck_decal('hazard-strip',r0+.42,a,SEG_ARC*(r0+.42)/3-.1,a+math.pi/2,mat='decal-hazard')
+o=box('Rim joint',pol(rm,SEG_A0,.001),(r1-r0-.3,.024,.002),'soot',0);o.rotation_euler.z=SEG_A0
+ASSETS[CURRENT]['anchors']={'segment_game_angles':[0,round(SEG_ARC,5)],'radii':[r0,r1]}
+
+begin('core-radial-bridge','Static grated spoke bridge along +X from the pillar (r 3.2) to the rim (r 14.7), 1.8 m wide; deep trusses only over the ring gaps so rotating rings pass beneath.','core')
+L0,L1=CORE_PILLAR,CORE_RIM[0]+.3;LM=(L0+L1)/2;LN=L1-L0;W=CORE_SPOKE_HALF;DT=SPOKE_TOP-SPOKE_BOTTOM;DZ=(SPOKE_TOP+SPOKE_BOTTOM)/2
+for y in [-W+.06,W-.06]:
+    box('Deck stringer',(LM,y,DZ),(LN,.12,DT),'steel',.01,1)
+    box('Amber edge line',(LM,y,SPOKE_TOP+.002),(LN-.1,.08,.004),'amber',0)
+n=int(LN/.3)
+for k in range(n):box('Grate slat',(L0+.15+k*LN/n,0,DZ),(.05,2*W-.24,DT*.8),'steel',0)
+for y in [-.45,.45]:box('Grate runner',(LM,y,SPOKE_BOTTOM+.01),(LN-.2,.04,.02),'hardware',0)
+for x,s in [(L0+.2,1),(L1-.2,-1)]:o=decal('hazard-strip',(0,0,SPOKE_TOP+.004),2*W-.3,mat='decal-hazard',facing='+Z');o.rotation_euler.z=math.pi/2;o.location=(x,0,0)
+gaps=[(CORE_PILLAR,CORE_RINGS[0][0])]+[(CORE_RINGS[i][1],CORE_RINGS[i+1][0]) for i in range(2)]+[(CORE_RINGS[2][1],CORE_RIM[0])]
+for g0,g1 in gaps:
+    gm=(g0+g1)/2;gl=g1-g0-.06
+    for y in [-W+.1,W-.1]:
+        box('Gap truss chord',(gm,y,-CORE_DEPTH+.08),(gl,.14,.14),'petrol',.01,1)
+        for sx in [-1,1]:rod('Gap truss web',(gm-sx*gl/2,y,SPOKE_BOTTOM),(gm+sx*gl*.1,y,-CORE_DEPTH+.12),.04,'steel',6)
+    box('Gap cross beam',(gm,0,-CORE_DEPTH+.08),(.14,2*W-.2,.14),'petrol',0)
+ASSETS[CURRENT]['anchors']={'inner':[L0,0,SPOKE_TOP],'outer':[L1,0,SPOKE_TOP],'half_width':W}
+
+begin('core-shaft-wall','30-degree panel of the circular shaft wall behind the rim (inner face r 17.6) with rows of amber lamps; 12 per shaft.','core')
+WR0,WR1,WTOP,WBOT=17.6,18.2,3.5,-12.0
+arc_mesh('Shaft wall',WR0,WR1,SEG_A0-CORE_SEAM,SEG_A1+CORE_SEAM,WTOP,WTOP-WBOT,'concrete-dark')
+arc_mesh('Wall cap',WR0-.06,WR1,SEG_A0-CORE_SEAM,SEG_A1+CORE_SEAM,WTOP+.1,.1,'steel')
+for z in [.9,-3.2,-7.4]:arc_mesh('Pour seam',WR0-.01,WR0+.01,SEG_A0-CORE_SEAM,SEG_A1+CORE_SEAM,z,.04,'soot')
+o=box('Pilaster',pol(WR0-.1,SEG_A0-CORE_SEAM,(WTOP+WBOT)/2),(.3,.5,WTOP-WBOT),'concrete',.03,1);o.rotation_euler.z=SEG_A0-CORE_SEAM
+for z in [2.3,-1.4,-5.4,-9.4]:
+    for k in range(3):
+        a=SEG_A0+(k+.5)*SEG_ARC/3
+        o=box('Lamp housing',pol(WR0-.07,a,z),(.14,.5,.24),'hardware',.01,1);o.rotation_euler.z=a
+        o=box('Amber lamp lens',pol(WR0-.145,a,z),(.02,.4,.14),'signal-amber',0);o.rotation_euler.z=a
+ASSETS[CURRENT]['anchors']={'segment_game_angles':[0,round(SEG_ARC,5)],'inner_radius':WR0,'lamp_rows_z':[2.3,-1.4,-5.4,-9.4]}
+
+begin('core-support-pillar','Square concrete column under the rim into the void (top at deck bottom -0.6, 12 m deep), steel bands, hazard stripe, amber marker lamp.','core')
+PT=-CORE_DEPTH;PB=-12.8
+box('Pillar capital',(0,0,PT-.2),(1.9,1.9,.4),'concrete-dark',.03,1)
+box('Pillar shaft',(0,0,(PT-.4+PB)/2),(1.5,1.5,PT-.4-PB),'concrete',.04,1)
+for z in [-3.0,-6.2,-9.4]:box('Steel band',(0,0,z),(1.56,1.56,.16),'steel',.01,1)
+decal('hazard-strip',(0,-.752,-1.9),1.3,mat='decal-hazard',facing='-Y')
+box('Marker lamp housing',(0,-.8,-2.6),(.24,.1,.18),'hardware',.01,1);box('Marker lamp lens',(0,-.856,-2.6),(.18,.012,.12),'signal-amber',0)
+rod('Service conduit',(.62,-.8,PT-.4),(.62,-.8,PB+.4),.05,'steel',8)
+box('Void footing',(0,0,PB-.2),(1.9,1.9,.4),'concrete-dark',.03,1)
+ASSETS[CURRENT]['anchors']={'top':[0,0,PT],'game_columns':{'radius':CORE_RIM[1]-1,'count':10,'offset':.2}}
 
 begin('core-kill-switch','Finale kill-switch station with red/amber status lenses and animated activation lever.','core')
 box('Switch plinth',(0,0,.08),(.75,.65,.16),'steel');box('Switch body',(0,0,.82),(.52,.4,1.5),'petrol');box('Face',(0,-.22,.95),(.43,.055,1.0),'ivory')

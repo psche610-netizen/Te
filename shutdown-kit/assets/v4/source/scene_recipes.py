@@ -27,16 +27,24 @@ put(out,'turbine-generator',(.6,2.5,0));put(out,'operator-amber',(.2,.4,0),math.
 out=scene('crew-rescue','Rescue capsule encounter with captured crew, release interaction and a second crew worker.')
 room(out,0,0);room(out,8,4,1,1);put(out,'grated-bridge',(5.5,4,0),math.pi/2);put(out,'turbine-generator',(0,3,0));put(out,'crew-teal',(-.4,1,0),math.pi,clip='repair');put(out,'containment-capsule',(4,4,0));put(out,'crew-ivory',(4,3.88,.3),clip='caught');put(out,'operator-amber',(2.7,2.8,0),math.pi,clip='rescue');put(out,'warden',(8,4,0));put(out,'vision-cone',(8,4,.05));put(out,'water-tile',(4,3,-3.8),s=(2,2,1))
 
-out=scene('core-arena','Three concentric supported walkways, four kill switches, four bridges and a retractable gap.')
+# Core layout mirrors game/lib/game/config.ts CORE. Game angle a (atan2(z, x) in three) = Blender angle -a.
+CORE_RINGS=[(4.2,6.6),(7.6,10.0),(11.0,13.4)];SEG_ARC=math.tau/12
+CORE_SPOKES=[math.pi/4,3*math.pi/4,5*math.pi/4,7*math.pi/4]
+CORE_TERMINALS=[(2,0),(2,6),(1,3),(0,9)]
+def gpol(r,a,z=0):return (r*math.cos(a),-r*math.sin(a),z)
+out=scene('core-arena','Spindle, three rotating 12-segment rings, static rim + shaft wall, four spokes, rim support columns, four kill switches and one dropping segment (game CORE layout).')
 put(out,'core-spindle')
-for name in ['core-ring-inner','core-ring-middle','core-ring-outer']:
-    for q in range(4):put(out,name,r=q*math.pi/2)
-# Outer ring one quarter remains split at runtime; the separate moving segment supplies the gap state.
-for r in [3.8,6.0]:
-    for q in range(4):a=q*math.pi/2;put(out,'grated-bridge',(r*math.cos(a),r*math.sin(a),0),a+math.pi/2,s=(.65,.24,1))
-for q in range(4):a=q*math.pi/2+.3;put(out,'core-kill-switch',(5.05*math.cos(a),5.05*math.sin(a),.04),a-math.pi/2)
-for q in range(12):a=q*math.pi/6;put(out,'foundation-pier',(7*math.cos(a),7*math.sin(a),-.35),a,s=(.24,.24,1.2))
-put(out,'operator-amber',(0,-4.95,.04),-.6,clip='run');put(out,'warden',(-4.5,2.2,.04));put(out,'warden',(3.6,3.8,.04));put(out,'vision-cone',(-4.5,2.2,.08));put(out,'vision-cone',(3.6,3.8,.08))
+for i,name in enumerate(['core-ring-inner','core-ring-middle','core-ring-outer']):
+    for j in range(12):
+        if (i,j)==(2,4):put(out,'core-retracting-segment',r=-j*SEG_ARC,clip='retract');continue
+        put(out,name,r=-j*SEG_ARC)
+for j in range(12):put(out,'core-rim-segment',r=-j*SEG_ARC);put(out,'core-shaft-wall',r=-j*SEG_ARC)
+for a in CORE_SPOKES:put(out,'core-radial-bridge',r=-a)
+for k in range(10):a=k/10*math.tau+.2;put(out,'core-support-pillar',gpol(16.2,a),-a)
+for ring,seg in CORE_TERMINALS:
+    a=(seg+.5)*SEG_ARC;r=sum(CORE_RINGS[ring])/2;put(out,'core-kill-switch',gpol(r,a),-a+math.pi/2)
+put(out,'operator-amber',gpol(15.8,math.pi/4),-math.pi/4,clip='run')
+for r,a in [(8.8,2.2),(12.2,4.1)]:put(out,'warden',gpol(r,a));put(out,'vision-cone',gpol(r,a,.05))
 
 out=scene('foundry-floor','Crucible suspended by foundry crane over casting trough, furnace, maintenance operator and Weaver.')
 # Ladle hangs at overhead-gantry anchors.hook (0,0,3.3). Its pour_lip at full tilt is (0,-.904,-1.669), so the
