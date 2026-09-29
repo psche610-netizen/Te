@@ -2,7 +2,7 @@
   "version": 3,
   "status": "v4-library",
   "visual_match": "Requires scene-level comparison; no pixel-identical claim.",
-  "authoring": "Blender 5.0.1",
+  "authoring": "Blender 5.2.2 LTS",
   "coordinates": "GLB Y up; metres; character front +Z after Blender -Y conversion",
   "textures": {
     "atlas": "textures/v4-atlas.png",
