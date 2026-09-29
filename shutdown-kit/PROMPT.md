@@ -1,33 +1,42 @@
-## NEXT CHAT: Phase 20b — local-build workflow (read first)
+## READ FIRST: where things are and who runs what
 
-Blender builds run on the user's laptop, NOT in the v0 sandbox (sandbox builds take about 20 min and burn credits).
-User machine: Fedora, RTX 4060 Mobile 8 GB (NVIDIA driver installed), Blender at
-`~/Downloads/blender-5.2.2-linux-x64/blender` (use this one; the scripts were last built with bpy 5.0.1) and `~/Downloads/blender-4.5.14-linux-x64/blender` (fallback only).
+**Status:** Phases 0–20b are DONE. All 86 V4 assets are within budget and have been reviewed (`SHUTDOWN.md` section 17). **Next: Part B, starting at Phase 21.**
 
-The agent's job in the next chat:
-1. Read the "Phase 20b" checklist in `SHUTDOWN.md` (35 over-budget assets).
-2. Edit the modeling code in `assets/v4/source/complete_library.py` / `build_assets.py` so each asset meets its triangle budget: fewer cylinder verts and bevel segments, or a Decimate modifier applied before export. Don't change asset ids, pivots, materials or anchors.
-3. Commit and push the script changes, then give the user the exact commands below. Do NOT run the Blender build in the sandbox.
+**In the v0 chat:** the user starts each chat with `git clone https://github.com/psche610-netizen/Te`, so the repo is at `./Te/` in the project root (paths below are relative to `Te/`). `GITHUB_PAT` is set in the project Vars. Push with `git push https://x-access-token:$GITHUB_PAT@github.com/psche610-netizen/Te.git HEAD:main`, and never print or commit the token. If `$GITHUB_PAT` is empty in the shell, read it from `.env.development.local` in the project root.
 
-User commands (the agent repeats these, adjusted if paths change):
+**On the user's laptop:** Fedora, RTX 4060 Mobile 8 GB. The user's clone is `~/Downloads/Te`.
+- Blender: `~/Downloads/blender-5.2.2-linux-x64/blender` (use this one). `~/Downloads/blender-4.5.14-linux-x64/blender` is a fallback only.
+- The asset build is CPU-only (geometry + GLB export, no rendering), so the GPU does not help.
+
+**Save credits: the user runs everything heavy locally.** The agent writes code, runs `python -m py_compile` / quick greps if needed, commits, pushes, and then gives the user copy-paste terminal commands. The agent does NOT run Blender, `pnpm install`, `pnpm dev`, or the game in a browser in the sandbox. The user sends back terminal output and screenshots.
+
+User commands (the agent repeats them in its reply, adjusted to the phase):
 ```bash
-cd ~ && rm -rf Te && git clone https://github.com/psche610-netizen/Te.git && cd Te/shutdown-kit/assets/v4
-~/Downloads/blender-5.2.2-linux-x64/blender -b --python-exit-code 1 -P source/complete_library.py 2>&1 | tee /tmp/build.log
-grep -c EXPORTED /tmp/build.log          # expect 86
-grep -i "over budget" /tmp/build.log      # expect nothing
-python3 source/scene_recipes.py && python3 source/build_ui.py
-cd ~/Te && git add -A && git commit -m "Phase 20b: rebuilt assets within budget" && git push
+# get the agent's latest push
+cd ~/Downloads/Te && git pull
+
+# Part B: typecheck + run the game (open http://localhost:3000 in landscape, send a screenshot)
+cd ~/Downloads/Te/shutdown-kit/game && pnpm install && npx tsc --noEmit && pnpm dev
+
+# Rebuild ALL assets (about 10 min, 6 parallel Blenders); prints EXPORTED count (expect 86) + OVER BUDGET (expect none)
+cd ~/Downloads/Te/shutdown-kit/assets/v4 && ./build_fast.sh
+
+# Rebuild ONE or a few assets (fast)
+cd ~/Downloads/Te/shutdown-kit/assets/v4 && ~/Downloads/blender-5.2.2-linux-x64/blender -b --factory-startup --python-exit-code 1 -P source/complete_library.py -- --only <asset-id>[,<asset-id>] 2>&1 | grep -E "EXPORTED|DECIMATED|Error"
+
+# push local build results back
+cd ~/Downloads/Te && git add -A && git commit -m "<phase>: local build" && git push
 ```
-Use the NVIDIA GPU for Cycles renders if a render step is slow: prefix the blender command with `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia`.
-If the build fails, the user pastes the last 40 lines of `/tmp/build.log` into the chat. The agent fixes the script and pushes, and the user runs `git pull` and repeats.
-After the user pushes, the agent reclones or pulls, checks `renders/` visually, ticks Phase 20b in `SHUTDOWN.md`, and moves on to Part B (wiring V4 assets into the game).
+If `pnpm` is missing: `sudo dnf install nodejs && sudo npm i -g pnpm`.
+If a build fails, the user pastes `tail -40 /tmp/v4-build/<category>.log` (or the command output). The agent fixes the script and pushes, and the user pulls and reruns.
+Asset visual checks: the agent may copy `assets/v4/{contact-sheet.html,manifest.json,models,textures}` to `public/v4check/` and `concepts/v4` to `public/concepts/v4`, open `http://localhost:3000/v4check/contact-sheet.html?only=<id>&view=free` with `agent-browser open --webgpu`, and delete both copies afterwards (never commit them).
 
 Build SHUTDOWN, a landscape mobile stealth-horror game. This prompt is self-contained and works for a fresh chat or a resume. Use the same prompt every time.
 
 Repo: `github.com/psche610-netizen/Te`. Everything lives in `shutdown-kit/`.
 
 ## Setup (do this first)
-1. The code is in `shutdown-kit/game/` (Next.js app). Run `pnpm install && pnpm dev` inside `shutdown-kit/game` (the repo-root `package.json` is an empty stub), confirm it compiles.
+1. The code is in `shutdown-kit/game/` (Next.js app; the repo-root `package.json` is an empty stub). The user installs, typechecks and runs it locally (see READ FIRST); don't do it in the sandbox.
 2. Read `shutdown-kit/SHUTDOWN.md` fully. It is the source of truth. Section 15 is locked. **Section 2 (V4 art rules) and section 17 (V4 phases 13–27: Part A = all assets first, Part B = integration later) are the current work.** Section 16 is the progress log.
 3. Look at every image in `shutdown-kit/concepts/v4/` (look reference) and read `shutdown-kit/assets/v4/AUDIT.md` (status of every 3D asset) and `assets/v4/README.md` (pipeline) before editing.
 4. Continue from the first unchecked phase in section 17 (or the exact point section 16 says was in progress).
@@ -35,12 +44,12 @@ Repo: `github.com/psche610-netizen/Te`. Everything lives in `shutdown-kit/`.
 ## Ground rules
 - **Self-contained.** No backend, databases, auth, or Marketplace integrations. Local save file only.
 - **Small phases.** Exactly one phase per turn, then stop. At the end of each phase:
-  - Part A (assets): `python -m py_compile` on the changed scripts only (full build + tri counts + `contact-sheet.html` review happen once after Phase 20, see below). Part B (integration): run `npx tsc --noEmit` in `shutdown-kit/game` (and headless tsx checks for logic),
+  - Part A (assets): `python -m py_compile` on the changed scripts only. Part B (integration): give the user the typecheck/run command; they send back `npx tsc --noEmit` output and a screenshot. Fix errors they report before ticking the phase,
   - tick the boxes in `SHUTDOWN.md` section 17 (and 11 if relevant), update section 16 and `assets/v4/AUDIT.md`,
   - reply with a short report: what was built, what was checked, known issues, next phase, what the user should look at,
   - commit and push to GitHub (auth with `process.env.GITHUB_PAT`, e.g. `git push https://x-access-token:$GITHUB_PAT@github.com/psche610-netizen/Te.git HEAD:main`; never print or commit the token), then wait for "next".
 - **Do not run the game in agent-browser.** The user runs it and sends screenshots. agent-browser is fine for lightweight asset checks (`assets/v4/contact-sheet.html`).
-- **Part A = write the Python scripts only, verify once at the end.** In Phases 13–20, author/edit `assets/v4/source/*.py` (Blender + texture scripts) and check them with `python -m py_compile` only. Do NOT run Blender builds, export GLBs, render contact sheets or review per phase. After Phase 20, run the full build once (`/tmp/bpyenv/bin/python` with `bpy==5.0.1`, Python 3.11 via uv, or `blender --background --python ...` locally), then check manifest tri counts + contact sheet for all assets together and fix in one pass.
+- **Part A = write the Python scripts only, verify once at the end.** In Phases 13–20, author/edit `assets/v4/source/*.py` (Blender + texture scripts) and check them with `python -m py_compile` only. Do NOT run Blender builds, export GLBs, render contact sheets or review per phase. Asset builds always run on the user's laptop (`build_fast.sh` or `--only`, see READ FIRST). Afterwards the agent pulls, checks `manifest.json` tri counts (per-asset overrides in `ASSET_BUDGET`, e.g. `turbine-generator` 6000) and the contact sheet.
 - **V4 art rules (section 2) are hard constraints.** Painted low-poly from one shared atlas, V4 palette tokens, orthographic iso camera, amber key + cool shadows, red only for enemy/danger, stencils + hazard stripes, Bebas Neue + Share Tech Mono. Banned: bloom haze, lens flare, decorative particles, glossy/chrome, faces, emoji, UI gradients.
 - **Assets first.** Phases 13–20 (Part A) only author assets in `assets/v4/` (Blender script, GLBs, atlases, rigs, decals, UI kit) — no `game/` code changes. Integration, logic and backend come after, in Part B (21–27), which the user may do.
 - **Models:** Blender-authored GLBs from `assets/v4/source/build_assets.py`. Author → review against the concept → log. In Part B: integrate, keeping the code primitive as fallback until the GLB replaces it. No embedded duplicate textures in the shipped build.
