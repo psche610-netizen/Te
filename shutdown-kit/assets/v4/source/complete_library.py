@@ -44,9 +44,9 @@ MATS['glass'].surface_render_method='DITHERED'
 MATS['glass'].diffuse_color=(.12,.3,.31,.22)
 # Isolate UV editing from any preceding selected objects.
 _original_finish=finish_obj
-def finish_obj(o,name,mat='petrol',bevel=0):
+def finish_obj(o,name,mat='petrol',bevel=0,segments=2):
     bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
-    return _original_finish(o,name,mat,bevel)
+    return _original_finish(o,name,mat,bevel,segments)
 def begin(name,description,category):
     root=start(name,description);ASSETS[name].update(category=category,clips=[]);return root
 
@@ -318,14 +318,16 @@ begin('operator-plinth','Worn concrete loadout display pedestal with operator id
 cylinder('Plinth',(0,0,.15),.86,.3,'ivory','Z',48);label('OPERATOR 07',(0,-.842,.09),.1,'steel')
 
 # Architecture ----------------------------------------------------------------
-begin('foundation-pier','Deep structural pier with stepped wall buttresses and hardware.','environment')
-box('Pier',(0,0,-1.8),(4,4,3.6),'petrol',.07)
-for x in [-1.9,-.95,0,.95,1.9]:box('Buttress',(x,-2,-1.7),(.25,.25,3.4),'steel')
-for z in [-.3,-1.3,-2.7]:box('Seam',(0,-2.02,z),(3.9,.08,.06),'hardware')
-
-begin('wall-corner','L-shaped ivory cutaway corner with teal lower panels.','environment')
-for p,s in [((0,1,1.5),(2,.3,3)),((1,0,1.5),(.3,2,3))]:box('Corner wall',p,s,'ivory')
-for p,s in [((0,.82,.3),(2,.08,.6)),((.82,0,.3),(.08,2,.6))]:box('Corner skirt',p,s,'petrol')
+# Thick grid walls (wall-post/end/straight/corner/t/cross) are authored in build_assets.py.
+begin('foundation-pier','Dark concrete base block under a 2x2-cell floor module. Top at z=0 (under the floor slab), foot at -3.6; sits in water with a waterline stain at z=-1.','environment')
+box('Pier block',(0,0,-1.8),(4,4,3.6),'concrete-dark',.06,1)
+box('Top coping',(0,0,-.09),(4.12,4.12,.18),'concrete',.03,1)
+box('Waterline stain',(0,0,-1.05),(4.012,4.012,.4),'soot',0)
+for z in [-.7,-1.8,-2.8]:box('Pour seam',(0,0,z),(4.008,4.008,.03),'soot',0)
+for k in range(4):
+    for u in [-1.3,0,1.3]:
+        x,y=[(u,-2.08),(2.08,u),(u,2.08),(-2.08,u)][k]
+        box('Pilaster',(x,y,-1.9),(.32,.16,3.4) if k%2==0 else (.16,.32,3.4),'concrete-dark',.03,1)
 
 begin('service-door','Inset ivory service door with round latch and open animation.','environment')
 for x in [-.65,.65]:box('Jamb',(x,0,1.15),(.14,.35,2.3),'steel')
@@ -546,14 +548,16 @@ for name,a in ASSETS.items():
     mins=[min(v[i] for v in bounds) for i in range(3)];maxs=[max(v[i] for v in bounds) for i in range(3)]
     budget=BUDGET.get(a['category'],1500)
     entries[name]={'id':name,'file':f'models/{name}.glb','category':a['category'],'description':a['description'],'concept':f"concepts/v4/{concept_for(name,a['category'])}.png",'triangles':triangles,'budget':budget,'over_budget':triangles>budget,'mesh_primitives':len(result),'materials':sorted({o.data.materials[0].name for o in result}),'bytes':path.stat().st_size,'clips':a['clips'],'rigged':'rig' in a,'bounds_blender':{'min':mins,'max':maxs}}
+    if a['root'].get('decal_item'):entries[name]['decal_item']=a['root']['decal_item']
     print('EXPORTED',name,triangles,'tris',('OVER BUDGET '+str(budget)) if triangles>budget else 'ok',flush=True)
 materials={}
 for n,m in MATS.items():
     materials[n]={'atlas_cell':n if n in QUADS else None,'fallback_color':[round(c,4) for c in m.get('fallback_color',m.diffuse_color[:3])],'emission':m.get('emission',0),'roughness':.9 if n in QUADS else round(m.node_tree.nodes['Principled BSDF'].inputs['Roughness'].default_value,3)}
+    if m.get('decal_atlas'):materials[n].update(atlas='decals',decal_kind=m['decal_kind'])
 manifest={'version':3,'status':'v4-library','visual_match':'Requires scene-level comparison; no pixel-identical claim.','authoring':'Blender '+bpy.app.version_string,
  'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion',
  'textures':{'atlas':'textures/v4-atlas.png','atlas_layout':'textures/atlas-layout.json','decals':'textures/decals-atlas.png','decals_layout':'textures/decals-layout.json'},
- 'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0).',
+ 'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == "decals": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind "mask" -> color = fallback_color with the atlas as alpha, "color" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json.',
  'budgets':BUDGET,'materials':materials,'assets':[entries[n] for n in ASSETS if n in entries]}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 if FULL:

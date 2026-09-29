@@ -352,9 +352,17 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 14 (Phase 13 scripts done; build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 15 (Phases 13–14 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
+
+**Phase 14 (environment shell) — scripts only, not built yet:**
+- `build_assets.py`: `box(..., seg=1)` single-chamfer option (repeated tiles/blocks stay in budget). Decal system: `DECALS` (from `textures/decals-layout.json`), materials `decal-ivory` / `decal-indigo` / `decal-amber` (mask, tinted) + `decal-hazard` (color), all `BLENDED` with custom props `decal_atlas`/`decal_kind`; `decal(item, p, w, h, mat, facing, vertical)` builds a UV-mapped quad (`-Y/+Y/+X/-X/+Z`, `vertical` runs stripes up the quad). Stencil text on the rebuilt pieces uses decals instead of `label()` text meshes.
+- Thick wall kit: `wall_run(axis, a, b, ends)` = 0.8 m concrete body (`WALL_H` 2.0 = `GRID.wallHeight`), cap, dark plinth course, staggered block seams/joints both faces; ends `free`/`edge`/`host` avoid coplanar cap overlaps at cell edges and T joins. Grid pieces (one 2 m cell, origin at centre, arms +X/+Y/-Y): `wall-post`, `wall-end`, `wall-straight`, `wall-corner`, `wall-t`, `wall-cross`. `bulkhead-wall` = 4 m run with conduit + TURBINE / HALL / A stencils.
+- Floors: `floor_tiles(n)` 1 m worn concrete tiles on a `concrete-dark` slab (tile top z=0.03). `walkway-floor` (4 m, amber edge lines, hazard dashes both ends), `floor-cell`, `floor-cell-edge` (edge line + dashes on -Y), `floor-cell-drain`.
+- `sliding-bulkhead`: vertical hazard stripes on both uprights, header stripe, leaf stripes, B-1 + KEEP CLEAR decals (on the moving leaf). Hydraulic rails moved outward.
+- `complete_library.py`: `foundation-pier` = dark concrete block, coping, pilasters on 4 faces, pour seams, waterline stain at z=-1; old thin `wall-corner` removed (now in the kit). Manifest: decal materials get `atlas: "decals"` + `decal_kind`, decal assets get `decal_item`; runtime note updated.
+- Known for the post-Phase-20 review: `sliding-bulkhead` (3 m tall, 2.6 m clear) and `bulkhead-wall`'s old 3 m height don't match the 2 m cell / 2.0 m wall kit; Part B scales the door or it gets resized in the review pass. Thick 0.8 m walls vs `GRID.wallThickness` 0.3 colliders: Part B (Phase 22) decides whether to widen colliders (gameplay-neutral check needed) or keep them thin.
 
 **Phase 12 (Ship) — done (edited via GitLab, no local build):**
 - `capacitor.config.ts` (appId `com.hideogroup.shutdown`, webDir `out`, ink background). Deps added: `@capacitor/android`, `@capacitor/haptics`, dev `@capacitor/cli` (all ^8). **The lockfile was not regenerated**: CI uses `pnpm install --no-frozen-lockfile`; run `pnpm install` locally and commit `pnpm-lock.yaml`.
@@ -541,10 +549,10 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] `contact-sheet.html`: add a game-camera view (ortho iso ~45°, amber key + indigo fill) and show the matching concept next to each asset; `manifest.json` lists tris + budget per asset.
 
 ### Phase 14 — Environment shell assets (screen 05)
-- [ ] FIX walkway-floor → worn grey concrete tiles, amber edge lines, hazard dashes, drain grate variant.
-- [ ] FIX bulkhead-wall + wall-corner → thick (~0.8 m) concrete block walls with seams and top cap; add wall-end, wall-T and wall-cross pieces for the grid.
-- [ ] FIX foundation-pier → dark concrete base block that sits in water.
-- [ ] sliding-bulkhead: hazard stripes on frame edges + "B-1" stencil. Decal quad meshes (wall stencil, floor stencil, hazard edge strip) using the decal atlas.
+- [x] FIX walkway-floor → worn grey concrete tiles, amber edge lines, hazard dashes, drain grate variant. (+ `floor-cell`, `floor-cell-edge`, `floor-cell-drain` 2 m grid cells)
+- [x] FIX bulkhead-wall + wall-corner → thick (~0.8 m) concrete block walls with seams and top cap; add wall-end, wall-T and wall-cross pieces for the grid. (+ `wall-post`, `wall-straight`)
+- [x] FIX foundation-pier → dark concrete base block that sits in water.
+- [x] sliding-bulkhead: hazard stripes on frame edges + "B-1" stencil. Decal quad meshes (wall stencil, floor stencil, hazard edge strip) using the decal atlas.
 
 ### Phase 15 — Characters + rigs + clips
 - [ ] FIX operator-amber (and crew-teal / crew-ivory) → bulkier suit, knee pads, dark gloves/boots, bigger backpack, chest radio.

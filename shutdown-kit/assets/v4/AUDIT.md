@@ -26,15 +26,16 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | supply-crate | OK | |
 | pipe-straight, pipe-elbow | OK | |
 | pipe-valve | FIX | Handwheel floats detached above the body (bug). |
-| sliding-bulkhead | OK | Add hazard stripes on frame edges (05 "B-1"). |
+| sliding-bulkhead | OK (P14 script) | Hazard stripes on uprights/header/leaf, B-1 + KEEP CLEAR decals. Height (3 m) vs 2 m wall kit to check in review. |
 | service-door | OK | |
 | wall-lamp | OK | |
 | guardrail | OK | |
 | ladder, stairs, grated-bridge, overhead-duct, electrical-cabinet | OK | |
-| walkway-floor | FIX | Black/ivory checkerboard is wrong. Needs worn grey concrete tiles, amber edge lines + hazard dashes, drain grates. |
-| bulkhead-wall | FIX | Thin panel. Concept walls are thick (~0.8 m) concrete block walls with block seams, top cap, stencil signage. |
-| wall-corner | FIX | Same as bulkhead-wall. |
-| foundation-pier | FIX | Reads as a green crate. Should be dark stone/concrete base block that sits in the water. |
+| walkway-floor | OK (P14 script) | Worn concrete 1 m tiles, amber edge lines, hazard dashes. New grid cells: floor-cell, floor-cell-edge, floor-cell-drain. |
+| bulkhead-wall | OK (P14 script) | 4 m thick (0.8 m) block wall, cap, seams, conduit, TURBINE / HALL / A decals. |
+| wall-corner | OK (P14 script) | Rebuilt as grid kit piece. New: wall-post, wall-end, wall-straight, wall-t, wall-cross (2 m cell, 2.0 m tall). |
+| foundation-pier | OK (P14 script) | Dark concrete block, coping, pilasters, pour seams, waterline stain at z=-1. |
+| decal-wall-stencil, decal-floor-stencil, decal-hazard-edge | OK (P14 script) | Decal quads on `decals-atlas.png`; runtime sets the UV rect from `decal_item` / decals-layout. |
 | warning-beacon | FIX | Oversized flat red cylinder; needs lens + cage, smaller. |
 | wall-microphone, rotary-control | OK | Matches 02. |
 
@@ -91,8 +92,8 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | **junction-box / small wall box** | NEW |
 | **floor-drain-grate** | NEW |
 | **hanging workwear / coat hook** | NEW (04) |
-| **stencil decal sheet** | NEW – SECTOR B, TURBINE HALL A, B-1, C1, G-02, 01–07, room names, slogans. |
-| **hazard-stripe decals** | NEW |
+| stencil decal sheet | OK – `textures/decals-atlas.png` (P13) + decal quads (P14). |
+| hazard-stripe decals | OK – `hazard-strip` item + `decal-hazard-edge` quad (P14). |
 
 ## H. Effects
 
