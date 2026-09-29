@@ -62,12 +62,14 @@ def begin(name,description,category):
     root=start(name,description);ASSETS[name].update(category=category,clips=[]);return root
 
 def ellipsoid(name,p,s,mat='petrol',segments=20):
-    bpy.ops.mesh.primitive_uv_sphere_add(segments=segments,ring_count=12,radius=1,location=p);o=bpy.context.object;o.scale=s
+    segments=min(segments,16 if max(s)>.15 else 10)
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=segments,ring_count=max(6,segments//2),radius=1,location=p);o=bpy.context.object;o.scale=s
     bpy.ops.object.transform_apply(location=False,rotation=False,scale=True)
     return finish_obj(o,name,mat)
 
 def ring(name,p,r,minor,mat='hardware',axis='Z'):
-    bpy.ops.mesh.primitive_torus_add(major_segments=32,minor_segments=8,location=p,major_radius=r,minor_radius=minor)
+    major=12 if r<.15 else 16 if r<.5 else 24
+    bpy.ops.mesh.primitive_torus_add(major_segments=major,minor_segments=4,location=p,major_radius=r,minor_radius=minor)
     o=bpy.context.object
     if axis=='Y':o.rotation_euler[0]=math.pi/2
     if axis=='X':o.rotation_euler[1]=math.pi/2
@@ -76,9 +78,9 @@ def ring(name,p,r,minor,mat='hardware',axis='Z'):
 def cloth_segment(name,a,b,rx,ry,mat):
     # Tailored sleeve/trouser mesh: angular fold ridges, tapered cuffs, asymmetric drape.
     a,b=Vector(a),Vector(b);d=(b-a).normalized();u=Vector((1,0,0));v=d.cross(u).normalized()
-    verts=[];faces=[];n=12;levels=9
-    for k in range(levels):
-        t=k/(levels-1);bulge=[.72,.92,1,1.04,.92,1.05,.87,.96,.65][k]
+    bulges=[.72,.98,1.04,.95,.92,.65];verts=[];faces=[];n=10;levels=len(bulges)
+    for k,bulge in enumerate(bulges):
+        t=k/(levels-1)
         for j in range(n):
             ang=j*math.tau/n;fold=1+.065*math.sin(j*2.2+k*2.4)
             verts.append(a+(b-a)*t+u*(math.cos(ang)*rx*bulge*fold)+v*(math.sin(ang)*ry*bulge*fold))
@@ -1207,7 +1209,27 @@ unknown=(ONLY or set())-set(ASSETS)
 if unknown:raise SystemExit(f'Unknown asset ids: {sorted(unknown)}')
 old_manifest=json.loads((ROOT/'manifest.json').read_text()) if (ROOT/'manifest.json').exists() else {'assets':[]}
 entries={e['id']:e for e in old_manifest.get('assets',[]) if e['id'] in ASSETS}
+def _tris(o):return sum(len(p.vertices)-2 for p in o.data.polygons)
+def enforce_budget(name,objs,budget):
+    """Collapse-decimate the heaviest source parts (before the per-material join) until the asset fits.
+    Decals and stencil text are never touched; ids, pivots, materials, rigs and anchors are unchanged."""
+    before=sum(_tris(o) for o in objs)
+    for floor in (160,80,32,12):
+        total=sum(_tris(o) for o in objs)
+        if total<=budget:break
+        heavy=[o for o in objs if _tris(o)>=floor and not o.get('decal') and not o.name.startswith('Marking ')]
+        if not heavy:continue
+        heavy_tris=sum(_tris(o) for o in heavy)
+        ratio=min(.98,max(.12,(budget*.95-(total-heavy_tris))/heavy_tris))
+        for o in heavy:
+            bpy.ops.object.select_all(action='DESELECT');o.select_set(True);bpy.context.view_layer.objects.active=o
+            m=o.modifiers.new('Budget decimate','DECIMATE');m.decimate_type='COLLAPSE';m.ratio=ratio;m.use_collapse_triangulate=True
+            if len(o.modifiers)>1:bpy.ops.object.modifier_move_to_index(modifier=m.name,index=0)
+            bpy.ops.object.modifier_apply(modifier=m.name)
+    after=sum(_tris(o) for o in objs)
+    if after!=before:print('DECIMATED',name,before,'->',after,'tris (budget',budget,')',flush=True)
 for name,a in ASSETS.items():
+    if name in selected:enforce_budget(name,a['objects'],BUDGET.get(a['category'],1500))
     groups={}
     for o in a['objects']:groups.setdefault((o.parent.name,o.data.materials[0].name),[]).append(o)
     result=[]

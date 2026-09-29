@@ -408,7 +408,9 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - `build_ui.py`: 51 icons; `tokens.json` `lucideIcons` maps every current `lucide-react` import in `game/` to its V4 icon for the Part B swap.
 - For review: 35 of 86 assets are over their triangle budget (e.g. turbine-generator 37.9k vs 2k, characters ~16k vs 6k). Pre-existing (budgets were never enforced in earlier phases); decimation/LOD pass needed before Part B wiring. The redundant `v0-project.zip` (and its LFS `.gitattributes`) were removed from the repo.
 
-**Phase 20b (Triangle budget pass) — TODO:** decimate (Blender Decimate modifier / fewer bevel segments + cylinder verts) each asset below to its budget in `complete_library.py`/`build_assets.py`, re-run `complete_library.py` (bpy 5.0.1, ~20 min), confirm 0 OVER BUDGET lines, then Part B.
+**Phase 20b (Triangle budget pass) — scripts done, awaiting local build:** decimate (Blender Decimate modifier / fewer bevel segments + cylinder verts) each asset below to its budget in `complete_library.py`/`build_assets.py`, re-run `complete_library.py` (bpy 5.0.1, ~20 min), confirm 0 OVER BUDGET lines, then Part B.
+- Script changes: `build_assets.py` bevels capped at 1 segment and skipped under 4 mm / on cylinders r < 5 cm; `circle_verts(r)` caps cylinder/cone/rod/tube sides by radius (6 / 8 / 12 / 16 / 24); rod default 8; text `resolution_u` 2. `complete_library.py`: ellipsoids ≤16 segments, torus rings 12–24 x 4, cloth segments 10 x 6. Safety net `enforce_budget()` at export: collapse-decimates the heaviest source parts (Decimate moved before the Armature modifier) until each asset is ≤95% of its budget; decals and `Marking` text are never decimated. Logs `DECIMATED id before -> after`. Ids, pivots, materials, rigs, anchors unchanged.
+- To do after the user's local build: tick the list below from `/tmp/build.log`, check `renders/` for decimation artefacts (characters, turbine, scrap-bundle are the most reduced).
   - [ ] EXPORTED turbine-generator 37856 tris OVER BUDGET 2000
   - [ ] EXPORTED control-console 10776 tris OVER BUDGET 2000
   - [ ] EXPORTED locker-bank 8784 tris OVER BUDGET 2000

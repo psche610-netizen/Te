@@ -54,7 +54,16 @@ def start(name,description):
     ASSETS[name]={'root':root,'objects':[],'description':description};CURRENT=name;PART='static'
     return root
 
+# Phase 20b triangle budget: one chamfer segment everywhere, no bevel on tiny parts,
+# and round-part resolution scaled to radius (the iso camera never sees 32-sided bolts).
+MAX_BEVEL_SEGMENTS=1;MIN_BEVEL=.004
+def circle_verts(r,requested):
+    cap=6 if r<.03 else 8 if r<.08 else 12 if r<.2 else 16 if r<.6 else 24
+    return max(4,min(requested,cap))
+
 def finish_obj(o,name,mat='petrol',bevel=0,segments=2):
+    segments=min(segments,MAX_BEVEL_SEGMENTS)
+    if bevel<MIN_BEVEL:bevel=0
     o.name=name;o.data.materials.clear();o.data.materials.append(MATS[mat]);o.parent=ASSETS[CURRENT]['root'];o['part']=PART
     if o.type=='MESH' and mat in QUADS:
         if not o.data.uv_layers:
@@ -141,20 +150,21 @@ def wall_run(axis,a,b,ends=('free','free'),h=WALL_H,t=WALL_T):
                 u+=1.0
 
 def cylinder(name,p,r,depth,mat='petrol',axis='Z',vertices=32,r2=None):
+    vertices=circle_verts(max(r,r2 or 0),vertices)
     if r2 is None:bpy.ops.mesh.primitive_cylinder_add(vertices=vertices,radius=r,depth=depth,location=p)
     else:bpy.ops.mesh.primitive_cone_add(vertices=vertices,radius1=r,radius2=r2,depth=depth,location=p)
     o=bpy.context.object
     if axis=='X':o.rotation_euler[1]=math.pi/2
     if axis=='Y':o.rotation_euler[0]=math.pi/2
-    return finish_obj(o,name,mat,min(.018,r*.08,depth*.15))
+    return finish_obj(o,name,mat,min(.018,r*.08,depth*.15) if r>=.05 else 0)
 
-def rod(name,a,b,r,mat='hardware',vertices=12):
+def rod(name,a,b,r,mat='hardware',vertices=8):
     d=Vector(b)-Vector(a);o=cylinder(name,(Vector(a)+Vector(b))/2,r,d.length,mat,vertices=vertices)
     o.rotation_euler=d.to_track_quat('Z','Y').to_euler();return o
 
 def tube(name,points,r,mat='petrol',sides=12):
     # Parallel-transport-ish frame is stable for the planar elbows and cables used here.
-    verts=[];faces=[]
+    sides=circle_verts(r,sides);verts=[];faces=[]
     for i,p in enumerate(points):
         t=Vector(points[min(i+1,len(points)-1)])-Vector(points[max(0,i-1)])
         t.normalize();ref=Vector((0,1,0)) if abs(t.y)<.9 else Vector((1,0,0))
@@ -168,7 +178,7 @@ def tube(name,points,r,mat='petrol',sides=12):
     return finish_obj(o,name,mat)
 
 def label(text,p,size=.15,mat='ivory',rotation=(math.pi/2,0,0)):
-    bpy.ops.object.text_add(location=p,rotation=rotation);o=bpy.context.object;o.data.body=text;o.data.size=size;o.data.extrude=.0005;o.data.align_x='CENTER';o.data.space_character=1.12
+    bpy.ops.object.text_add(location=p,rotation=rotation);o=bpy.context.object;o.data.body=text;o.data.size=size;o.data.extrude=.0005;o.data.align_x='CENTER';o.data.space_character=1.12;o.data.resolution_u=2
     bpy.ops.object.convert(target='MESH');return finish_obj(bpy.context.object,'Marking '+text,mat)
 
 def flange(x,r,z=1.35):
