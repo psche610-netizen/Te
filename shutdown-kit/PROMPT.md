@@ -1,3 +1,27 @@
+## NEXT CHAT: Phase 20b — local-build workflow (read first)
+
+Blender builds run on the user's laptop, NOT in the v0 sandbox (sandbox builds take about 20 min and burn credits).
+User machine: Fedora, RTX 4060 Mobile 8 GB (NVIDIA driver installed), Blender at
+`~/Downloads/blender-5.2.2-linux-x64/blender` (use this one; the scripts were last built with bpy 5.0.1) and `~/Downloads/blender-4.5.14-linux-x64/blender` (fallback only).
+
+The agent's job in the next chat:
+1. Read the "Phase 20b" checklist in `SHUTDOWN.md` (35 over-budget assets).
+2. Edit the modeling code in `assets/v4/source/complete_library.py` / `build_assets.py` so each asset meets its triangle budget: fewer cylinder verts and bevel segments, or a Decimate modifier applied before export. Don't change asset ids, pivots, materials or anchors.
+3. Commit and push the script changes, then give the user the exact commands below. Do NOT run the Blender build in the sandbox.
+
+User commands (the agent repeats these, adjusted if paths change):
+```bash
+cd ~ && rm -rf Te && git clone https://github.com/psche610-netizen/Te.git && cd Te/shutdown-kit/assets/v4
+~/Downloads/blender-5.2.2-linux-x64/blender -b --python-exit-code 1 -P source/complete_library.py 2>&1 | tee /tmp/build.log
+grep -c EXPORTED /tmp/build.log          # expect 86
+grep -i "over budget" /tmp/build.log      # expect nothing
+python3 source/scene_recipes.py && python3 source/build_ui.py
+cd ~/Te && git add -A && git commit -m "Phase 20b: rebuilt assets within budget" && git push
+```
+Use the NVIDIA GPU for Cycles renders if a render step is slow: prefix the blender command with `__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia`.
+If the build fails, the user pastes the last 40 lines of `/tmp/build.log` into the chat. The agent fixes the script and pushes, and the user runs `git pull` and repeats.
+After the user pushes, the agent reclones or pulls, checks `renders/` visually, ticks Phase 20b in `SHUTDOWN.md`, and moves on to Part B (wiring V4 assets into the game).
+
 Build SHUTDOWN, a landscape mobile stealth-horror game. This prompt is self-contained and works for a fresh chat or a resume. Use the same prompt every time.
 
 Repo: `github.com/psche610-netizen/Te`. Everything lives in `shutdown-kit/`.
