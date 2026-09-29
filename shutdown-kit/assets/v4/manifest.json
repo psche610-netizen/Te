@@ -1,34 +1,562 @@
 {
-  "version": 2,
-  "status": "complete-concept-asset-inventory",
+  "version": 3,
+  "status": "v4-library",
   "visual_match": "Requires scene-level comparison; no pixel-identical claim.",
   "authoring": "Blender 5.0.1",
   "coordinates": "GLB Y up; metres; character front +Z after Blender -Y conversion",
-  "textures": [
-    "textures/painted-enamel-atlas.png",
-    "textures/painted-workwear-atlas.png"
-  ],
+  "textures": {
+    "atlas": "textures/v4-atlas.png",
+    "atlas_layout": "textures/atlas-layout.json",
+    "decals": "textures/decals-atlas.png",
+    "decals_layout": "textures/decals-layout.json"
+  },
+  "runtime": "GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == \"decals\": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind \"mask\" -> color = fallback_color with the atlas as alpha, \"color\" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json. Characters: clip_meta[clip] = {loop, drive, frames, seconds}; drive \"walkPhase\" -> time = ((walkPhase / 2pi) mod 1) * seconds, \"time\" -> play normally (one-shots hold the last frame). tint_slots {suit, trim} name the materials to clone + recolor per instance; meshes carry extras.tint_slot.",
+  "budgets": {
+    "character": 6000,
+    "machinery": 4000,
+    "core": 4000,
+    "environment": 2000,
+    "equipment": 1500,
+    "effect": 1500
+  },
+  "materials": {
+    "petrol": {
+      "atlas_cell": "petrol",
+      "fallback_color": [
+        0.08,
+        0.23,
+        0.24
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "ivory": {
+      "atlas_cell": "ivory",
+      "fallback_color": [
+        0.71,
+        0.69,
+        0.59
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "amber": {
+      "atlas_cell": "amber",
+      "fallback_color": [
+        0.72,
+        0.36,
+        0.05
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "steel": {
+      "atlas_cell": "steel",
+      "fallback_color": [
+        0.03,
+        0.06,
+        0.07
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "cloth-amber": {
+      "atlas_cell": "cloth-amber",
+      "fallback_color": [
+        0.72,
+        0.36,
+        0.05
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "cloth-teal": {
+      "atlas_cell": "cloth-teal",
+      "fallback_color": [
+        0.05,
+        0.18,
+        0.2
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "cloth-ivory": {
+      "atlas_cell": "cloth-ivory",
+      "fallback_color": [
+        0.71,
+        0.69,
+        0.59
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "cloth-black": {
+      "atlas_cell": "cloth-black",
+      "fallback_color": [
+        0.02,
+        0.02,
+        0.02
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "concrete": {
+      "atlas_cell": "concrete",
+      "fallback_color": [
+        0.26,
+        0.26,
+        0.23
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "teal": {
+      "atlas_cell": "teal",
+      "fallback_color": [
+        0.08,
+        0.2,
+        0.19
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "indigo": {
+      "atlas_cell": "indigo",
+      "fallback_color": [
+        0.007,
+        0.016,
+        0.02
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "danger": {
+      "atlas_cell": "danger",
+      "fallback_color": [
+        0.69,
+        0.06,
+        0.02
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "frost": {
+      "atlas_cell": "frost",
+      "fallback_color": [
+        0.4,
+        0.54,
+        0.53
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "rust": {
+      "atlas_cell": "rust",
+      "fallback_color": [
+        0.16,
+        0.04,
+        0.016
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "soot": {
+      "atlas_cell": "soot",
+      "fallback_color": [
+        0.024,
+        0.022,
+        0.02
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "concrete-dark": {
+      "atlas_cell": "concrete-dark",
+      "fallback_color": [
+        0.07,
+        0.078,
+        0.074
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "hardware": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.16,
+        0.19,
+        0.18
+      ],
+      "emission": 0,
+      "roughness": 0.62
+    },
+    "rubber": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.008,
+        0.015,
+        0.019
+      ],
+      "emission": 0,
+      "roughness": 0.96
+    },
+    "gauge-face": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.85,
+        0.76,
+        0.52
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "signal-amber": {
+      "atlas_cell": null,
+      "fallback_color": [
+        1.0,
+        0.34,
+        0.035
+      ],
+      "emission": 2,
+      "roughness": 0.5
+    },
+    "danger-red": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.75,
+        0.012,
+        0.005
+      ],
+      "emission": 2,
+      "roughness": 0.5
+    },
+    "decal-ivory": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.71,
+        0.69,
+        0.59
+      ],
+      "emission": 0,
+      "roughness": 0.9,
+      "atlas": "decals",
+      "decal_kind": "mask"
+    },
+    "decal-indigo": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.007,
+        0.016,
+        0.02
+      ],
+      "emission": 0,
+      "roughness": 0.9,
+      "atlas": "decals",
+      "decal_kind": "mask"
+    },
+    "decal-amber": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.72,
+        0.36,
+        0.05
+      ],
+      "emission": 0,
+      "roughness": 0.9,
+      "atlas": "decals",
+      "decal_kind": "mask"
+    },
+    "decal-hazard": {
+      "atlas_cell": null,
+      "fallback_color": [
+        1,
+        1,
+        1
+      ],
+      "emission": 0,
+      "roughness": 0.9,
+      "atlas": "decals",
+      "decal_kind": "color"
+    },
+    "visor": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.004,
+        0.014,
+        0.02
+      ],
+      "emission": 0,
+      "roughness": 0.18
+    },
+    "molten": {
+      "atlas_cell": null,
+      "fallback_color": [
+        1.0,
+        0.19,
+        0.008
+      ],
+      "emission": 3,
+      "roughness": 0.5
+    },
+    "molten-core": {
+      "atlas_cell": null,
+      "fallback_color": [
+        1.0,
+        0.55,
+        0.12
+      ],
+      "emission": 5,
+      "roughness": 0.5
+    },
+    "molten-glow": {
+      "atlas_cell": null,
+      "fallback_color": [
+        1.0,
+        0.3,
+        0.03
+      ],
+      "emission": 3,
+      "roughness": 0.6
+    },
+    "water": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.018,
+        0.08,
+        0.1
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "fall-water": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.05,
+        0.16,
+        0.17
+      ],
+      "emission": 0,
+      "roughness": 0.9
+    },
+    "foam": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.46,
+        0.64,
+        0.62
+      ],
+      "emission": 0,
+      "roughness": 0.95
+    },
+    "foam-splash": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.52,
+        0.66,
+        0.63
+      ],
+      "emission": 0,
+      "roughness": 0.95
+    },
+    "glass": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.12,
+        0.3,
+        0.31
+      ],
+      "emission": 0,
+      "roughness": 0.15
+    },
+    "basalt": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.045,
+        0.055,
+        0.06
+      ],
+      "emission": 0,
+      "roughness": 0.95
+    },
+    "wood": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.36,
+        0.26,
+        0.15
+      ],
+      "emission": 0,
+      "roughness": 0.85
+    },
+    "vision-red": {
+      "atlas_cell": null,
+      "fallback_color": [
+        0.75,
+        0.035,
+        0.012
+      ],
+      "emission": 0.3,
+      "roughness": 1.0
+    }
+  },
+  "effects": {
+    "water": {
+      "kind": "water",
+      "deep": "#142127",
+      "mid": "#23474C",
+      "crest": "#507C79",
+      "opaque": true,
+      "reflections": false,
+      "specular": 0,
+      "wave": {
+        "amp": 0.018,
+        "freq": [
+          3,
+          2
+        ],
+        "speed": [
+          1,
+          0.7
+        ]
+      },
+      "ripple": {
+        "freq": [
+          7,
+          8
+        ],
+        "warp": 1.8,
+        "speed": [
+          1,
+          0.8
+        ],
+        "line": [
+          0.72,
+          0.91
+        ],
+        "mix": 0.58
+      },
+      "broad": {
+        "freq": [
+          0.8,
+          1.4
+        ],
+        "speed": 0.3,
+        "mix": 0.07
+      },
+      "scroll_uv": [
+        0.02,
+        0.035
+      ],
+      "contact_foam": {
+        "color": "#DED7BC",
+        "width": 0.25,
+        "alpha": 0.35,
+        "note": "optional line where piers meet water; derive from level-grid pier AABBs, no depth texture"
+      }
+    },
+    "fall-water": {
+      "kind": "scroll",
+      "axis": "v",
+      "speed": 1.6,
+      "base": "#23474C",
+      "streak": "#507C79",
+      "streak_freq": [
+        9,
+        3
+      ],
+      "streak_mix": 0.45,
+      "side": "double"
+    },
+    "foam": {
+      "kind": "scroll",
+      "axis": "v",
+      "speed": 2.2,
+      "base": "#DED7BC",
+      "alpha": 0.85,
+      "breakup": 0.35,
+      "side": "double"
+    },
+    "molten": {
+      "kind": "flicker",
+      "base": "#FF3002",
+      "hot": "#FF8C1F",
+      "emissive": 3,
+      "hz": 5,
+      "depth": 0.15,
+      "note": "furnace mouth, trough surface, splash crown, stack ember rim"
+    },
+    "molten-core": {
+      "kind": "scroll",
+      "axis": "v",
+      "speed": 1.4,
+      "base": "#FF8C1F",
+      "hot": "#FFE0A0",
+      "emissive": 5,
+      "streak_freq": [
+        6,
+        2
+      ],
+      "opaque": true
+    },
+    "molten-glow": {
+      "kind": "scroll",
+      "axis": "v",
+      "speed": 0.9,
+      "base": "#FF4D08",
+      "alpha": 0.5,
+      "blend": "additive",
+      "emissive": 3,
+      "side": "double",
+      "depthWrite": false
+    },
+    "foam-splash": {
+      "kind": "pulse",
+      "base": "#DED7BC",
+      "alpha": 0.7,
+      "hz": 1.2,
+      "scale": [
+        1,
+        1.12
+      ],
+      "fade": "v",
+      "side": "double",
+      "note": "rings: v 0 inner -> 1 outer; alpha fades toward the outer edge and dips with the pulse"
+    }
+  },
   "assets": [
     {
       "id": "turbine-generator",
       "file": "models/turbine-generator.glb",
       "category": "environment",
       "description": "Hero horizontal generator with service console, removable end flanges and pipe connections.",
-      "triangles": 34484,
-      "mesh_primitives": 7,
-      "bytes": 4348960,
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 37856,
+      "budget": 2000,
+      "over_budget": true,
+      "mesh_primitives": 8,
+      "materials": [
+        "amber",
+        "gauge-face",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 2438448,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -2.4000000953674316,
+          -2.620000123977661,
           -1.7790000438690186,
           -3.2521274562213875e-08
         ],
         "max": [
-          2.4000000953674316,
-          1.125,
-          2.609999895095825
+          2.630000114440918,
+          1.1699999570846558,
+          3.080000162124634
         ]
       }
     },
@@ -37,9 +565,20 @@
       "file": "models/control-console.glb",
       "category": "environment",
       "description": "Analogue twin-gauge repair station; amber controls use a separate emissive material.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 10776,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 6,
-      "bytes": 2832056,
+      "materials": [
+        "gauge-face",
+        "hardware",
+        "ivory",
+        "rubber",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 691640,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -60,9 +599,19 @@
       "file": "models/locker-bank.glb",
       "category": "environment",
       "description": "Three full-height enamel lockers with louvers, hinges, number plates and recessed handles.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 8784,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 5,
-      "bytes": 2694596,
+      "materials": [
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 554152,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -83,9 +632,20 @@
       "file": "models/supply-crate.glb",
       "category": "environment",
       "description": "Portable enamel supply case with reinforced corners, latches, handle and amber identification stripe.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 3196,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 6,
-      "bytes": 2320848,
+      "materials": [
+        "amber",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 180472,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -106,9 +666,17 @@
       "file": "models/pipe-elbow.glb",
       "category": "environment",
       "description": "Quarter-circle cast pipe, radius 0.28 m, flange connections and visible six-sided fasteners.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 4576,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 3,
-      "bytes": 2456164,
+      "materials": [
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 315584,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -129,9 +697,17 @@
       "file": "models/pipe-straight.glb",
       "category": "environment",
       "description": "Two-metre pipe module with flanges. Repeat along local X.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 6052,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 3,
-      "bytes": 2556364,
+      "materials": [
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 415784,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -151,33 +727,325 @@
       "id": "bulkhead-wall",
       "file": "models/bulkhead-wall.glb",
       "category": "environment",
-      "description": "Four-metre ivory wall with blue skirting, separate conduit and painted signage.",
-      "triangles": 2656,
-      "mesh_primitives": 4,
-      "bytes": 2288492,
+      "description": "Four-metre (two-cell) thick concrete block wall with cap, block seams, conduit run and TURBINE HALL A stencil decals.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 1098,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 5,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "decal-indigo",
+        "hardware",
+        "steel"
+      ],
+      "bytes": 83224,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -2.0399999618530273,
-          -0.3499999940395355,
+          -2.0,
+          -0.4874262809753418,
           0.0
         ],
         "max": [
-          2.0399999618530273,
-          0.24500000476837158,
-          3.0450000762939453
+          2.0,
+          0.4399999976158142,
+          2.0999999046325684
         ]
       }
+    },
+    {
+      "id": "wall-post",
+      "file": "models/wall-post.glb",
+      "category": "environment",
+      "description": "Isolated thick wall cell (no wall neighbours): 0.8 m concrete block column with cap.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 316,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 25368,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.4399999976158142,
+          -0.4399999976158142,
+          0.0
+        ],
+        "max": [
+          0.4399999976158142,
+          0.4399999976158142,
+          2.0999999046325684
+        ]
+      }
+    },
+    {
+      "id": "wall-end",
+      "file": "models/wall-end.glb",
+      "category": "environment",
+      "description": "Wall end cell: arm toward +X ending in a capped block face at the cell centre.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 364,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 28752,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.4399999976158142,
+          -0.4399999976158142,
+          0.0
+        ],
+        "max": [
+          1.0,
+          0.4399999976158142,
+          2.0999999046325684
+        ]
+      }
+    },
+    {
+      "id": "wall-straight",
+      "file": "models/wall-straight.glb",
+      "category": "environment",
+      "description": "Straight wall cell along X, flush with both cell edges.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 412,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 32008,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -0.4399999976158142,
+          0.0
+        ],
+        "max": [
+          1.0,
+          0.4399999976158142,
+          2.0999999046325684
+        ]
+      }
+    },
+    {
+      "id": "wall-corner",
+      "file": "models/wall-corner.glb",
+      "category": "environment",
+      "description": "L wall cell: arms toward +X and +Y, 0.8 m thick concrete blocks with cap.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 632,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 48000,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.4399999976158142,
+          -0.4399999976158142,
+          0.0
+        ],
+        "max": [
+          1.0,
+          1.0,
+          2.0999999046325684
+        ]
+      }
+    },
+    {
+      "id": "wall-t",
+      "file": "models/wall-t.glb",
+      "category": "environment",
+      "description": "T wall cell: straight along X plus an arm toward +Y.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 680,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 51212,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -0.4399999976158142,
+          0.0
+        ],
+        "max": [
+          1.0,
+          1.0,
+          2.0999999046325684
+        ]
+      }
+    },
+    {
+      "id": "wall-cross",
+      "file": "models/wall-cross.glb",
+      "category": "environment",
+      "description": "Cross wall cell: straight along X plus arms toward +Y and -Y.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 948,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 70488,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -1.0,
+          0.0
+        ],
+        "max": [
+          1.0,
+          1.0,
+          2.0999999046325684
+        ]
+      }
+    },
+    {
+      "id": "decal-wall-stencil",
+      "file": "models/decal-wall-stencil.glb",
+      "category": "environment",
+      "description": "1 m vertical stencil quad facing -Y (room codes, SECTOR B, slogans).",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 2,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 1,
+      "materials": [
+        "decal-ivory"
+      ],
+      "bytes": 1712,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.5,
+          0.0,
+          0.0
+        ],
+        "max": [
+          0.5,
+          0.0,
+          1.0
+        ]
+      },
+      "decal_item": "code-b-1"
+    },
+    {
+      "id": "decal-floor-stencil",
+      "file": "models/decal-floor-stencil.glb",
+      "category": "environment",
+      "description": "1 m floor stencil quad facing up (bay codes G-01..G-08, EXIT).",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 2,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 1,
+      "materials": [
+        "decal-amber"
+      ],
+      "bytes": 1756,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.5,
+          -0.5,
+          0.004000000189989805
+        ],
+        "max": [
+          0.5,
+          0.5,
+          0.004000000189989805
+        ]
+      },
+      "decal_item": "code-g-02"
+    },
+    {
+      "id": "decal-hazard-edge",
+      "file": "models/decal-hazard-edge.glb",
+      "category": "environment",
+      "description": "2 m amber/black hazard strip for floor edges, lifts and moving parts; lies flat, rotate for walls.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 2,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 1,
+      "materials": [
+        "decal-hazard"
+      ],
+      "bytes": 1736,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -0.10000000149011612,
+          0.004000000189989805
+        ],
+        "max": [
+          1.0,
+          0.10000000149011612,
+          0.004000000189989805
+        ]
+      },
+      "decal_item": "hazard-strip"
     },
     {
       "id": "sliding-bulkhead",
       "file": "models/sliding-bulkhead.glb",
       "category": "environment",
       "description": "Door frame with independently named sliding panel. Panel motion local +X; clear width 2.6 m.",
-      "triangles": 3160,
-      "mesh_primitives": 9,
-      "bytes": 2317592,
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 1282,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 10,
+      "materials": [
+        "decal-hazard",
+        "decal-ivory",
+        "hardware",
+        "ivory",
+        "petrol",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 98284,
       "clips": [
         "open"
       ],
@@ -185,7 +1053,7 @@
       "bounds_blender": {
         "min": [
           -1.7000000476837158,
-          -0.36500000953674316,
+          -0.3500000238418579,
           0.0
         ],
         "max": [
@@ -200,9 +1068,18 @@
       "file": "models/wall-lamp.glb",
       "category": "environment",
       "description": "Industrial task light with enamel shade, protective cage and separate luminous bulb.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 1892,
+      "budget": 2000,
+      "over_budget": false,
       "mesh_primitives": 4,
-      "bytes": 2274264,
+      "materials": [
+        "hardware",
+        "petrol",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 133736,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -222,22 +1099,126 @@
       "id": "walkway-floor",
       "file": "models/walkway-floor.glb",
       "category": "environment",
-      "description": "Four-by-four modular service floor with bevelled tiles and amber route edges.",
-      "triangles": 7236,
-      "mesh_primitives": 3,
-      "bytes": 2650984,
+      "description": "Four-by-four (2x2 cells) service floor: worn grey concrete tiles, amber route edge lines, hazard dashes at both ends.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 776,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 4,
+      "materials": [
+        "amber",
+        "concrete",
+        "concrete-dark",
+        "decal-hazard"
+      ],
+      "bytes": 63724,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
           -2.0,
           -2.0,
-          -0.3400000035762787
+          -0.30000001192092896
         ],
         "max": [
           2.0,
           2.0,
-          0.04600000008940697
+          0.03700000047683716
+        ]
+      }
+    },
+    {
+      "id": "floor-cell",
+      "file": "models/floor-cell.glb",
+      "category": "environment",
+      "description": "One 2 m grid cell of worn concrete tiles.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 220,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "concrete",
+        "concrete-dark"
+      ],
+      "bytes": 19352,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -1.0,
+          -0.30000001192092896
+        ],
+        "max": [
+          1.0,
+          1.0,
+          0.029999999329447746
+        ]
+      }
+    },
+    {
+      "id": "floor-cell-edge",
+      "file": "models/floor-cell-edge.glb",
+      "category": "environment",
+      "description": "Grid cell at a drop or route edge: amber edge line and hazard dashes along -Y. Rotate per edge.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 234,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 4,
+      "materials": [
+        "amber",
+        "concrete",
+        "concrete-dark",
+        "decal-hazard"
+      ],
+      "bytes": 22700,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -1.0,
+          -0.30000001192092896
+        ],
+        "max": [
+          1.0,
+          1.0,
+          0.03700000047683716
+        ]
+      }
+    },
+    {
+      "id": "floor-cell-drain",
+      "file": "models/floor-cell-drain.glb",
+      "category": "environment",
+      "description": "Grid cell variant with a slotted floor drain grate in one tile.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 316,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 5,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "hardware",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 29468,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0,
+          -1.0,
+          -0.30000001192092896
+        ],
+        "max": [
+          1.0,
+          1.0,
+          0.04700000211596489
         ]
       }
     },
@@ -246,9 +1227,16 @@
       "file": "models/guardrail.glb",
       "category": "environment",
       "description": "Four-metre guardrail with midrail and bolted feet.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 1304,
+      "budget": 2000,
+      "over_budget": false,
       "mesh_primitives": 2,
-      "bytes": 2234208,
+      "materials": [
+        "hardware",
+        "steel"
+      ],
+      "bytes": 93552,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -260,7 +1248,7 @@
         "max": [
           1.9950000047683716,
           0.08500000089406967,
-          1.106515884399414
+          1.1065160036087036
         ]
       }
     },
@@ -268,15 +1256,30 @@
       "id": "operator-amber",
       "file": "models/operator-amber.glb",
       "category": "character",
-      "description": "Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.",
-      "triangles": 13524,
-      "mesh_primitives": 8,
-      "bytes": 7328536,
+      "description": "Bulky protective operator (04/07): padded workwear, knee pads, dark gloves and boots, large battery backpack with canisters, chest radio, opaque visor. Skinned rig; suit/trim tint slots; walk/run/crouch loop on walkPhase.",
+      "concept": "concepts/v4/04-loadout.png",
+      "triangles": 16244,
+      "budget": 6000,
+      "over_budget": true,
+      "mesh_primitives": 9,
+      "materials": [
+        "amber",
+        "cloth-amber",
+        "cloth-black",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel",
+        "visor"
+      ],
+      "bytes": 1908624,
       "clips": [
         "idle",
         "walk",
         "run",
         "crouch",
+        "hide-enter",
         "repair",
         "hide",
         "hold-breath",
@@ -287,30 +1290,117 @@
       "rigged": true,
       "bounds_blender": {
         "min": [
-          -0.3810544013977051,
-          -0.014888733625411987,
-          0.1789795458316803
+          -0.4463067054748535,
+          -0.5950990915298462,
+          -0.38398516178131104
         ],
         "max": [
-          0.3787843585014343,
-          0.8859272599220276,
-          1.8633716106414795
+          0.44159621000289917,
+          0.4979380965232849,
+          1.3425899744033813
         ]
+      },
+      "clip_meta": {
+        "idle": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "walk": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "run": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "crouch": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hide-enter": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "repair": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hide": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hold-breath": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "rescue": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "caught": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "sit-exhausted": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        }
+      },
+      "tint_slots": {
+        "suit": "cloth-amber",
+        "trim": "cloth-black"
       }
     },
     {
       "id": "crew-teal",
       "file": "models/crew-teal.glb",
       "category": "character",
-      "description": "Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.",
-      "triangles": 13524,
-      "mesh_primitives": 8,
-      "bytes": 7328448,
+      "description": "Bulky protective operator (04/07): padded workwear, knee pads, dark gloves and boots, large battery backpack with canisters, chest radio, opaque visor. Skinned rig; suit/trim tint slots; walk/run/crouch loop on walkPhase.",
+      "concept": "concepts/v4/07-crew.png",
+      "triangles": 16244,
+      "budget": 6000,
+      "over_budget": true,
+      "mesh_primitives": 9,
+      "materials": [
+        "amber",
+        "cloth-black",
+        "cloth-teal",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel",
+        "visor"
+      ],
+      "bytes": 1908520,
       "clips": [
         "idle",
         "walk",
         "run",
         "crouch",
+        "hide-enter",
         "repair",
         "hide",
         "hold-breath",
@@ -321,30 +1411,117 @@
       "rigged": true,
       "bounds_blender": {
         "min": [
-          -0.3810544013977051,
-          -0.014888733625411987,
-          0.1789795458316803
+          -0.4463067054748535,
+          -0.5950990915298462,
+          -0.38398516178131104
         ],
         "max": [
-          0.3787843585014343,
-          0.8859272599220276,
-          1.8633716106414795
+          0.44159621000289917,
+          0.4979380965232849,
+          1.3425899744033813
         ]
+      },
+      "clip_meta": {
+        "idle": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "walk": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "run": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "crouch": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hide-enter": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "repair": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hide": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hold-breath": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "rescue": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "caught": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "sit-exhausted": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        }
+      },
+      "tint_slots": {
+        "suit": "cloth-teal",
+        "trim": "cloth-black"
       }
     },
     {
       "id": "crew-ivory",
       "file": "models/crew-ivory.glb",
       "category": "character",
-      "description": "Protective operator with sculpted workwear folds, opaque visor, harness, fingers and battery backpack. Skinned rig and ten movement/action clips.",
-      "triangles": 13524,
-      "mesh_primitives": 8,
-      "bytes": 7328468,
+      "description": "Bulky protective operator (04/07): padded workwear, knee pads, dark gloves and boots, large battery backpack with canisters, chest radio, opaque visor. Skinned rig; suit/trim tint slots; walk/run/crouch loop on walkPhase.",
+      "concept": "concepts/v4/07-crew.png",
+      "triangles": 16244,
+      "budget": 6000,
+      "over_budget": true,
+      "mesh_primitives": 9,
+      "materials": [
+        "amber",
+        "cloth-black",
+        "cloth-ivory",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel",
+        "visor"
+      ],
+      "bytes": 1908540,
       "clips": [
         "idle",
         "walk",
         "run",
         "crouch",
+        "hide-enter",
         "repair",
         "hide",
         "hold-breath",
@@ -355,55 +1532,193 @@
       "rigged": true,
       "bounds_blender": {
         "min": [
-          -0.3810544013977051,
-          -0.014888733625411987,
-          0.1789795458316803
+          -0.4463067054748535,
+          -0.5950990915298462,
+          -0.38398516178131104
         ],
         "max": [
-          0.3787843585014343,
-          0.8859272599220276,
-          1.8633716106414795
+          0.44159621000289917,
+          0.4979380965232849,
+          1.3425899744033813
         ]
+      },
+      "clip_meta": {
+        "idle": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "walk": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "run": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "crouch": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hide-enter": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "repair": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hide": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "hold-breath": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "rescue": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "caught": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "sit-exhausted": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        }
+      },
+      "tint_slots": {
+        "suit": "cloth-ivory",
+        "trim": "cloth-black"
       }
     },
     {
       "id": "warden",
       "file": "models/warden.glb",
       "category": "character",
-      "description": "Tall asymmetric surveillance hunter with instrument head, red slit, articulated hands and six skeletal clips.",
-      "triangles": 14516,
+      "description": "Tall asymmetric surveillance hunter (06): large ivory box head with wide red slit, articulated three-claw hands. Skinned rig; suit/trim tint slots; walk/chase loop on walkPhase.",
+      "concept": "concepts/v4/06-locker.png",
+      "triangles": 15408,
+      "budget": 6000,
+      "over_budget": true,
       "mesh_primitives": 6,
-      "bytes": 3793244,
+      "materials": [
+        "danger-red",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 1792212,
       "clips": [
         "idle",
-        "patrol",
+        "walk",
+        "scan",
         "chase",
-        "search",
-        "capture",
+        "grab",
         "stunned"
       ],
       "rigged": true,
       "bounds_blender": {
         "min": [
-          -0.5217255353927612,
-          -0.5434596538543701,
+          -0.48943066596984863,
+          -0.7136565446853638,
           0.0034220218658447266
         ],
         "max": [
-          0.47601357102394104,
-          0.15091809630393982,
-          2.2394230365753174
+          0.48943066596984863,
+          0.15091808140277863,
+          2.393071413040161
         ]
+      },
+      "clip_meta": {
+        "idle": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "walk": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "scan": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "chase": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "grab": {
+          "loop": false,
+          "drive": "time",
+          "frames": 24,
+          "seconds": 1.0
+        },
+        "stunned": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        }
+      },
+      "tint_slots": {
+        "suit": "petrol",
+        "trim": "ivory"
       }
     },
     {
       "id": "weaver",
       "file": "models/weaver.glb",
       "category": "character",
-      "description": "Six-legged foundry maintenance hunter; independent three-joint legs, sensor head and six skeletal clips.",
-      "triangles": 15880,
-      "mesh_primitives": 7,
-      "bytes": 3989020,
+      "description": "Armored six-legged foundry hunter \"W-01\" (10): chunky petrol box hull with hazard stripes and W-01 stencils, ivory box head with red slit, thick three-joint hydraulic legs. Rest pose = weaver-body.tsx (KNEE/FOOT/SPLAY); tripod gait on walkPhase.",
+      "concept": "concepts/v4/10-paywall.png",
+      "triangles": 13028,
+      "budget": 6000,
+      "over_budget": true,
+      "mesh_primitives": 8,
+      "materials": [
+        "danger-red",
+        "decal-hazard",
+        "decal-ivory",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 1539844,
       "clips": [
         "idle",
         "scuttle",
@@ -415,25 +1730,109 @@
       "rigged": true,
       "bounds_blender": {
         "min": [
-          -1.2300000190734863,
-          -0.9197486639022827,
-          -0.14039325714111328
+          -0.9250000715255737,
+          -0.7283828854560852,
+          0.0
         ],
         "max": [
-          1.2300000190734863,
-          1.0731931924819946,
-          1.4294445514678955
+          0.925000011920929,
+          0.6883827447891235,
+          1.4000002145767212
         ]
+      },
+      "clip_meta": {
+        "idle": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "scuttle": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "chase": {
+          "loop": true,
+          "drive": "walkPhase",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "scan": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "strike": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        },
+        "stunned": {
+          "loop": true,
+          "drive": "time",
+          "frames": 48,
+          "seconds": 2.0
+        }
+      },
+      "tint_slots": {
+        "suit": "petrol",
+        "trim": "ivory"
+      },
+      "gait": {
+        "hip_y": 0.98,
+        "hip_x": 0.24,
+        "rows_game_z": [
+          0.3,
+          0.02,
+          -0.26
+        ],
+        "splay": [
+          0.55,
+          0,
+          -0.55
+        ],
+        "knee": [
+          0.4,
+          0.34
+        ],
+        "ankle": [
+          0.62,
+          -0.6
+        ],
+        "foot": [
+          0.58,
+          -0.98
+        ],
+        "splay_baked": true,
+        "bones": "hip{row}.{L|R} = game leg group (yaw rotation_euler[1], lift location.y); leg/shin/foot = knee/ankle flex about local Z; L = +X = game side +1; row 0 = front"
       }
     },
     {
       "id": "containment-capsule",
       "file": "models/containment-capsule.glb",
       "category": "machinery",
-      "description": "Crew rescue capsule with transparent window, animated lifting door, red beacon and release lever.",
-      "triangles": 3280,
-      "mesh_primitives": 10,
-      "bytes": 2365308,
+      "description": "Crew rescue capsule (07): transparent window, lifting door, roof beacon seated on the body, feed pipes, hazard-striped sill and C-1 stencil.",
+      "concept": "concepts/v4/07-crew.png",
+      "triangles": 5164,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 12,
+      "materials": [
+        "danger-red",
+        "decal-hazard",
+        "decal-indigo",
+        "glass",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 365660,
       "clips": [
         "open",
         "release"
@@ -447,8 +1846,8 @@
         ],
         "max": [
           0.6100000143051147,
-          0.5550000071525574,
-          3.0399999618530273
+          0.75,
+          2.986999988555908
         ]
       }
     },
@@ -457,9 +1856,17 @@
       "file": "models/locker-single.glb",
       "category": "environment",
       "description": "Functional hiding locker with hollow interior, front vent openings and a hinged door clip.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 1284,
+      "budget": 2000,
+      "over_budget": false,
       "mesh_primitives": 4,
-      "bytes": 2235880,
+      "materials": [
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 95284,
       "clips": [
         "open"
       ],
@@ -482,15 +1889,26 @@
       "file": "models/locker-interior-frame.glb",
       "category": "environment",
       "description": "First-person locker front with two genuinely open sight slits; renders the scene outside through the geometry.",
-      "triangles": 2300,
-      "mesh_primitives": 3,
-      "bytes": 2303680,
+      "concept": "concepts/v4/06-locker.png",
+      "triangles": 2762,
+      "budget": 2000,
+      "over_budget": true,
+      "mesh_primitives": 6,
+      "materials": [
+        "decal-ivory",
+        "hardware",
+        "petrol",
+        "rust",
+        "soot",
+        "steel"
+      ],
+      "bytes": 199596,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
           -0.8224999904632568,
-          -0.06650008261203766,
+          -0.07274900376796722,
           0.0
         ],
         "max": [
@@ -505,9 +1923,18 @@
       "file": "models/wall-microphone.glb",
       "category": "equipment",
       "description": "Ivory wall microphone, slotted grille, conduit connection and red detection lamp.",
+      "concept": "concepts/v4/02-mic.png",
       "triangles": 3224,
+      "budget": 1500,
+      "over_budget": true,
       "mesh_primitives": 4,
-      "bytes": 2365288,
+      "materials": [
+        "danger-red",
+        "hardware",
+        "ivory",
+        "rubber"
+      ],
+      "bytes": 224744,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -528,9 +1955,20 @@
       "file": "models/rotary-control.glb",
       "category": "equipment",
       "description": "Calibrated industrial rotary input with animated knob and ivory tick marks.",
+      "concept": "concepts/v4/02-mic.png",
       "triangles": 3464,
+      "budget": 1500,
+      "over_budget": true,
       "mesh_primitives": 6,
-      "bytes": 2380980,
+      "materials": [
+        "amber",
+        "gauge-face",
+        "hardware",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 240592,
       "clips": [
         "turn"
       ],
@@ -553,9 +1991,18 @@
       "file": "models/battery-pack.glb",
       "category": "equipment",
       "description": "Portable operator equipment with physically modeled fittings.",
+      "concept": "concepts/v4/09-results.png",
       "triangles": 1108,
+      "budget": 1500,
+      "over_budget": false,
       "mesh_primitives": 4,
-      "bytes": 2208892,
+      "materials": [
+        "hardware",
+        "ivory",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 68380,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -576,9 +2023,17 @@
       "file": "models/hand-radio.glb",
       "category": "equipment",
       "description": "Portable operator equipment with physically modeled fittings.",
+      "concept": "concepts/v4/09-results.png",
       "triangles": 680,
+      "budget": 1500,
+      "over_budget": false,
       "mesh_primitives": 3,
-      "bytes": 2190896,
+      "materials": [
+        "gauge-face",
+        "petrol",
+        "rubber"
+      ],
+      "bytes": 50288,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -599,9 +2054,16 @@
       "file": "models/repair-tool.glb",
       "category": "equipment",
       "description": "Portable operator equipment with physically modeled fittings.",
+      "concept": "concepts/v4/09-results.png",
       "triangles": 824,
+      "budget": 1500,
+      "over_budget": false,
       "mesh_primitives": 2,
-      "bytes": 3669416,
+      "materials": [
+        "cloth-black",
+        "hardware"
+      ],
+      "bytes": 59996,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -622,21 +2084,30 @@
       "file": "models/scrap-bundle.glb",
       "category": "equipment",
       "description": "Portable operator equipment with physically modeled fittings.",
-      "triangles": 1760,
-      "mesh_primitives": 2,
-      "bytes": 2261284,
+      "concept": "concepts/v4/09-results.png",
+      "triangles": 8676,
+      "budget": 1500,
+      "over_budget": true,
+      "mesh_primitives": 4,
+      "materials": [
+        "amber",
+        "hardware",
+        "rust",
+        "steel"
+      ],
+      "bytes": 613256,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.20999999344348907,
-          -0.2459999918937683,
-          0.0
+          -0.35125064849853516,
+          -0.19560827314853668,
+          0.0020000003278255463
         ],
         "max": [
-          0.24599997699260712,
-          0.06499999761581421,
-          0.30000001192092896
+          0.3522489368915558,
+          0.17434851825237274,
+          0.1469999998807907
         ]
       }
     },
@@ -645,9 +2116,17 @@
       "file": "models/breathing-canister.glb",
       "category": "equipment",
       "description": "Portable operator equipment with physically modeled fittings.",
+      "concept": "concepts/v4/09-results.png",
       "triangles": 852,
+      "budget": 1500,
+      "over_budget": false,
       "mesh_primitives": 3,
-      "bytes": 2196116,
+      "materials": [
+        "ivory",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 55528,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -667,22 +2146,40 @@
       "id": "operator-plinth",
       "file": "models/operator-plinth.glb",
       "category": "environment",
-      "description": "Worn concrete loadout display pedestal with operator identification.",
-      "triangles": 2836,
-      "mesh_primitives": 2,
-      "bytes": 2268360,
+      "description": "Square worn concrete loadout block (1.8 m, top z .42) with OPERATOR 07 stencil, hazard edge and chipped corners.",
+      "concept": "concepts/v4/04-loadout.png",
+      "triangles": 2636,
+      "budget": 2000,
+      "over_budget": true,
+      "mesh_primitives": 6,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "decal-hazard",
+        "hardware",
+        "indigo",
+        "soot"
+      ],
+      "bytes": 123284,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.8600000143051147,
-          -0.8600000143051147,
+          -0.9377817511558533,
+          -0.9377817511558533,
           0.0
         ],
         "max": [
-          0.8600000143051147,
-          0.8600000143051147,
-          0.30000001192092896
+          0.9377817511558533,
+          0.9377817511558533,
+          0.4350000023841858
+        ]
+      },
+      "anchors_blender": {
+        "stand": [
+          0,
+          0,
+          0.42
         ]
       }
     },
@@ -690,45 +2187,30 @@
       "id": "foundation-pier",
       "file": "models/foundation-pier.glb",
       "category": "environment",
-      "description": "Deep structural pier with stepped wall buttresses and hardware.",
-      "triangles": 972,
+      "description": "Dark concrete base block under a 2x2-cell floor module. Top at z=0 (under the floor slab), foot at -3.6; sits in water with a waterline stain at z=-1.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 664,
+      "budget": 2000,
+      "over_budget": false,
       "mesh_primitives": 3,
-      "bytes": 2212492,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "soot"
+      ],
+      "bytes": 54072,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -2.0250000953674316,
-          -2.125,
+          -2.1599998474121094,
+          -2.1599998474121094,
           -3.5999999046325684
         ],
         "max": [
-          2.0250000953674316,
-          2.0,
+          2.1599998474121094,
+          2.1599998474121094,
           0.0
-        ]
-      }
-    },
-    {
-      "id": "wall-corner",
-      "file": "models/wall-corner.glb",
-      "category": "environment",
-      "description": "L-shaped ivory cutaway corner with teal lower panels.",
-      "triangles": 432,
-      "mesh_primitives": 2,
-      "bytes": 2172088,
-      "clips": [],
-      "rigged": false,
-      "bounds_blender": {
-        "min": [
-          -1.0,
-          -1.0,
-          0.0
-        ],
-        "max": [
-          1.149999976158142,
-          1.149999976158142,
-          3.0
         ]
       }
     },
@@ -737,9 +2219,18 @@
       "file": "models/service-door.glb",
       "category": "environment",
       "description": "Inset ivory service door with round latch and open animation.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 1000,
+      "budget": 2000,
+      "over_budget": false,
       "mesh_primitives": 4,
-      "bytes": 2215292,
+      "materials": [
+        "hardware",
+        "ivory",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 74776,
       "clips": [
         "open"
       ],
@@ -762,15 +2253,23 @@
       "file": "models/ladder.glb",
       "category": "environment",
       "description": "Three-metre maintenance ladder with wall standoffs.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 2380,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 3,
-      "bytes": 2302528,
+      "materials": [
+        "amber",
+        "hardware",
+        "steel"
+      ],
+      "bytes": 161972,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
           -0.35499998927116394,
-          -0.04000001400709152,
+          -0.04000002518296242,
           0.0
         ],
         "max": [
@@ -785,9 +2284,17 @@
       "file": "models/stairs.glb",
       "category": "environment",
       "description": "Two-metre rise service stair with continuous rails and open tread profiles.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 3840,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 3,
-      "bytes": 2407260,
+      "materials": [
+        "amber",
+        "hardware",
+        "steel"
+      ],
+      "bytes": 266672,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -808,9 +2315,18 @@
       "file": "models/grated-bridge.glb",
       "category": "environment",
       "description": "Four-metre service bridge with open metal grating and twin guardrails.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 6584,
+      "budget": 2000,
+      "over_budget": true,
       "mesh_primitives": 4,
-      "bytes": 2601392,
+      "materials": [
+        "amber",
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 460884,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -822,7 +2338,7 @@
         "max": [
           0.7649999260902405,
           2.0124998092651367,
-          1.0260001420974731
+          1.0260000228881836
         ]
       }
     },
@@ -831,9 +2347,16 @@
       "file": "models/overhead-duct.glb",
       "category": "environment",
       "description": "Industrial rectangular duct with flange bands and corner fasteners.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 1404,
+      "budget": 2000,
+      "over_budget": false,
       "mesh_primitives": 2,
-      "bytes": 2241676,
+      "materials": [
+        "hardware",
+        "petrol"
+      ],
+      "bytes": 101016,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -853,25 +2376,228 @@
       "id": "pipe-valve",
       "file": "models/pipe-valve.glb",
       "category": "machinery",
-      "description": "Flanged shutoff valve with rotating red handwheel.",
-      "triangles": 7288,
+      "description": "Inline shutoff valve on the pipe-straight axis (z .42): bonnet, stem through a hub, red handwheel physically on the stem.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 9532,
+      "budget": 4000,
+      "over_budget": true,
       "mesh_primitives": 5,
-      "bytes": 2642060,
+      "materials": [
+        "danger-red",
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 660220,
       "clips": [
         "turn"
       ],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.6399999856948853,
-          -0.4099999964237213,
-          0.13999995589256287
+          -0.5699999928474426,
+          -0.3700000047683716,
+          -1.69688654239053e-08
         ],
         "max": [
-          0.7065001130104065,
-          0.4099999964237213,
-          2.7300000190734863
+          0.6365000009536743,
+          0.3700000047683716,
+          2.4700000286102295
         ]
+      }
+    },
+    {
+      "id": "pipe-tee",
+      "file": "models/pipe-tee.glb",
+      "category": "machinery",
+      "description": "Pipe tee on the pipe-straight axis: 2 m run along X with a vertical branch to a flange at z 1.3.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 9092,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 3,
+      "materials": [
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 625260,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.0099999904632568,
+          -0.3700000047683716,
+          -8.523721106712401e-08
+        ],
+        "max": [
+          1.0764999389648438,
+          0.3700000047683716,
+          1.375
+        ]
+      }
+    },
+    {
+      "id": "pipe-riser",
+      "file": "models/pipe-riser.glb",
+      "category": "machinery",
+      "description": "Vertical 3 m riser pipe, flanges both ends, two wall clamps (wall at +Y .45).",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 4308,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 3,
+      "materials": [
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 299600,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.3700000047683716,
+          -0.3700000047683716,
+          0.0
+        ],
+        "max": [
+          0.3700000047683716,
+          0.44999998807907104,
+          3.0
+        ]
+      }
+    },
+    {
+      "id": "pipe-bracket",
+      "file": "models/pipe-bracket.glb",
+      "category": "machinery",
+      "description": "Wall bracket for a 0.28 m pipe: wall plate at y 0 (wall behind, +Y), pipe centre at (0,-.5,0).",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 1344,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 2,
+      "materials": [
+        "hardware",
+        "steel"
+      ],
+      "bytes": 97496,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.15000000596046448,
+          -0.8100000023841858,
+          -0.33500003814697266
+        ],
+        "max": [
+          0.15000000596046448,
+          0.021941915154457092,
+          0.30699998140335083
+        ]
+      }
+    },
+    {
+      "id": "junction-box",
+      "file": "models/junction-box.glb",
+      "category": "machinery",
+      "description": "Wall-mounted electrical junction box with screwed lid, conduit glands and E1 stencil. Back on y 0, faces -Y.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 2246,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 6,
+      "materials": [
+        "amber",
+        "decal-indigo",
+        "hardware",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 162608,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.23000000417232513,
+          -0.20100001990795135,
+          -0.8999999761581421
+        ],
+        "max": [
+          0.23000000417232513,
+          0.0,
+          0.8999999165534973
+        ]
+      }
+    },
+    {
+      "id": "floor-drain-grate",
+      "file": "models/floor-drain-grate.glb",
+      "category": "environment",
+      "description": "Standalone slotted drain grate for floor tiles; top at z .012, origin at the tile surface.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 96,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 3,
+      "materials": [
+        "hardware",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 10512,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.3100000023841858,
+          -0.3100000023841858,
+          0.0
+        ],
+        "max": [
+          0.3100000023841858,
+          0.3100000023841858,
+          0.012000000104308128
+        ]
+      }
+    },
+    {
+      "id": "coat-hook-workwear",
+      "file": "models/coat-hook-workwear.glb",
+      "category": "environment",
+      "description": "Wall coat rail (back on y 0) with three hooks, hanging amber work jacket and breathing hose. Jacket uses tint slot suit.",
+      "concept": "concepts/v4/05-shift.png",
+      "triangles": 2616,
+      "budget": 2000,
+      "over_budget": true,
+      "mesh_primitives": 6,
+      "materials": [
+        "cloth-amber",
+        "cloth-black",
+        "hardware",
+        "ivory",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 189396,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.550000011920929,
+          -0.3968908488750458,
+          0.9956854581832886
+        ],
+        "max": [
+          0.550000011920929,
+          0.11938007175922394,
+          1.8088934421539307
+        ]
+      },
+      "tint_slots": {
+        "suit": "cloth-amber"
       }
     },
     {
@@ -879,9 +2605,19 @@
       "file": "models/electrical-cabinet.glb",
       "category": "machinery",
       "description": "Service cabinet with breaker rows, vents, handle and hazard stripe.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 2588,
+      "budget": 4000,
+      "over_budget": false,
       "mesh_primitives": 5,
-      "bytes": 2292652,
+      "materials": [
+        "amber",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 152224,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -901,22 +2637,30 @@
       "id": "warning-beacon",
       "file": "models/warning-beacon.glb",
       "category": "equipment",
-      "description": "Red rotating alarm beacon with mounting base.",
-      "triangles": 1272,
+      "description": "Compact caged red alarm beacon (0.26 m), base on z 0. Runtime pulses the danger-red emission.",
+      "concept": "concepts/v4/09-results.png",
+      "triangles": 2952,
+      "budget": 1500,
+      "over_budget": true,
       "mesh_primitives": 3,
-      "bytes": 2227756,
+      "materials": [
+        "danger-red",
+        "hardware",
+        "steel"
+      ],
+      "bytes": 203916,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.12999999523162842,
-          -0.12999999523162842,
-          0.044999998062849045
+          -0.08500000089406967,
+          -0.08500000089406967,
+          0.0
         ],
         "max": [
-          0.12999999523162842,
-          0.12999999523162842,
-          0.3199999928474426
+          0.08500000089406967,
+          0.08500000089406967,
+          0.24699999392032623
         ]
       }
     },
@@ -924,21 +2668,34 @@
       "id": "coolant-tank",
       "file": "models/coolant-tank.glb",
       "category": "machinery",
-      "description": "Tall refrigeration tank with insulation seams, gauge, frost cap and service valves.",
-      "triangles": 7604,
-      "mesh_primitives": 6,
-      "bytes": 2637636,
+      "description": "Tall refrigeration tank (r .65): painted bands, ivory cap with frost crown and drips, gauge, frosted service pipe, C1 stencil decal.",
+      "concept": "concepts/v4/09-results.png",
+      "triangles": 6138,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 8,
+      "materials": [
+        "decal-ivory",
+        "frost",
+        "gauge-face",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 426936,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.6869999766349792,
+          -0.671366810798645,
           -0.7489999532699585,
           0.0
         ],
         "max": [
-          0.6869999766349792,
-          0.6869999766349792,
+          0.6650000214576721,
+          0.6650000214576721,
           3.1600000858306885
         ]
       }
@@ -947,22 +2704,35 @@
       "id": "refrigeration-unit",
       "file": "models/refrigeration-unit.glb",
       "category": "machinery",
-      "description": "Twin-fan chiller with cream insulated casing and coolant connections.",
-      "triangles": 7896,
-      "mesh_primitives": 5,
-      "bytes": 2605972,
+      "description": "Twin-fan chiller: ivory insulated casing, frosted top, frosted coolant connections at the back, COLD STORAGE stencil and hazard kick strip (decals).",
+      "concept": "concepts/v4/09-results.png",
+      "triangles": 4708,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 8,
+      "materials": [
+        "decal-hazard",
+        "decal-indigo",
+        "frost",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 333192,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
           -1.2000000476837158,
-          -0.6188124418258667,
+          -0.5689712762832642,
           0.0
         ],
         "max": [
           1.2000000476837158,
-          0.44999998807907104,
-          1.7000000476837158
+          0.7837690711021423,
+          1.899999976158142
         ]
       }
     },
@@ -970,10 +2740,23 @@
       "id": "cold-storage-door",
       "file": "models/cold-storage-door.glb",
       "category": "environment",
-      "description": "Heavy insulated sliding door with latch, gasket and open clip.",
-      "triangles": 1416,
-      "mesh_primitives": 5,
-      "bytes": 2222048,
+      "description": "Heavy insulated sliding door: ivory frame with vertical hazard stripes, rubber gasket, frosted threshold, 02 stencil decal on the moving leaf, open clip.",
+      "concept": "concepts/v4/09-results.png",
+      "triangles": 746,
+      "budget": 2000,
+      "over_budget": false,
+      "mesh_primitives": 10,
+      "materials": [
+        "decal-hazard",
+        "decal-indigo",
+        "frost",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 63492,
       "clips": [
         "open"
       ],
@@ -981,13 +2764,48 @@
       "bounds_blender": {
         "min": [
           -1.100000023841858,
-          -0.2549999952316284,
+          -0.2750000059604645,
           0.0
         ],
         "max": [
           1.100000023841858,
-          0.25,
+          0.2750000059604645,
           2.705000162124634
+        ]
+      }
+    },
+    {
+      "id": "frost-silo",
+      "file": "models/frost-silo.glb",
+      "category": "machinery",
+      "description": "Tall domed cryogenic silo (03/09/11), larger than coolant-tank: r 1.0, 5.2 m. Concrete plinth, steel skirt with amber band, petrol shell, frost-crowned dome with drips, cage ladder, frosted bottom outlet, 02 stencil decal.",
+      "concept": "concepts/v4/03-sectors.png",
+      "triangles": 4482,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 7,
+      "materials": [
+        "amber",
+        "concrete-dark",
+        "decal-ivory",
+        "frost",
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 316460,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -1.1799999475479126,
+          -1.1799999475479126,
+          0.0
+        ],
+        "max": [
+          1.5550000667572021,
+          1.1799999475479126,
+          4.740000247955322
         ]
       }
     },
@@ -995,33 +2813,69 @@
       "id": "chimney",
       "file": "models/chimney.glb",
       "category": "machinery",
-      "description": "Plant exhaust stack with ivory/red bands, rim and service collar.",
-      "triangles": 5468,
-      "mesh_primitives": 4,
-      "bytes": 2502904,
+      "description": "Plant exhaust stack (1.5 m dia, ~8 m) with concrete lower shaft, red/ivory upper bands, rim, ember glow and cage ladder.",
+      "concept": "concepts/v4/03-sectors.png",
+      "triangles": 4902,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 10,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "danger",
+        "danger-red",
+        "hardware",
+        "ivory",
+        "molten",
+        "rubber",
+        "soot",
+        "steel"
+      ],
+      "bytes": 326012,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.35500001907348633,
-          -0.35500001907348633,
+          -0.9959080815315247,
+          -1.2552169561386108,
           0.0
         ],
         "max": [
-          0.35500001907348633,
-          0.35500001907348633,
-          4.065000057220459
+          0.9959080815315247,
+          0.9959080815315247,
+          8.064000129699707
         ]
-      }
+      },
+      "anchors_blender": {
+        "smoke": [
+          0,
+          0,
+          8.1
+        ]
+      },
+      "effects": [
+        "molten"
+      ]
     },
     {
       "id": "foundry-furnace",
       "file": "models/foundry-furnace.glb",
       "category": "machinery",
       "description": "Refractory furnace with glowing mouth, heavy shutters and exhaust collar.",
+      "concept": "concepts/v4/10-paywall.png",
       "triangles": 2476,
+      "budget": 4000,
+      "over_budget": false,
       "mesh_primitives": 6,
-      "bytes": 2287064,
+      "materials": [
+        "hardware",
+        "ivory",
+        "molten",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 146668,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -1035,41 +2889,85 @@
           0.8999999761581421,
           4.050000190734863
         ]
-      }
+      },
+      "effects": [
+        "molten"
+      ]
     },
     {
       "id": "foundry-crucible",
       "file": "models/foundry-crucible.glb",
       "category": "machinery",
-      "description": "Open refractory crucible with molten surface, trunnions and pouring clip.",
-      "triangles": 3432,
-      "mesh_primitives": 3,
-      "bytes": 2373660,
+      "description": "Hanging ladle (10/03) for the overhead-gantry hook. Origin = bail eye: place it at the gantry anchors.hook. Bail yoke with hazard arms, tapered banded drum with ribs, -Y pour spout, glowing melt, tilt gear. pour clip tilts the drum 1.05 rad about the trunnions; anchors.pour_lip = spout lip at full tilt.",
+      "concept": "concepts/v4/10-paywall.png",
+      "triangles": 4120,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 8,
+      "materials": [
+        "decal-hazard",
+        "hardware",
+        "molten-core",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 289560,
       "clips": [
         "pour"
       ],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -1.0199999809265137,
-          -0.8499999642372131,
-          1.100000023841858
+          -0.9865673780441284,
+          -1.008803367614746,
+          -3.2782816886901855
         ],
         "max": [
-          1.0199999809265137,
-          0.8499999642372131,
-          2.3999998569488525
+          1.166603922843933,
+          0.97144615650177,
+          0.030000003054738045
         ]
-      }
+      },
+      "anchors_blender": {
+        "pivot": [
+          0,
+          0,
+          -1.3
+        ],
+        "pour_lip_rest": [
+          0,
+          -0.77,
+          -0.7
+        ],
+        "pour_lip": [
+          0.0,
+          -0.9036,
+          -1.6694
+        ]
+      },
+      "effects": [
+        "molten-core"
+      ]
     },
     {
       "id": "overhead-gantry",
       "file": "models/overhead-gantry.glb",
       "category": "machinery",
-      "description": "Foundry overhead crane with crossbeam, trolley, hoist drum and hook.",
-      "triangles": 3916,
-      "mesh_primitives": 5,
-      "bytes": 2386364,
+      "description": "Foundry overhead crane (10): petrol columns with vertical hazard stripes and knee braces, crossbeam with F-03 stencil and hazard rail, trolley, hoist drum, twin cables, striped hook block and hook. anchors.hook = where the foundry-crucible origin hangs.",
+      "concept": "concepts/v4/10-paywall.png",
+      "triangles": 2754,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 6,
+      "materials": [
+        "amber",
+        "decal-hazard",
+        "decal-ivory",
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 196608,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -1081,7 +2979,14 @@
         "max": [
           2.700000047683716,
           0.44999998807907104,
-          5.189999580383301
+          5.210000038146973
+        ]
+      },
+      "anchors_blender": {
+        "hook": [
+          0,
+          0,
+          3.3
         ]
       }
     },
@@ -1090,9 +2995,17 @@
       "file": "models/casting-trough.glb",
       "category": "machinery",
       "description": "Molten-metal casting channel with refractory walls and end stops.",
+      "concept": "concepts/v4/10-paywall.png",
       "triangles": 648,
+      "budget": 4000,
+      "over_budget": false,
       "mesh_primitives": 3,
-      "bytes": 2190044,
+      "materials": [
+        "hardware",
+        "molten",
+        "steel"
+      ],
+      "bytes": 49444,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -1106,28 +3019,241 @@
           1.399999976158142,
           0.5199999809265137
         ]
-      }
+      },
+      "effects": [
+        "molten"
+      ]
     },
     {
       "id": "overseer-housing",
       "file": "models/overseer-housing.glb",
       "category": "machinery",
-      "description": "Title-screen monumental overseer housing with recessed red observation slit.",
-      "triangles": 2316,
-      "mesh_primitives": 5,
-      "bytes": 2252096,
+      "description": "Monumental dark monolith (~9 x 5 x 16 m) with stepped buttresses, recessed red observation slit, vertical light seam, OVERSEER stencil (01 title backdrop, 03 Core island).",
+      "concept": "concepts/v4/01-title.png",
+      "triangles": 2844,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 8,
+      "materials": [
+        "concrete-dark",
+        "danger-red",
+        "hardware",
+        "indigo",
+        "ivory",
+        "rubber",
+        "soot",
+        "steel"
+      ],
+      "bytes": 154772,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -1.7999999523162842,
-          -1.0699999332427979,
+          -5.199999809265137,
+          -3.200000047683716,
           0.0
         ],
         "max": [
-          1.7999999523162842,
-          0.8999999761581421,
-          6.400000095367432
+          5.199999809265137,
+          3.200000047683716,
+          19.369998931884766
+        ]
+      },
+      "anchors_blender": {
+        "slit": [
+          0,
+          -2.39,
+          13.2
+        ],
+        "seam": [
+          0,
+          -2.36,
+          3.8
+        ]
+      }
+    },
+    {
+      "id": "sea-rock",
+      "file": "models/sea-rock.glb",
+      "category": "environment",
+      "description": "Low basalt outcrop / island base (~6 x 5 m, top z 1.2..2.6, foot z -1.5) of hex columns with a wet dark waterline; stacks under sector islands and along title shores.",
+      "concept": "concepts/v4/03-sectors.png",
+      "triangles": 4308,
+      "budget": 2000,
+      "over_budget": true,
+      "mesh_primitives": 2,
+      "materials": [
+        "basalt",
+        "soot"
+      ],
+      "bytes": 301456,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -4.452282905578613,
+          -4.369194984436035,
+          -1.8211156129837036
+        ],
+        "max": [
+          4.432538986206055,
+          4.477630615234375,
+          2.3360278606414795
+        ]
+      },
+      "anchors_blender": {
+        "waterline_z": 0
+      }
+    },
+    {
+      "id": "cliff-stack",
+      "file": "models/cliff-stack.glb",
+      "category": "environment",
+      "description": "Tall stepped basalt spire (~4 m wide, 14 m high, foot z -2) for the title backdrop and Core island silhouette.",
+      "concept": "concepts/v4/01-title.png",
+      "triangles": 3532,
+      "budget": 2000,
+      "over_budget": true,
+      "mesh_primitives": 1,
+      "materials": [
+        "basalt"
+      ],
+      "bytes": 246848,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -2.7867093086242676,
+          -2.6104042530059814,
+          -2.1111044883728027
+        ],
+        "max": [
+          2.6366095542907715,
+          2.651489496231079,
+          10.545295715332031
+        ]
+      },
+      "anchors_blender": {
+        "top_z": 14
+      }
+    },
+    {
+      "id": "facility-tower-block",
+      "file": "models/facility-tower-block.glb",
+      "category": "machinery",
+      "description": "Multi-storey concrete facility block (8 x 6 x 12.6 m) with floor bands, lit amber windows, slogan stencils, big 07, roof plant and down-pipes.",
+      "concept": "concepts/v4/01-title.png",
+      "triangles": 1498,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 9,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "decal-ivory",
+        "glass",
+        "hardware",
+        "petrol",
+        "rubber",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 117432,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -4.199999809265137,
+          -3.200000047683716,
+          0.0
+        ],
+        "max": [
+          4.199999809265137,
+          3.200000047683716,
+          13.899999618530273
+        ]
+      },
+      "anchors_blender": {
+        "roof_z": 12.5
+      }
+    },
+    {
+      "id": "pallet",
+      "file": "models/pallet.glb",
+      "category": "equipment",
+      "description": "Standard 1.2 x 1.0 m wooden pallet (0.15 m), three stringers, top/bottom boards.",
+      "concept": "concepts/v4/11-overseer.png",
+      "triangles": 572,
+      "budget": 1500,
+      "over_budget": false,
+      "mesh_primitives": 1,
+      "materials": [
+        "wood"
+      ],
+      "bytes": 44984,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.6100000143051147,
+          -0.5,
+          0.0
+        ],
+        "max": [
+          0.6100000143051147,
+          0.5,
+          0.15000000596046448
+        ]
+      },
+      "anchors_blender": {
+        "load": [
+          0,
+          0,
+          0.15
+        ]
+      }
+    },
+    {
+      "id": "forklift",
+      "file": "models/forklift.glb",
+      "category": "equipment",
+      "description": "Compact amber warehouse forklift (1.1 x 2.2 m, guard 2.1 m): counterweight body, mast, forks, overhead guard, seat, rubber wheels, beacon.",
+      "concept": "concepts/v4/11-overseer.png",
+      "triangles": 2618,
+      "budget": 1500,
+      "over_budget": true,
+      "mesh_primitives": 9,
+      "materials": [
+        "amber",
+        "decal-hazard",
+        "hardware",
+        "petrol",
+        "rubber",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 194388,
+      "clips": [
+        "lift"
+      ],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.5770000219345093,
+          -2.2049999237060547,
+          0.002729058265686035
+        ],
+        "max": [
+          0.5770000219345093,
+          1.2569999694824219,
+          2.2516326904296875
+        ]
+      },
+      "anchors_blender": {
+        "fork_load": [
+          0,
+          -1.1,
+          0.1
         ]
       }
     },
@@ -1135,117 +3261,419 @@
       "id": "core-spindle",
       "file": "models/core-spindle.glb",
       "category": "machinery",
-      "description": "Central calculating spindle with sensor band, ivory casing, toothed base and external service pipes.",
-      "triangles": 10244,
-      "mesh_primitives": 6,
-      "bytes": 2814632,
+      "description": "Tall modular calculating column (pillar r 3.2) with red sensor band at the slit height, ivory/petrol modules, CORE stencils and service conduits.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 9132,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 9,
+      "materials": [
+        "amber",
+        "concrete-dark",
+        "danger-red",
+        "decal-ivory",
+        "hardware",
+        "ivory",
+        "petrol",
+        "rubber",
+        "steel"
+      ],
+      "bytes": 610948,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -1.15500009059906,
-          -1.15500009059906,
-          0.0
+          -3.200000047683716,
+          -3.200000047683716,
+          -12.0
         ],
         "max": [
-          1.15500009059906,
-          1.15500009059906,
-          5.699999809265137
+          3.200000047683716,
+          3.200000047683716,
+          13.239999771118164
         ]
+      },
+      "anchors_blender": {
+        "sensor_band": [
+          0,
+          0,
+          6.0
+        ],
+        "slit_game_angle": 0.7854
       }
     },
     {
       "id": "core-ring-inner",
       "file": "models/core-ring-inner.glb",
       "category": "core",
-      "description": "Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.",
-      "triangles": 7092,
-      "mesh_primitives": 5,
-      "bytes": 2615700,
+      "description": "One 30-degree segment of core ring 01 (r 4.2-6.6); 12 instances per ring, seg j at three rotation.y = -j*SEG_ARC. Amber edge lines, hazard ends, ring number, fascia stanchions.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 1590,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 7,
+      "materials": [
+        "amber",
+        "concrete",
+        "decal-hazard",
+        "decal-ivory",
+        "petrol",
+        "soot",
+        "steel"
+      ],
+      "bytes": 110028,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.021000195294618607,
-          -0.07051679491996765,
-          -0.39499998092651367
+          3.4572246074676514,
+          -3.282346725463867,
+          -0.6000000238418579
         ],
         "max": [
-          3.473987102508545,
-          3.473987579345703,
-          0.8140000104904175
+          6.9564900398254395,
+          0.6686444282531738,
+          0.006000000052154064
         ]
+      },
+      "anchors_blender": {
+        "segment_game_angles": [
+          0,
+          0.5236
+        ],
+        "radii": [
+          4.2,
+          6.6
+        ],
+        "top_z": 0,
+        "seam_rad": 0.012,
+        "ring_index": 0
       }
     },
     {
       "id": "core-ring-middle",
       "file": "models/core-ring-middle.glb",
       "category": "core",
-      "description": "Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.",
-      "triangles": 7092,
-      "mesh_primitives": 5,
-      "bytes": 2615720,
+      "description": "One 30-degree segment of core ring 02 (r 7.6-10.0); 12 instances per ring, seg j at three rotation.y = -j*SEG_ARC. Amber edge lines, hazard ends, ring number, fascia stanchions.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 1590,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 7,
+      "materials": [
+        "amber",
+        "concrete",
+        "decal-hazard",
+        "decal-ivory",
+        "petrol",
+        "soot",
+        "steel"
+      ],
+      "bytes": 110056,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.021000288426876068,
-          -0.059935957193374634,
-          -0.39499998092651367
+          6.068544387817383,
+          -4.946890830993652,
+          -0.6000000238418579
         ],
         "max": [
-          5.67398738861084,
-          5.673987865447998,
-          0.8140000104904175
+          10.72396183013916,
+          0.6404133439064026,
+          0.006000000052154064
         ]
+      },
+      "anchors_blender": {
+        "segment_game_angles": [
+          0,
+          0.5236
+        ],
+        "radii": [
+          7.6,
+          10.0
+        ],
+        "top_z": 0,
+        "seam_rad": 0.012,
+        "ring_index": 1
       }
     },
     {
       "id": "core-ring-outer",
       "file": "models/core-ring-outer.glb",
       "category": "core",
-      "description": "Quarter-ring walkway module with tiled deck, amber safety strips and toothed supporting rail. Four instances form a complete ring.",
-      "triangles": 7092,
-      "mesh_primitives": 5,
-      "bytes": 2615704,
+      "description": "One 30-degree segment of core ring 03 (r 11.0-13.4); 12 instances per ring, seg j at three rotation.y = -j*SEG_ARC. Amber edge lines, hazard ends, ring number, fascia stanchions.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 1590,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 7,
+      "materials": [
+        "amber",
+        "concrete",
+        "decal-hazard",
+        "decal-ivory",
+        "petrol",
+        "soot",
+        "steel"
+      ],
+      "bytes": 110052,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.021000143140554428,
-          -0.049355119466781616,
-          -0.39499998092651367
+          8.67490005493164,
+          -6.611435413360596,
+          -0.6000000238418579
         ],
         "max": [
-          7.873987197875977,
-          7.873988151550293,
-          0.8140000104904175
+          14.488470077514648,
+          0.6050413846969604,
+          0.006000000052154064
         ]
+      },
+      "anchors_blender": {
+        "segment_game_angles": [
+          0,
+          0.5236
+        ],
+        "radii": [
+          11.0,
+          13.4
+        ],
+        "top_z": 0,
+        "seam_rad": 0.012,
+        "ring_index": 2
       }
     },
     {
       "id": "core-retracting-segment",
       "file": "models/core-retracting-segment.glb",
       "category": "core",
-      "description": "Movable 30-degree outer ring deck segment with retract clip and red edge lamps.",
-      "triangles": 1728,
-      "mesh_primitives": 3,
-      "bytes": 2256336,
+      "description": "Drop-away ring-03 segment variant with red gap lamps and a retract (fall) clip; use for dropped/warn segments.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 2470,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 8,
+      "materials": [
+        "amber",
+        "concrete",
+        "danger-red",
+        "decal-hazard",
+        "decal-ivory",
+        "petrol",
+        "soot",
+        "steel"
+      ],
+      "bytes": 172876,
       "clips": [
         "retract"
       ],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          5.715767860412598,
-          -0.054999999701976776,
-          -0.30000001192092896
+          8.67490005493164,
+          -6.611435413360596,
+          -0.6000000238418579
         ],
         "max": [
-          7.849999904632568,
-          3.924999952316284,
-          0.22499999403953552
+          14.488470077514648,
+          0.6050417423248291,
+          0.00800000037997961
         ]
+      },
+      "anchors_blender": {
+        "segment_game_angles": [
+          0,
+          0.5236
+        ],
+        "radii": [
+          11.0,
+          13.4
+        ]
+      }
+    },
+    {
+      "id": "core-rim-segment",
+      "file": "models/core-rim-segment.glb",
+      "category": "core",
+      "description": "Static outer rim walkway segment (r 14.4-17.2), 12 per ring, hazard lip on the void edge.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 334,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 5,
+      "materials": [
+        "amber",
+        "concrete",
+        "concrete-dark",
+        "decal-hazard",
+        "soot"
+      ],
+      "bytes": 24348,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          11.715734481811523,
+          -8.600000381469727,
+          -0.6000000238418579
+        ],
+        "max": [
+          17.200000762939453,
+          0.18741071224212646,
+          0.11999999731779099
+        ]
+      },
+      "anchors_blender": {
+        "segment_game_angles": [
+          0,
+          0.5236
+        ],
+        "radii": [
+          14.4,
+          17.2
+        ]
+      }
+    },
+    {
+      "id": "core-radial-bridge",
+      "file": "models/core-radial-bridge.glb",
+      "category": "core",
+      "description": "Static grated spoke bridge along +X from the pillar (r 3.2) to the rim (r 14.7), 1.8 m wide; deep trusses only over the ring gaps so rotating rings pass beneath.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 3620,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 5,
+      "materials": [
+        "amber",
+        "decal-hazard",
+        "hardware",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 260172,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          3.1999998092651367,
+          -0.8999999761581421,
+          -0.5899999737739563
+        ],
+        "max": [
+          14.699999809265137,
+          0.8999999165534973,
+          0.08399999886751175
+        ]
+      },
+      "anchors_blender": {
+        "inner": [
+          3.2,
+          0,
+          0.08
+        ],
+        "outer": [
+          14.700000000000001,
+          0,
+          0.08
+        ],
+        "half_width": 0.9
+      }
+    },
+    {
+      "id": "core-shaft-wall",
+      "file": "models/core-shaft-wall.glb",
+      "category": "core",
+      "description": "30-degree panel of the circular shaft wall behind the rim (inner face r 17.6) with rows of amber lamps; 12 per shaft.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 1256,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 6,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "hardware",
+        "signal-amber",
+        "soot",
+        "steel"
+      ],
+      "bytes": 90384,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          14.774221420288086,
+          -9.100000381469727,
+          -12.0
+        ],
+        "max": [
+          18.612760543823242,
+          0.0,
+          3.5999999046325684
+        ]
+      },
+      "anchors_blender": {
+        "segment_game_angles": [
+          0,
+          0.5236
+        ],
+        "inner_radius": 17.6,
+        "lamp_rows_z": [
+          2.3,
+          -1.4,
+          -5.4,
+          -9.4
+        ]
+      }
+    },
+    {
+      "id": "core-support-pillar",
+      "file": "models/core-support-pillar.glb",
+      "category": "core",
+      "description": "Square concrete column under the rim into the void (top at deck bottom -0.6, 12 m deep), steel bands, hazard stripe, amber marker lamp.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 542,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 6,
+      "materials": [
+        "concrete",
+        "concrete-dark",
+        "decal-hazard",
+        "hardware",
+        "signal-amber",
+        "steel"
+      ],
+      "bytes": 46700,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.949999988079071,
+          -0.949999988079071,
+          -13.199999809265137
+        ],
+        "max": [
+          0.949999988079071,
+          0.949999988079071,
+          -0.6000000238418579
+        ]
+      },
+      "anchors_blender": {
+        "top": [
+          0,
+          0,
+          -0.6
+        ],
+        "game_columns": {
+          "radius": 16.2,
+          "count": 10,
+          "offset": 0.2
+        }
       }
     },
     {
@@ -1253,9 +3681,21 @@
       "file": "models/core-kill-switch.glb",
       "category": "core",
       "description": "Finale kill-switch station with red/amber status lenses and animated activation lever.",
-      "triangles": 1520,
-      "mesh_primitives": 7,
-      "bytes": 2246568,
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 2222,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 8,
+      "materials": [
+        "amber",
+        "danger-red",
+        "decal-ivory",
+        "hardware",
+        "ivory",
+        "petrol",
+        "steel"
+      ],
+      "bytes": 158796,
       "clips": [
         "activate"
       ],
@@ -1271,62 +3711,180 @@
           0.32499998807907104,
           1.5699999332427979
         ]
-      }
+      },
+      "decal_item": "code-01",
+      "decal_variants": [
+        "code-01",
+        "code-02",
+        "code-03",
+        "code-04"
+      ]
+    },
+    {
+      "id": "number-plate",
+      "file": "models/number-plate.glb",
+      "category": "core",
+      "description": "Shared screwed number plate (kill switches 1-4, lockers, bays). Decal item swapped per instance.",
+      "concept": "concepts/v4/08-core.png",
+      "triangles": 702,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 3,
+      "materials": [
+        "decal-ivory",
+        "hardware",
+        "steel"
+      ],
+      "bytes": 53028,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.10999999940395355,
+          -0.01700000837445259,
+          -0.10999999940395355
+        ],
+        "max": [
+          0.10999999940395355,
+          0.0,
+          0.10999999940395355
+        ]
+      },
+      "decal_item": "code-01"
     },
     {
       "id": "water-tile",
       "file": "models/water-tile.glb",
       "category": "effect",
-      "description": "Eight-metre water surface. Runtime water material supplies animated ripples.",
-      "triangles": 12,
+      "description": "Eight-metre dark water surface at z 0, 16x16 grid for vertex ripples. Matte, no reflections; see manifest effects.water.",
+      "concept": "concepts/v4/01-title.png",
+      "triangles": 512,
+      "budget": 1500,
+      "over_budget": false,
       "mesh_primitives": 1,
-      "bytes": 2316,
+      "materials": [
+        "water"
+      ],
+      "bytes": 13820,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
           -4.0,
           -4.0,
-          -0.09999999403953552
+          0.0
         ],
         "max": [
           4.0,
           4.0,
-          -0.019999999552965164
+          0.0
         ]
-      }
+      },
+      "effects": [
+        "water"
+      ]
     },
     {
       "id": "waterfall",
       "file": "models/waterfall.glb",
       "category": "effect",
-      "description": "Two-metre falling water ribbon with layered foam ribbons. Runtime scroll/pulse material supported.",
-      "triangles": 2912,
-      "mesh_primitives": 2,
-      "bytes": 201924,
+      "description": "Volumetric 2 m outfall: water body sheet leaving a lip at (0,0,2) along -Y, two foam streaks, foam lip curl, splash crown and three splash rings at the landing. UV v runs down the fall for scroll shaders (manifest effects).",
+      "concept": "concepts/v4/01-title.png",
+      "triangles": 656,
+      "budget": 1500,
+      "over_budget": false,
+      "mesh_primitives": 3,
+      "materials": [
+        "fall-water",
+        "foam",
+        "foam-splash"
+      ],
+      "bytes": 45492,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.5289999842643738,
-          -0.6790000200271606,
-          -0.0016714187804609537
+          -0.8199999928474426,
+          -1.5862610340118408,
+          -0.027295807376503944
         ],
         "max": [
-          0.5289999842643738,
-          0.3789999783039093,
-          2.0052249431610107
+          0.8199999928474426,
+          0.053738970309495926,
+          2.0750503540039062
         ]
-      }
+      },
+      "fall_lip_blender": [
+        0.0,
+        0.0,
+        2.0
+      ],
+      "fall_landing_blender": [
+        0.0,
+        -0.7663,
+        0.0
+      ],
+      "effects": [
+        "fall-water",
+        "foam",
+        "foam-splash"
+      ]
+    },
+    {
+      "id": "outlet-pipe",
+      "file": "models/outlet-pipe.glb",
+      "category": "machinery",
+      "description": "Large wall outfall (01/05/07). Wall face at y 0 (+Y behind), origin at the wall foot on the water line. 0.45 m pipe out 0.95 m along -Y with bolted wall + mouth flanges, clamp strut, paint band, rust run, S2 stencil. Place waterfall at waterfall_anchor so its lip meets the mouth.",
+      "concept": "concepts/v4/01-title.png",
+      "triangles": 2674,
+      "budget": 4000,
+      "over_budget": false,
+      "mesh_primitives": 8,
+      "materials": [
+        "amber",
+        "concrete-dark",
+        "decal-ivory",
+        "hardware",
+        "petrol",
+        "rubber",
+        "rust",
+        "steel"
+      ],
+      "bytes": 190676,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.6499999761581421,
+          -0.9799999594688416,
+          1.1799999475479126
+        ],
+        "max": [
+          0.6499999761581421,
+          7.750188046884432e-09,
+          3.0300002098083496
+        ]
+      },
+      "waterfall_anchor_blender": [
+        0.0,
+        -0.95,
+        0.0
+      ]
     },
     {
       "id": "vision-cone",
       "file": "models/vision-cone.glb",
       "category": "effect",
       "description": "Flat triangular enemy vision field with alpha material; visibility and occlusion are controlled by gameplay.",
+      "concept": "concepts/v4/05-shift.png",
       "triangles": 1,
+      "budget": 1500,
+      "over_budget": false,
       "mesh_primitives": 1,
-      "bytes": 1464,
+      "materials": [
+        "vision-red"
+      ],
+      "bytes": 1524,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
@@ -1346,24 +3904,90 @@
       "id": "molten-stream",
       "file": "models/molten-stream.glb",
       "category": "effect",
-      "description": "Pouring molten-metal stream with separately modeled hot droplets.",
-      "triangles": 1660,
-      "mesh_primitives": 1,
-      "bytes": 122084,
+      "description": "Molten pour (10): origin on the receiving surface, lip at (0,0,1.25) leaving along -Y (matches foundry-crucible anchors.pour_lip; scale Z to fit other drops). Bright core ribbon inside a translucent glow sheath, glow pool, splash crown and ico droplets. UV v runs down the pour (effects molten-core / molten-glow).",
+      "concept": "concepts/v4/10-paywall.png",
+      "triangles": 708,
+      "budget": 1500,
+      "over_budget": false,
+      "mesh_primitives": 3,
+      "materials": [
+        "molten",
+        "molten-core",
+        "molten-glow"
+      ],
+      "bytes": 59628,
       "clips": [],
       "rigged": false,
       "bounds_blender": {
         "min": [
-          -0.14470864832401276,
-          -0.3400578498840332,
-          -0.005333167500793934
+          -0.30733785033226013,
+          -0.6210901141166687,
+          -0.012600301764905453
         ],
         "max": [
-          0.17484596371650696,
-          0.051729392260313034,
-          2.0077593326568604
+          0.30000001192092896,
+          0.112257219851017,
+          1.3113595247268677
         ]
-      }
+      },
+      "anchors_blender": {
+        "lip": [
+          0,
+          0,
+          1.25
+        ],
+        "landing": [
+          0.0,
+          -0.2524,
+          0.0
+        ]
+      },
+      "effects": [
+        "molten",
+        "molten-core",
+        "molten-glow"
+      ]
+    },
+    {
+      "id": "tall-smokestack",
+      "file": "models/tall-smokestack.glb",
+      "category": "machinery",
+      "description": "Foundry stack (03/10): ~9 m tapered rust-metal stack on a concrete plinth, flared base, steel bands, soot crown with ember-lit rim and dark flue, side flue inlet, cage ladder, red top lamp, F-03 stencil.",
+      "concept": "concepts/v4/03-sectors.png",
+      "triangles": 4754,
+      "budget": 4000,
+      "over_budget": true,
+      "mesh_primitives": 10,
+      "materials": [
+        "amber",
+        "concrete-dark",
+        "danger-red",
+        "decal-ivory",
+        "hardware",
+        "molten",
+        "rubber",
+        "rust",
+        "soot",
+        "steel"
+      ],
+      "bytes": 331816,
+      "clips": [],
+      "rigged": false,
+      "bounds_blender": {
+        "min": [
+          -0.949999988079071,
+          -1.1500000953674316,
+          0.0
+        ],
+        "max": [
+          0.949999988079071,
+          0.949999988079071,
+          9.006999969482422
+        ]
+      },
+      "effects": [
+        "molten"
+      ]
     }
   ]
 }

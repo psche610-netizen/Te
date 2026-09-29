@@ -34,8 +34,35 @@ icons={
 'cold':'<path d="M32 5v54M9 18l46 28M9 46l46-28M24 10l8 8 8-8M24 54l8-8 8 8M9 27l12-2-3-11M46 50l-3-11 12-2M9 37l12 2-3 11M46 14l-3 11 12 2" fill="none" stroke="currentColor" stroke-width="3"/>',
 'core':'<path d="M26 6h12v51H26z"/><ellipse cx="32" cy="34" rx="27" ry="12" fill="none" stroke="currentColor" stroke-width="3"/><ellipse cx="32" cy="34" rx="18" ry="8" fill="none" stroke="currentColor" stroke-width="3"/>',
 'shield':'<path d="m32 5 23 9v19q-3 17-23 27C12 50 9 43 9 33V14z" fill="none" stroke="currentColor" stroke-width="4"/><path d="m21 32 8 8 15-17" fill="none" stroke="currentColor" stroke-width="4"/>',
-'wrench':'<path d="M38 5q-16 3-12 18L8 43q-8 11 4 15l22-24q18 2 23-15l-12 6-9-8z"/>'
+'wrench':'<path d="M38 5q-16 3-12 18L8 43q-8 11 4 15l22-24q18 2 23-15l-12 6-9-8z"/>',
+# Phase 20: every glyph the shell uses (lucide stand-ins in loadout / sector-map / settings / HUD) now has a V4 icon.
+'steady':'<circle cx="32" cy="32" r="20" fill="none" stroke="currentColor" stroke-width="4"/><path d="M32 3v17m0 24v17M3 32h17m24 0h17" stroke="currentColor" stroke-width="4"/><circle cx="32" cy="32" r="4"/>',
+'deep-pockets':'<path d="M22 14q0-8 10-8t10 8v4H22z" fill="none" stroke="currentColor" stroke-width="4"/><rect x="12" y="17" width="40" height="41" rx="6"/><path d="M20 36h24v14H20z" fill="#142127"/><path d="M28 36v5h8v-5" fill="none" stroke="currentColor" stroke-width="3"/>',
+'ghost':'<path d="M12 58V28a20 20 0 0 1 40 0v30l-7-6-6 6-7-6-7 6-6-6z"/><path d="M22 26h6v8h-6zm14 0h6v8h-6z" fill="#142127"/>',
+'override':'<path d="M50 32A18 18 0 1 1 40 16" fill="none" stroke="currentColor" stroke-width="5"/><path d="m34 6 14 9-13 9z"/><path d="m34 24-8 11h6l-3 9 9-12h-6z"/>',
+'restart':'<path d="M14 32a18 18 0 1 0 6-13" fill="none" stroke="currentColor" stroke-width="5"/><path d="M10 8v17h17z"/>',
+'token':'<path d="m32 4 24 14v28L32 60 8 46V18z"/><path d="m32 16 13 8v16l-13 8-13-8V24z" fill="#142127"/><path d="m32 23 7 4v10l-7 4-7-4V27z"/>',
+'calendar':'<rect x="8" y="12" width="48" height="45" rx="3" fill="none" stroke="currentColor" stroke-width="4"/><path d="M8 13h48v11H8zM18 5v12m28-12v12" stroke="currentColor" stroke-width="4"/><path d="M32 30v11l7 6" fill="none" stroke="currentColor" stroke-width="4"/>',
+'sound':'<path d="M6 24h12l16-14v44L18 40H6z"/><path d="M42 22q6 10 0 20m7-27q12 17 0 34" fill="none" stroke="currentColor" stroke-width="4"/>',
+'sound-off':'<path d="M6 24h12l16-14v44L18 40H6z"/><path d="m42 22 16 20m0-20L42 42" fill="none" stroke="currentColor" stroke-width="4"/>',
+'haptics':'<rect x="21" y="6" width="22" height="52" rx="4"/><rect x="25" y="13" width="14" height="33" fill="#142127"/><path d="M13 20 8 26l5 6-5 6 5 6m38-24 5 6-5 6 5 6-5 6" fill="none" stroke="currentColor" stroke-width="3"/>',
+'fullscreen':'<path d="M6 22V6h16M42 6h16v16M58 42v16H42M22 58H6V42" fill="none" stroke="currentColor" stroke-width="5"/><rect x="20" y="20" width="24" height="24"/>',
+'skin':'<path d="m22 5-14 9 5 12 6-3v35h26V23l6 3 5-12-14-9q-4 7-10 7t-10-7z"/><path d="M29 24h6v34h-6z" fill="#142127"/><path d="M24 36h16v4H24z"/>',
+'warning':'<path d="M32 5 61 57H3z"/><path d="M29 22h6l-1 20h-4zm0 24h6v6h-6z" fill="#142127"/>',
+'timer':'<circle cx="32" cy="37" r="22" fill="none" stroke="currentColor" stroke-width="4"/><path d="M26 5h12M32 5v10m18 0 6 6" stroke="currentColor" stroke-width="4"/><path d="M32 37V22a15 15 0 0 1 13 22z"/>',
+'exit':'<path d="M28 6H8v52h20" fill="none" stroke="currentColor" stroke-width="5"/><path d="M22 32h28m-10-12 12 12-12 12" fill="none" stroke="currentColor" stroke-width="5"/>',
+'map':'<path d="m4 12 18-6 20 6 18-6v46l-18 6-20-6-18 6z" fill="none" stroke="currentColor" stroke-width="4"/><path d="M22 6v46m20-40v46" stroke="currentColor" stroke-width="3"/><circle cx="32" cy="30" r="5"/>',
+'trash':'<path d="M8 13h48M24 13V6h16v7" fill="none" stroke="currentColor" stroke-width="4"/><path d="M13 18h38l-4 40H17z"/><path d="M25 26v24m14-24v24" stroke="#142127" stroke-width="4"/>',
+'noise':'<path d="M4 32h7l5-14 7 30 7-38 7 42 7-30 5 16 5-6h6" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="bevel"/>',
+'info':'<circle cx="32" cy="32" r="27"/><path d="M29 14h6v6h-6zm0 12h6v24h-6z" fill="#142127"/>'
 }
+# Game PerkId → icon (replaces the lucide ICON map in components/shell/loadout.tsx in Part B).
+PERK_ICONS={'softStep':'soft-step','quickHands':'quick-hands','secondWind':'second-wind','awareness':'eye','steady':'steady','deepPockets':'deep-pockets','ghost':'ghost','decoy':'radio','override':'override'}
+# Sector id → icon (sector-map cards, facility map legend).
+SECTOR_ICONS={'plant':'factory','cold-storage':'cold','foundry':'weaver','core':'core'}
+# lucide-react stand-in currently imported by game/components → V4 icon (Part B swaps every import).
+LUCIDE_ICONS={'Backpack':'deep-pockets','CalendarClock':'calendar','Check':'check','Crosshair':'steady','Eye':'eye','Footprints':'soft-step','Ghost':'ghost','Hand':'quick-hands','HeartPulse':'second-wind','Hexagon':'token','Lock':'lock','Radio':'radio','RotateCcw':'override'}
+assert set(PERK_ICONS.values())|set(SECTOR_ICONS.values())|set(LUCIDE_ICONS.values())<=set(icons)
 for name,body in icons.items():(OUT/'icons'/f'{name}.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="currentColor" color="#ded7bc"><title>{name}</title>{body}</svg>\n')
 (OUT/'icons.svg').write_text('<svg xmlns="http://www.w3.org/2000/svg">'+''.join(f'<symbol id="{n}" viewBox="0 0 64 64">{b}</symbol>' for n,b in icons.items())+'</svg>')
 # UI chrome is vector-based so labels remain separate, editable, and localizable.
@@ -45,9 +72,30 @@ chrome={
 'panel':'<rect x="1" y="1" width="318" height="78" rx="3" fill="#101c20" fill-opacity=".94" stroke="#ded7bc"/>',
 'panel-danger':'<rect x="1" y="1" width="318" height="78" rx="3" fill="#281c18" fill-opacity=".92" stroke="#d84726" stroke-width="2"/>',
 'meter-frame':'<rect x="1" y="1" width="318" height="78" rx="3" fill="#101c20" stroke="#ded7bc"/>'+''.join(f'<rect x="{12+i*18.5}" y="14" width="13" height="51" rx="1" fill="'+('#dea33a' if i<9 else '#142127')+'" stroke="#ded7bc" stroke-width=".6"/>' for i in range(16)),
+'meter-frame-danger':'<rect x="1" y="1" width="318" height="78" rx="3" fill="#281c18" stroke="#d84726" stroke-width="2"/>'+''.join(f'<rect x="{12+i*18.5}" y="14" width="13" height="51" rx="1" fill="'+('#dea33a' if i<11 else '#d84726' if i<14 else '#142127')+'" stroke="#ded7bc" stroke-width=".6"/>' for i in range(16)),
+'button-danger':'<rect x="1" y="1" width="318" height="78" rx="4" fill="#281c18" stroke="#d84726" stroke-width="2"/>',
+'button-disabled':'<rect x="1" y="1" width="318" height="78" rx="4" fill="#142127" fill-opacity=".6" stroke="#62716c" stroke-width="2" stroke-dasharray="8 6"/>',
+'tab':'<path d="M1 79V9l8-8h302l8 8v70" fill="#142127" fill-opacity=".7" stroke="#62716c" stroke-width="2"/>',
+'tab-active':'<path d="M1 79V9l8-8h302l8 8v70" fill="#23474c" stroke="#ded7bc" stroke-width="2"/><rect x="1" y="74" width="318" height="5" fill="#dea33a"/>',
+'toggle-on':'<rect x="1" y="1" width="318" height="78" rx="3" fill="#142127" stroke="#ded7bc" stroke-width="2"/><rect x="162" y="8" width="150" height="64" rx="2" fill="#dea33a"/>',
+'toggle-off':'<rect x="1" y="1" width="318" height="78" rx="3" fill="#142127" stroke="#62716c" stroke-width="2"/><rect x="8" y="8" width="150" height="64" rx="2" fill="#62716c"/>',
+'hazard-bar':'<defs><pattern id="hz" width="40" height="80" patternUnits="userSpaceOnUse" patternTransform="skewX(-35)"><rect width="20" height="80" fill="#dea33a"/><rect x="20" width="20" height="80" fill="#142127"/></pattern></defs><rect width="320" height="80" fill="url(#hz)"/>',
 }
 for name,body in chrome.items():(OUT/f'{name}.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80">{body}</svg>')
-for name,body in {'joystick-base':'<circle cx="100" cy="100" r="97" fill="#142127" fill-opacity=".75" stroke="#ded7bc" stroke-width="2"/>','joystick-knob':'<circle cx="100" cy="100" r="49" fill="#ded7bc" fill-opacity=".72" stroke="#eee8d4" stroke-width="2"/>','touch-ring':'<circle cx="100" cy="100" r="97" fill="#142127" fill-opacity=".86" stroke="#ded7bc" stroke-width="2"/>'}.items():(OUT/f'{name}.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">{body}</svg>')
-(OUT/'tokens.json').write_text(json.dumps({'colors':{'petrol':'#23474c','teal':'#507c79','ivory':'#ded7bc','amber':'#dea33a','indigo':'#142127','danger':'#d84726'},'fonts':{'display':'Bebas Neue','instrument':'Share Tech Mono'},'icons':list(icons)},indent=2))
-(OUT/'gallery.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>V4 UI assets</title><link rel="stylesheet" href="v4.css"><main><h1>SHUTDOWN</h1><p>V4 UI asset library</p><div class="icon-grid">'+''.join(f'<figure><img src="icons/{n}.svg" alt=""><figcaption>{n}</figcaption></figure>' for n in icons)+'</div><h2>CONTROLS</h2><button class="primary">DEPLOY</button> <button>LOADOUT</button><p><img src="meter-frame.svg" width="320" alt="Noise meter"></p><div class="perk"><img src="icons/soft-step.svg" alt=""><h2>SOFT STEP</h2></div></main></html>')
-print('UI:',len(icons),'icons,',len(chrome)+3,'chrome assets')
+# Card chrome (perk / skin / sector cards on screens 02, 03, 04): 240 x 300.
+cards={
+'perk-card':'<rect x="1" y="1" width="238" height="298" rx="3" fill="#101c20" fill-opacity=".94" stroke="#ded7bc" stroke-width="2"/><path d="M1 44h238" stroke="#62716c"/>',
+'perk-card-equipped':'<rect x="1" y="1" width="238" height="298" rx="3" fill="#23474c" stroke="#dea33a" stroke-width="3"/><path d="M1 44h238" stroke="#dea33a"/><path d="M200 1h39v39z" fill="#dea33a"/>',
+'perk-card-locked':'<rect x="1" y="1" width="238" height="298" rx="3" fill="#142127" fill-opacity=".8" stroke="#62716c" stroke-width="2" stroke-dasharray="10 6"/><path d="M1 44h238" stroke="#62716c"/>',
+'sector-card':'<rect x="1" y="1" width="238" height="298" rx="3" fill="#101c20" fill-opacity=".9" stroke="#ded7bc" stroke-width="2"/><rect x="1" y="250" width="238" height="49" fill="#23474c"/>',
+'sector-card-locked':'<rect x="1" y="1" width="238" height="298" rx="3" fill="#142127" fill-opacity=".85" stroke="#62716c" stroke-width="2"/><rect x="1" y="250" width="238" height="49" fill="#142127"/><path d="M1 250h238" stroke="#62716c"/>',
+}
+for name,body in cards.items():(OUT/f'{name}.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 300">{body}</svg>')
+round_ui={'joystick-base':'<circle cx="100" cy="100" r="97" fill="#142127" fill-opacity=".75" stroke="#ded7bc" stroke-width="2"/>','joystick-knob':'<circle cx="100" cy="100" r="49" fill="#ded7bc" fill-opacity=".72" stroke="#eee8d4" stroke-width="2"/>','touch-ring':'<circle cx="100" cy="100" r="97" fill="#142127" fill-opacity=".86" stroke="#ded7bc" stroke-width="2"/>',
+'touch-ring-active':'<circle cx="100" cy="100" r="97" fill="#dea33a" fill-opacity=".9" stroke="#e4bd69" stroke-width="3"/>',
+'touch-ring-disabled':'<circle cx="100" cy="100" r="97" fill="#142127" fill-opacity=".5" stroke="#62716c" stroke-width="2" stroke-dasharray="10 8"/>',
+'hold-ring':'<circle cx="100" cy="100" r="92" fill="none" stroke="#142127" stroke-width="10"/><circle cx="100" cy="100" r="92" fill="none" stroke="#dea33a" stroke-width="10" stroke-dasharray="578" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>'}
+for name,body in round_ui.items():(OUT/f'{name}.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">{body}</svg>')
+(OUT/'tokens.json').write_text(json.dumps({'colors':{'petrol':'#23474c','teal':'#507c79','ivory':'#ded7bc','amber':'#dea33a','indigo':'#142127','danger':'#d84726','muted':'#62716c'},'fonts':{'display':'Bebas Neue','instrument':'Share Tech Mono'},'icons':list(icons),'perkIcons':PERK_ICONS,'sectorIcons':SECTOR_ICONS,'lucideIcons':LUCIDE_ICONS,'chrome':{'wide_320x80':list(chrome),'card_240x300':list(cards),'round_200':list(round_ui)},'notes':{'hold-ring':'animate stroke-dashoffset 578 → 0 for hold progress'}},indent=2))
+(OUT/'gallery.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>V4 UI assets</title><link rel="stylesheet" href="v4.css"><main><h1>SHUTDOWN</h1><p>V4 UI asset library</p><div class="icon-grid">'+''.join(f'<figure><img src="icons/{n}.svg" alt=""><figcaption>{n}</figcaption></figure>' for n in icons)+'</div><h2>CONTROLS</h2><button class="primary">DEPLOY</button> <button>LOADOUT</button><div class="icon-grid">'+''.join(f'<figure><img src="{n}.svg" alt="" style="width:100%;height:auto"><figcaption>{n}</figcaption></figure>' for n in [*chrome,*cards,*round_ui])+'</div><div class="perk"><img src="icons/soft-step.svg" alt=""><h2>SOFT STEP</h2></div></main></html>')
+print('UI:',len(icons),'icons,',len(chrome)+len(cards)+len(round_ui),'chrome assets')

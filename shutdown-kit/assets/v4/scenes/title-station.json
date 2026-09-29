@@ -1,6 +1,6 @@
 {
   "id": "title-station",
-  "description": "Two-level pumping station title diorama with monumental observer, turbine, worker and outfalls.",
+  "description": "Pumping Station 07 title diorama (01): turbine deck + lower service deck on piers, tower block with slogans, outlet pipes and waterfalls, OVERSEER monolith and basalt stacks behind.",
   "coordinates": "Blender Z up; rotation radians around Z",
   "instances": [
     {
@@ -312,11 +312,39 @@
       ]
     },
     {
-      "asset": "overseer-housing",
+      "asset": "control-console",
       "position": [
-        8,
-        6,
-        -1
+        5.2,
+        4.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "pipe-elbow",
+      "position": [
+        5.6,
+        1.6,
+        1.2
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "asset": "facility-tower-block",
+      "position": [
+        1,
+        10.2,
+        -4.4
       ],
       "rotation": 0,
       "scale": [
@@ -355,6 +383,20 @@
     },
     {
       "asset": "walkway-floor",
+      "position": [
+        2,
+        -4,
+        -3
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
       "position": [
         2,
         -4,
@@ -410,41 +452,97 @@
       ]
     },
     {
+      "asset": "electrical-cabinet",
+      "position": [
+        0.6,
+        -2.6,
+        -3
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "outlet-pipe",
+      "position": [
+        -1.2,
+        -2,
+        -4.4
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "waterfall",
+      "position": [
+        -1.2,
+        -2.95,
+        -4.4
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "outlet-pipe",
+      "position": [
+        5.2,
+        -2,
+        -4.4
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "waterfall",
+      "position": [
+        5.2,
+        -2.95,
+        -4.4
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
       "asset": "water-tile",
       "position": [
-        2,
-        0,
-        -4.3
+        4,
+        4,
+        -4.4
       ],
       "rotation": 0,
       "scale": [
-        2,
-        2,
+        4,
+        4,
         1
       ]
     },
     {
-      "asset": "pipe-elbow",
+      "asset": "overseer-housing",
       "position": [
-        -1,
-        -2.5,
-        -1
+        12,
+        24,
+        -4.4
       ],
-      "rotation": 1.5707963267948966,
-      "scale": [
-        2,
-        2,
-        2
-      ]
-    },
-    {
-      "asset": "waterfall",
-      "position": [
-        -1,
-        -3,
-        -3.8
-      ],
-      "rotation": 0,
+      "rotation": -0.35,
       "scale": [
         1,
         1,
@@ -452,27 +550,111 @@
       ]
     },
     {
-      "asset": "pipe-elbow",
+      "asset": "cliff-stack",
       "position": [
-        4,
-        -2.5,
-        -1
+        -8,
+        20,
+        -4.4
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": 0.3,
       "scale": [
-        2,
-        2,
-        2
+        1,
+        1,
+        1
       ]
     },
     {
-      "asset": "waterfall",
+      "asset": "cliff-stack",
+      "position": [
+        22,
+        16,
+        -4.4
+      ],
+      "rotation": 1.1,
+      "scale": [
+        0.85,
+        0.85,
+        0.85
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        24,
+        28,
+        -4.4
+      ],
+      "rotation": 2.0,
+      "scale": [
+        1.2,
+        1.2,
+        1.2
+      ]
+    },
+    {
+      "asset": "cliff-stack",
       "position": [
         4,
-        -3,
-        -3.8
+        30,
+        -4.4
       ],
-      "rotation": 0,
+      "rotation": 0.8,
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -4,
+        -3,
+        -4.4
+      ],
+      "rotation": 0.4,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        8.5,
+        -2.5,
+        -4.4
+      ],
+      "rotation": 1.9,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -5,
+        8,
+        -4.4
+      ],
+      "rotation": 2.8,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        9,
+        8,
+        -4.4
+      ],
+      "rotation": 0.9,
       "scale": [
         1,
         1,

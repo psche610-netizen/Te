@@ -75,13 +75,14 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes |
 |---|---|---|
-| overseer-housing | FIX | Small cabinet. Needs a monumental dark monolith with red slit (01, 03 Core island). |
-| chimney | FIX | Too thin (0.7 m). Needs ~1.5 m dia, taller, red/ivory bands (03 plant). |
-| operator-plinth | FIX | Round disc; concept is a square worn concrete block with "OPERATOR 07" stencil + hazard edge (04). |
-| **sea-rock / cliff stacks** | NEW | Dark rock spires + island bases (01, 03). |
-| **facility-tower-block** | NEW | Big multi-storey concrete block with slogan stencils (01). |
+| overseer-housing | FIX → OK (P20) | ~9 × 5 × 16 m dark monolith, stepped buttresses, recessed `danger-red` observation slit + light seam, OVERSEER stencil (01 backdrop, 03 Core island at 0.42 scale). |
+| chimney | FIX → OK (P20) | 1.5 m dia, ~8 m: concrete lower shaft, red/ivory upper bands, rim, ember glow, cage ladder (03 plant). |
+| operator-plinth | FIX → OK (P20) | Square 1.8 m worn concrete block, top z 0.42 (operator stands there), OPERATOR 07 stencil, hazard edge, chipped corners (04). |
+| **sea-rock / cliff-stack** | NEW → OK (P20) | Hex-column basalt island base (foot z -1.5, wet waterline) + 14 m stepped spire (01, 03). |
+| **facility-tower-block** | NEW → OK (P20) | 8 × 6 × 12.6 m block, floor bands, lit amber windows, slogan stencils, big 07, roof plant, down-pipes (01). |
 | **outlet-pipe** | OK (P17 script) | 0.45 m wall outfall, wall + mouth flanges, clamp strut, rust run, `code-s2`; `waterfall_anchor` in the manifest. |
-| **forklift / pallet** | NEW | Seen in 11 storage rooms. |
+| **forklift / pallet** | NEW → OK (P20) | Amber compact forklift (mast, forks, guard, beacon) + 1.2 × 1.0 m pallet; placed in `overseer-map` storage rooms (11). |
+| scene recipes | NEW → OK (P20) | `scenes/title-station.json` (01), `sector-{plant,cold-storage,foundry,core}.json` + composed `sector-map.json` (03), `loadout-stage.json` (04), `overseer-map.json` (11). JSON instance layouts, assembled from the GLBs in Part B. |
 
 ## G. Props & decals (all gameplay screens)
 
@@ -107,7 +108,7 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 ## I. UI (`ui/`)
 
-Fonts, icons (30), panels, buttons, joystick, meter, tokens — present. Not yet wired into the game.
+OK (P20) – `source/build_ui.py`: 51 icons (`icons/` + `icons.svg` sprite; every perk, sector and HUD icon, plus `lucideIcons` in `tokens.json` mapping each current `lucide-react` import to its V4 icon), panels, buttons (amber/outline/danger/disabled), tabs, toggles, perk + sector cards, hold ring, touch rings, joystick, meters, hazard bar, `v4.css`, `gallery.html`. Wired into the game in Part B.
 
 ## Phase mapping
 

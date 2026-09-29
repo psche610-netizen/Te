@@ -1,0 +1,1295 @@
+{
+  "id": "sector-map",
+  "description": "All four sector islands at the 03 layout, joined by walkway spokes over the sea.",
+  "coordinates": "Blender Z up; rotation radians around Z",
+  "instances": [
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -14,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -14,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -14,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -14,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -10,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -10,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -10,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -10,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -14,
+        20,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -10,
+        20,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -16,
+        14,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -16,
+        18,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -14,
+        12,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -10,
+        12,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -8,
+        14,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -8,
+        18,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        -14,
+        19.7,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        -10,
+        19.7,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "turbine-generator",
+      "position": [
+        -13,
+        15,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "electrical-cabinet",
+      "position": [
+        -10.5,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "overhead-duct",
+      "position": [
+        -12,
+        17,
+        2.5
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "chimney",
+      "position": [
+        -14,
+        18.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    {
+      "asset": "chimney",
+      "position": [
+        -12.2,
+        18.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -12,
+        16,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -14,
+        19,
+        -3.8
+      ],
+      "rotation": 1.4,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -9,
+        14,
+        -3.8
+      ],
+      "rotation": 2.6,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        14,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        14,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        14,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        14,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        18,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        18,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        18,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        18,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        14,
+        20,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        18,
+        20,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        12,
+        14,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        12,
+        18,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        14,
+        12,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        18,
+        12,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        20,
+        14,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        20,
+        18,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        14,
+        19.7,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        18,
+        19.7,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "frost-silo",
+      "position": [
+        14,
+        14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "asset": "frost-silo",
+      "position": [
+        16.2,
+        14.2,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "asset": "frost-silo",
+      "position": [
+        14.2,
+        16.4,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "asset": "coolant-tank",
+      "position": [
+        16.4,
+        16.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "refrigeration-unit",
+      "position": [
+        17.6,
+        18,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "cold-storage-door",
+      "position": [
+        18,
+        19.8,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "supply-crate",
+      "position": [
+        19,
+        13.2,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        16,
+        16,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        14,
+        19,
+        -3.8
+      ],
+      "rotation": 1.4,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        19,
+        14,
+        -3.8
+      ],
+      "rotation": 2.6,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -14,
+        -14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -14,
+        -14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -14,
+        -10,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -14,
+        -10,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -10,
+        -14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -10,
+        -14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "walkway-floor",
+      "position": [
+        -10,
+        -10,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundation-pier",
+      "position": [
+        -10,
+        -10,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -14,
+        -8,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -10,
+        -8,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -16,
+        -14,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "bulkhead-wall",
+      "position": [
+        -16,
+        -10,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -14,
+        -16,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -10,
+        -16,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -8,
+        -14,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "guardrail",
+      "position": [
+        -8,
+        -10,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        -14,
+        -8.3,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "wall-lamp",
+      "position": [
+        -10,
+        -8.3,
+        1.9
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "foundry-furnace",
+      "position": [
+        -13.5,
+        -10,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "overhead-gantry",
+      "position": [
+        -12,
+        -13,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "asset": "foundry-crucible",
+      "position": [
+        -12,
+        -13,
+        2.64
+      ],
+      "rotation": 0,
+      "scale": [
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "asset": "casting-trough",
+      "position": [
+        -12,
+        -14,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "tall-smokestack",
+      "position": [
+        -14.6,
+        -9.2,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -12,
+        -12,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -14,
+        -9,
+        -3.8
+      ],
+      "rotation": 1.4,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        -9,
+        -14,
+        -3.8
+      ],
+      "rotation": 2.6,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "overseer-housing",
+      "position": [
+        16,
+        -12,
+        -1.9999999999999998
+      ],
+      "rotation": 0,
+      "scale": [
+        0.42,
+        0.42,
+        0.42
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        12.5,
+        -9.5,
+        -3.8
+      ],
+      "rotation": 1.35,
+      "scale": [
+        0.45,
+        0.45,
+        0.45
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        19.2,
+        -9.2,
+        -3.8
+      ],
+      "rotation": 1.2000000000000002,
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        13,
+        -15.5,
+        -3.8
+      ],
+      "rotation": 0.96,
+      "scale": [
+        0.32,
+        0.32,
+        0.32
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        19.5,
+        -14.5,
+        -3.8
+      ],
+      "rotation": 1.08,
+      "scale": [
+        0.36,
+        0.36,
+        0.36
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        16,
+        -12,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        13,
+        -13,
+        -3.8
+      ],
+      "rotation": 1,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        18.5,
+        -10.5,
+        -3.8
+      ],
+      "rotation": 2,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        2,
+        16,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        -12,
+        2,
+        0
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "grated-bridge",
+      "position": [
+        2,
+        -12,
+        -2.5999999999999996
+      ],
+      "rotation": 0,
+      "scale": [
+        3,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "water-tile",
+      "position": [
+        2,
+        2,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        6,
+        6,
+        1
+      ]
+    }
+  ]
+}

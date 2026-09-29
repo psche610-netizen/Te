@@ -1,6 +1,6 @@
 {
   "id": "sector-cold-storage",
-  "description": "Sector-selection miniature: cold-storage",
+  "description": "Sector-selection miniature on a sea-rock island: cold-storage",
   "coordinates": "Blender Z up; rotation radians around Z",
   "instances": [
     {
@@ -256,7 +256,7 @@
       ]
     },
     {
-      "asset": "coolant-tank",
+      "asset": "frost-silo",
       "position": [
         0,
         0,
@@ -264,44 +264,44 @@
       ],
       "rotation": 0,
       "scale": [
-        1,
-        1,
-        1
+        0.8,
+        0.8,
+        0.8
       ]
     },
     {
-      "asset": "coolant-tank",
+      "asset": "frost-silo",
       "position": [
-        2,
-        0,
+        2.2,
+        0.2,
         0
       ],
       "rotation": 0,
       "scale": [
-        1,
-        1,
-        1
+        0.8,
+        0.8,
+        0.8
       ]
     },
     {
-      "asset": "coolant-tank",
+      "asset": "frost-silo",
       "position": [
-        0,
-        2,
+        0.2,
+        2.4,
         0
       ],
       "rotation": 0,
       "scale": [
-        1,
-        1,
-        1
+        0.8,
+        0.8,
+        0.8
       ]
     },
     {
       "asset": "coolant-tank",
       "position": [
-        2,
-        2,
+        2.4,
+        2.6,
         0
       ],
       "rotation": 0,
@@ -333,6 +333,62 @@
         0
       ],
       "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "supply-crate",
+      "position": [
+        5,
+        -0.8,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        2,
+        2,
+        -3.8
+      ],
+      "rotation": 0,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        0,
+        5,
+        -3.8
+      ],
+      "rotation": 1.4,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        5,
+        0,
+        -3.8
+      ],
+      "rotation": 2.6,
       "scale": [
         1,
         1,

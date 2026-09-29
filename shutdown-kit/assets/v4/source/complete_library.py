@@ -26,7 +26,8 @@ def concept_for(name,category):
       'containment-capsule':'07-crew','locker-interior-frame':'06-locker','wall-microphone':'02-mic','rotary-control':'02-mic',
       'operator-plinth':'04-loadout','overseer-housing':'01-title','chimney':'03-sectors','coolant-tank':'09-results',
       'refrigeration-unit':'09-results','cold-storage-door':'09-results','water-tile':'01-title','waterfall':'01-title',
-      'outlet-pipe':'01-title','frost-silo':'03-sectors','tall-smokestack':'03-sectors'}
+      'outlet-pipe':'01-title','frost-silo':'03-sectors','tall-smokestack':'03-sectors',
+      'sea-rock':'03-sectors','cliff-stack':'01-title','facility-tower-block':'01-title','forklift':'11-overseer','pallet':'11-overseer'}
     if name in table:return table[name]
     if category=='core' or name.startswith('core-'):return '08-core'
     if name.startswith(('foundry-','overhead-gantry','casting-','molten-')):return '10-paywall'
@@ -47,6 +48,8 @@ material('fall-water',(.05,.16,.17),0,.9)
 material('foam',(.46,.64,.62),0,.95)
 material('foam-splash',(.52,.66,.63),0,.95)
 material('glass',(.12,.3,.31),0,.15)
+material('basalt',(.045,.055,.06),0,.95)
+material('wood',(.36,.26,.15),0,.85)
 MATS['glass'].node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.22
 MATS['glass'].surface_render_method='DITHERED'
 MATS['glass'].diffuse_color=(.12,.3,.31,.22)
@@ -587,8 +590,15 @@ for name in ['battery-pack','hand-radio','repair-tool','scrap-bundle','breathing
     else:
         cylinder('Canister',(0,0,.28),.10,.5,'ivory');cylinder('Cap',(0,0,.55),.08,.065,'steel');tube('Air hose',[(0,0,.58),(.12,0,.64),(.2,0,.5),(.2,0,.12)],.012,'rubber')
 
-begin('operator-plinth','Worn concrete loadout display pedestal with operator identification.','environment')
-cylinder('Plinth',(0,0,.15),.86,.3,'ivory','Z',48);label('OPERATOR 07',(0,-.842,.09),.1,'steel')
+begin('operator-plinth','Square worn concrete loadout block (1.8 m, top z .42) with OPERATOR 07 stencil, hazard edge and chipped corners.','environment')
+box('Plinth block',(0,0,.19),(1.8,1.8,.38),'concrete',.035,1)
+box('Top slab',(0,0,.4),(1.72,1.72,.04),'concrete-dark',.01,1)
+box('Foot shadow',(0,0,.012),(1.84,1.84,.024),'soot',0)
+for facing,p,rot in [('-Y',(0,-.902,.3),0),('+Y',(0,.902,.3),0),('+X',(.902,0,.3),0),('-X',(-.902,0,.3),0)]:decal('hazard-strip',p,1.62,mat='decal-hazard',facing=facing)
+label('OPERATOR 07',(0,-.905,.14),.1,'indigo')
+for x,y in [(-.86,-.86),(.86,-.86),(.86,.86),(-.86,.86)]:o=box('Chipped corner',(x,y,.36),(.12,.12,.06),'concrete-dark',.01,1);o.rotation_euler.z=math.pi/4
+for x in [-.5,.5]:box('Floor bolt',(x,-.5,.425),(.07,.07,.02),'hardware',.005,1)
+ASSETS[CURRENT]['anchors']={'stand':[0,0,.42]}
 
 # Architecture ----------------------------------------------------------------
 # Thick grid walls (wall-post/end/straight/corner/t/cross) are authored in build_assets.py.
@@ -790,10 +800,20 @@ tube('Bottom outlet',[(R-.05,0,.9),(R+.3,0,.9),(R+.45,0,.75),(R+.45,0,.3)],.09,'
 cylinder('Outlet frost',(R+.45,0,.55),.105,.4,'frost','Z',12)
 decal('code-02',(0,-(R+.02),2.2),.38,mat='decal-ivory')
 
-begin('chimney','Plant exhaust stack with ivory/red bands, rim and service collar.','machinery')
-for k in range(8):cylinder('Stack section',(0,0,.25+k*.5),.28,.5,'ivory' if k%2==0 else 'petrol')
-ring('Rim',(0,0,4.02),.31,.045,'hardware');cylinder('Dark opening',(0,0,4.02),.24,.008,'rubber')
-for z in [.4,1.9,3.4]:ring('Collar',(0,0,z),.30,.035,'hardware')
+begin('chimney','Plant exhaust stack (1.5 m dia, ~8 m) with concrete lower shaft, red/ivory upper bands, rim, ember glow and cage ladder.','machinery')
+cylinder('Stack foot',(0,0,.3),1.0,.6,'concrete-dark','Z',24,.86)
+cylinder('Lower shaft',(0,0,2.6),.8,4.0,'concrete','Z',24,.76)
+for k in range(6):cylinder('Stack band',(0,0,4.85+k*.5),.755-k*.012,.5,'danger' if k%2==0 else 'ivory','Z',24,.743-k*.012)
+cylinder('Rim',(0,0,7.95),.8,.22,'hardware','Z',24)
+cylinder('Soot crown',(0,0,7.72),.76,.26,'soot','Z',24)
+cylinder('Dark opening',(0,0,8.058),.62,.008,'rubber','Z',24)
+annulus('Ember glow',(0,0,8.064),.5,.64,'molten',24)
+for z in [1.1,3.0,4.6]:cylinder('Collar',(0,0,z),.82-z*.012,.1,'hardware','Z',24)
+for z in [.8+k*.45 for k in range(16)]:box('Ladder rung',(0,-.86,z),(.36,.035,.035),'steel',0)
+for x in [-.18,.18]:rod('Ladder rail',(x,-.86,.6),(x,-.84,7.8),.022,'steel',6)
+for z in [3.2,5.0,6.8]:tube('Ladder cage hoop',[(-.2,-.84,z),(-.22,-1.14,z),(0,-1.24,z),(.22,-1.14,z),(.2,-.84,z)],.016,'steel',5)
+cylinder('Aircraft lamp',(0,-.8,7.6),.07,.12,'danger-red','Y',8)
+ASSETS[CURRENT]['anchors']={'smoke':[0,0,8.1]}
 
 begin('foundry-furnace','Refractory furnace with glowing mouth, heavy shutters and exhaust collar.','machinery')
 box('Furnace',(0,0,1.55),(2.3,1.8,3.1),'steel',.1)
@@ -854,10 +874,92 @@ for x in [-.7,.7]:box('Side',(x,0,.32),(.18,2.8,.4),'hardware')
 for y in [-1.31,1.31]:box('End',(0,y,.32),(1.6,.18,.4),'hardware')
 
 # Core ------------------------------------------------------------------------
-begin('overseer-housing','Title-screen monumental overseer housing with recessed red observation slit.','machinery')
-box('Monolith',(0,0,3.2),(3.6,1.8,6.4),'petrol',.09)
-for x in [-1.67,1.67]:box('Edge buttress',(x,-.94,3.15),(.21,.26,6.3),'steel')
-box('Eye recess',(0,-.94,4.6),(2.65,.14,.4),'rubber');box('Observation slit',(0,-1.023,4.6),(2.4,.025,.08),'danger-red');label('OVERSEER',(0,-.929,4.0),.23,'ivory')
+begin('overseer-housing','Monumental dark monolith (~9 x 5 x 16 m) with stepped buttresses, recessed red observation slit, vertical light seam, OVERSEER stencil (01 title backdrop, 03 Core island).','machinery')
+box('Stepped plinth',(0,0,.6),(10.4,6.4,1.2),'concrete-dark',.05,1)
+box('Monolith',(0,0,8.6),(8.4,4.4,14.8),'indigo',.08,1)
+box('Upper taper',(0,0,16.4),(7.6,3.8,1.2),'indigo',.06,1)
+for s in [-1,1]:
+    box('Buttress lower',(s*4.55,0,4.2),(1.1,4.9,7.2),'concrete-dark',.05,1)
+    box('Buttress upper',(s*4.35,0,10.4),(.7,4.6,5.4),'concrete-dark',.05,1)
+    box('Buttress cap',(s*4.4,0,13.2),(.9,4.8,.3),'steel',.02,1)
+for z in [3.2,6.6,10.0,13.4]:box('Panel seam',(0,-2.205,z),(8.3,.012,.05),'soot',0)
+for x in [-2.1,0,2.1]:box('Panel seam',(x,-2.205,8.6),(.05,.012,14.6),'soot',0)
+box('Eye recess',(0,-2.18,13.2),(6.2,.4,1.1),'rubber',.02,1)
+box('Observation slit',(0,-2.39,13.2),(5.6,.04,.34),'danger-red',0)
+box('Slit glow lip',(0,-2.41,12.93),(5.8,.02,.06),'danger-red',0)
+box('Vertical seam recess',(0,-2.2,3.8),(.9,.3,5.2),'rubber',.02,1)
+box('Vertical seam glow',(0,-2.36,3.8),(.26,.02,4.8),'danger-red',0)
+label('OVERSEER',(0,-2.22,11.6),.46,'ivory')
+for x in [-3.3,3.3]:box('Antenna mast',(x,0,18.1),(.12,.12,2.2),'hardware',0);cylinder('Mast lamp',(x,0,19.3),.1,.14,'danger-red','Z',8)
+ASSETS[CURRENT]['anchors']={'slit':[0,-2.39,13.2],'seam':[0,-2.36,3.8]}
+
+# Menu world (01 title, 03 sector map, 11 overseer) ---------------------------
+def basalt_column(name,p,r,h,rng,mat='basalt',tilt=.05):
+    o=cylinder(name,(p[0],p[1],p[2]+h/2),r,h,mat,'Z',6,r*rng.uniform(.82,.95))
+    o.rotation_euler=(rng.uniform(-tilt,tilt),rng.uniform(-tilt,tilt),rng.uniform(0,math.pi/3));return o
+
+begin('sea-rock','Low basalt outcrop / island base (~6 x 5 m, top z 1.2..2.6, foot z -1.5) of hex columns with a wet dark waterline; stacks under sector islands and along title shores.','environment')
+rng=random.Random(20)
+for k in range(26):
+    a=rng.uniform(0,math.tau);d=math.sqrt(rng.random())*2.6;r=rng.uniform(.45,.8)
+    basalt_column('Basalt column',(d*math.cos(a)*1.15,d*math.sin(a),-1.5),r,rng.uniform(2.3,4.1)-d*.35,rng)
+box('Waterline stain',(0,0,-.2),(6.2,5.4,.3),'soot',.2,1)
+ASSETS[CURRENT]['anchors']={'waterline_z':0}
+
+begin('cliff-stack','Tall stepped basalt spire (~4 m wide, 14 m high, foot z -2) for the title backdrop and Core island silhouette.','environment')
+rng=random.Random(7)
+for tier,(rad,h,n) in enumerate([(2.1,6,9),(1.5,10,7),(.9,14,5)]):
+    for k in range(n):
+        a=k/n*math.tau+rng.uniform(-.2,.2);d=rad*rng.uniform(.3,.8)
+        basalt_column('Spire column',(d*math.cos(a),d*math.sin(a),-2),rng.uniform(.5,.85)*(1-tier*.18),h*rng.uniform(.8,1.05),rng,tilt=.03)
+for z in [3.6,7.8]:box('Ledge',(0,0,z),(3.4-z*.18,3.0-z*.16,.3),'basalt',.1,1)
+ASSETS[CURRENT]['anchors']={'top_z':14}
+
+begin('facility-tower-block','Multi-storey concrete facility block (8 x 6 x 12.6 m) with floor bands, lit amber windows, slogan stencils, big 07, roof plant and down-pipes.','machinery')
+box('Tower body',(0,0,6.1),(8,6,12.2),'concrete',.05,1)
+box('Plinth',(0,0,.5),(8.4,6.4,1),'concrete-dark',.04,1)
+box('Roof slab',(0,0,12.35),(8.3,6.3,.3),'concrete-dark',.03,1)
+for z in [3.2,6.2,9.2]:box('Floor band',(0,0,z),(8.08,6.08,.24),'concrete-dark',.01,1)
+lit=random.Random(3)
+for f,z in enumerate([4.6,7.6,10.6]):
+    for x in [-2.8,-1.4,1.4,2.8]:
+        box('Window recess',(x,-3.0,z),(.9,.1,1.1),'rubber',0)
+        box('Window glass',(x,-3.04,z),(.8,.02,1.0),'signal-amber' if lit.random()<.45 else 'glass',0)
+    for y in [-1.6,0,1.6]:box('Window recess',(4.0,y,z),(.1,.9,1.1),'rubber',0);box('Window glass',(4.04,y,z),(.02,.8,1.0),'signal-amber' if lit.random()<.35 else 'glass',0)
+decal('slogan-shift',(-.9,-3.01,1.9),4.8,mat='decal-ivory',facing='-Y')
+decal('slogan-listening',(4.01,0,1.9),5.0,mat='decal-ivory',facing='+X')
+decal('code-07',(-2.4,-3.015,8.6),1.6,mat='decal-ivory',facing='-Y')
+box('Service door',(2.6,-3.02,1.6),(1.3,.06,2.2),'petrol',.01,1);box('Door lamp',(2.6,-3.1,2.9),(.3,.14,.14),'signal-amber',0)
+for x,y in [(-2,1),(1.8,-.8)]:box('Roof plant',(x,y,13.0),(2.2,1.8,1.0),'steel',.03,1)
+cylinder('Roof vent',(2.4,1.8,13.2),.4,1.4,'hardware','Z',12)
+for x in [-3.9,3.9]:rod('Down-pipe',(x,-3.1,.8),(x,-3.1,12.2),.09,'petrol',8)
+ASSETS[CURRENT]['anchors']={'roof_z':12.5}
+
+begin('pallet','Standard 1.2 x 1.0 m wooden pallet (0.15 m), three stringers, top/bottom boards.','equipment')
+for y in [-.44,0,.44]:box('Stringer block',(0,y,.075),(1.2,.1,.09),'wood',.004,1)
+for k in range(7):box('Top board',(-.54+k*.18,0,.135),(.12,1.0,.03),'wood',.003,1)
+for x in [-.54,0,.54]:box('Bottom board',(x,0,.015),(.14,1.0,.03),'wood',.003,1)
+ASSETS[CURRENT]['anchors']={'load':[0,0,.15]}
+
+begin('forklift','Compact amber warehouse forklift (1.1 x 2.2 m, guard 2.1 m): counterweight body, mast, forks, overhead guard, seat, rubber wheels, beacon.','equipment')
+box('Chassis',(0,.35,.45),(1.05,1.5,.55),'amber',.04,1)
+box('Counterweight',(0,1.05,.75),(1.05,.4,.75),'petrol',.05,1)
+box('Engine hood',(0,.55,.9),(.95,.8,.3),'amber',.04,1)
+box('Seat',(0,.55,1.18),(.5,.45,.12),'rubber',.02,1);box('Seat back',(0,.78,1.45),(.5,.1,.45),'rubber',.02,1)
+rod('Steering column',(0,.05,.95),(0,.2,1.35),.03,'hardware',6);cylinder('Wheel',(0,.22,1.38),.16,.03,'rubber','Z',12)
+for x in [-.45,.45]:
+    for y in [.0,.95]:cylinder('Tyre',(x*1.06,y,.24),.24,.2,'rubber','X',12)
+    rod('Guard post',(x,.0,1.0),(x,.02,2.1),.035,'steel',6);rod('Guard post',(x,.95,1.2),(x,.95,2.1),.035,'steel',6)
+box('Overhead guard',(0,.48,2.12),(1.0,1.1,.05),'steel',.01,1)
+for k in range(4):box('Guard slat',(0,.1+k*.25,2.16),(1.0,.05,.04),'steel',0)
+decal('hazard-strip',(0,1.257,.5),.98,mat='decal-hazard',facing='+Y')
+cylinder('Beacon',(0,.9,2.2),.07,.1,'signal-amber','Z',8)
+for x in [-.36,.36]:box('Mast rail',(x,-.48,1.15),(.08,.1,2.2),'steel',.01,1)
+idx=len(ASSETS[CURRENT]['objects'])
+box('Carriage',(0,-.58,.45),(.82,.08,.5),'hardware',.01,1)
+for x in [-.24,.24]:box('Fork',(x,-1.1,.08),(.12,1.05,.04),'steel',.005,1);box('Fork heel',(x,-.62,.3),(.12,.05,.5),'steel',.005,1)
+pivot_part('fork-carriage',(0,-.58,.05),ASSETS[CURRENT]['objects'][idx:],'lift','Z',.9,True)
+ASSETS[CURRENT]['anchors']={'fork_load':[0,-1.1,.1]}
 
 # Core geometry mirrors game/lib/game/config.ts CORE (metres). Game angle a = atan2(z, x) in three; glTF z = -Blender y,
 # so Blender angle = -a. Ring/rim/wall pieces span game angle [0, SEG_ARC] (Blender [-SEG_ARC, 0]); instance j at

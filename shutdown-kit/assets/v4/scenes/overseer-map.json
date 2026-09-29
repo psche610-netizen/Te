@@ -1026,6 +1026,160 @@
       ]
     },
     {
+      "asset": "pallet",
+      "position": [
+        0.6,
+        -0.4,
+        0
+      ],
+      "rotation": 0.3,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "supply-crate",
+      "position": [
+        0.6,
+        -0.4,
+        0.15
+      ],
+      "rotation": 0.3,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "pallet",
+      "position": [
+        16.4,
+        8.6,
+        0
+      ],
+      "rotation": -0.5,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "supply-crate",
+      "position": [
+        16.4,
+        8.6,
+        0.15
+      ],
+      "rotation": -0.5,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "forklift",
+      "position": [
+        1.2,
+        0.9,
+        0
+      ],
+      "rotation": 2.3,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "forklift",
+      "position": [
+        15.2,
+        9.4,
+        0
+      ],
+      "rotation": -1.1,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "frost-silo",
+      "position": [
+        16.6,
+        0.6,
+        0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.6,
+        0.6,
+        0.6
+      ]
+    },
+    {
+      "asset": "outlet-pipe",
+      "position": [
+        -2.2,
+        4,
+        -3.8
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "waterfall",
+      "position": [
+        -3.1500000000000004,
+        4,
+        -3.8
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "outlet-pipe",
+      "position": [
+        18.2,
+        4,
+        -3.8
+      ],
+      "rotation": -1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "waterfall",
+      "position": [
+        19.15,
+        4,
+        -3.8
+      ],
+      "rotation": -1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
       "asset": "water-tile",
       "position": [
         8,

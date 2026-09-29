@@ -402,6 +402,12 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - NEW: `pipe-tee`, `pipe-riser` (3 m, wall clamps), `pipe-bracket` (pipe centre (0,-.5,0)), `junction-box` (E1 decal, conduits), `floor-drain-grate`, `coat-hook-workwear` (tint slot suit).
 - For review: `scene_recipes.py` places four kill switches but every instance shows `code-01` until the runtime (or `put()`) sets the variant. Locker interior viewer side assumed -Y.
 
+**Phase 20 (Title / sector map / overseer + UI kit) — done, full build 86/86 exported (bpy 5.0.1):**
+- FIX `overseer-housing` (dark monolith, `danger-red` slit — was an undefined `vision-red` material), `chimney` (1.5 m, red/ivory bands), `operator-plinth` (square block, top z 0.42). NEW `sea-rock`, `cliff-stack`, `facility-tower-block`, `forklift`, `pallet`.
+- `scene_recipes.py`: `title-station` (01: two decks, tower block, outlet pipes + waterfalls, monolith, stacks), `sector-{plant,cold-storage,foundry,core}` on sea-rock islands + composed `sector-map` (03), `loadout-stage` operator at plinth top, `overseer-map` storage rooms get pallets/crates/forklifts, a frost silo and outlet waterfalls (11). Warden clip `search` → `scan` (the only clip name that exists).
+- `build_ui.py`: 51 icons; `tokens.json` `lucideIcons` maps every current `lucide-react` import in `game/` to its V4 icon for the Part B swap.
+- For review: 35 of 86 assets are over their triangle budget (e.g. turbine-generator 37.9k vs 2k, characters ~16k vs 6k). Pre-existing (budgets were never enforced in earlier phases); decimation/LOD pass needed before Part B wiring. The redundant `v0-project.zip` (and its LFS `.gitattributes`) were removed from the repo.
+
 **Phase 17 (Water + Cold Storage) — scripts only, not built yet (`complete_library.py`, `effects/v4-effects.js`):**
 - Materials: `water` now matte (metallic 0, rough .9; was .2/.27 glossy), new flat `fall-water` and `foam-splash`. `EFFECTS` dict (material name → runtime shader spec, V4 token colors) exported as manifest top-level `effects`; assets list the effect materials they use in `effects`.
 - Helpers: `_uv_mesh` (from_pydata + per-vertex UVs), `grid_plane`, `sweep` (elliptical section along a YZ path, u around / v down the path, normals recalculated), `annulus` (flat ring or open frustum, v inner→outer), `frost_drips`.
@@ -539,7 +545,7 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - `lib/game/overseer/lines.ts` — OVERSEER line bank + priorities. `subtitles.ts` — `say()` queue. `director.ts` — adaptive director (habits → responses). `components/shell/game-hud.tsx` `Subtitle` renders it (also in the locker view). `objective-views.tsx` `LockerGas` — red plates at gassed lockers. `shift.ts` `triggerTargetedShift` — director-chosen closures.
 - `lib/game/notice.ts` — `notify()` HUD notice. `lib/game/audio.ts` — synthesized SFX + ambient drone. `lib/game/juice.ts` — feedback layer (SFX triggers, heartbeat, shake, haptics). `lib/game/haptics.ts` — Capacitor / vibrate haptics. `components/shell/danger-vignette.tsx` — proximity frame. `lib/game/actions.ts` — one-frame UI → sim actions (use, hack, repair result).
 - `components/shell/repair-trial.tsx` — needle / wires / hold trials. `components/game/objective-views.tsx` — generator lights, security cameras.
-- `lib/game/level/types.ts` — level/module types. `build.ts` — ASCII → `LevelData` (arms, posts, modules, colliders, per-cell buckets). `collision.ts` — `collidersNear`, `resolveCircle`. `parts.ts` — primitive part lists for locker/generator/crate + `composeParts`. `sector1.ts` — Sector 1 layout.
+- `lib/game/level/types.ts` — level/module types. `build.ts` �� ASCII → `LevelData` (arms, posts, modules, colliders, per-cell buckets). `collision.ts` — `collidersNear`, `resolveCircle`. `parts.ts` — primitive part lists for locker/generator/crate + `composeParts`. `sector1.ts` — Sector 1 layout.
 - `components/game/game-canvas.tsx` — R3F `<Canvas orthographic>`; title diorama or `GameScene`.
 - `components/game/scene-rig.tsx` — title camera + lights.
 - `components/game/game-scene.tsx` — creates session, runs `GameLoop` (useFrame), mounts rig/level/player.
@@ -628,10 +634,10 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] FIX core-spindle → tall modular column, red sensor band, "CORE" stencil.
 
 ### Phase 20 — Menu world + UI kit (screens 01, 02, 03, 04, 09, 10)
-- [ ] FIX overseer-housing → monumental monolith with red slit. FIX chimney → ~1.5 m, taller, red/ivory bands. FIX operator-plinth → square concrete block, "OPERATOR 07", hazard edge.
-- [ ] NEW sea-rock / cliff stacks, facility-tower-block, forklift + pallet.
-- [ ] Scene recipes (`source/scene_recipes.py`) for the title diorama and the 3D sector map islands, exported as GLB layouts.
-- [ ] UI kit complete: panels, buttons, icons (every icon the HUD/screens need), joystick, meter, checked against 01–11. **Part A done → all AUDIT rows OK.**
+- [x] FIX overseer-housing → monumental monolith with red slit. FIX chimney → ~1.5 m, taller, red/ivory bands. FIX operator-plinth → square concrete block, "OPERATOR 07", hazard edge.
+- [x] NEW sea-rock / cliff stacks, facility-tower-block, forklift + pallet.
+- [x] Scene recipes (`source/scene_recipes.py`) for the title diorama and the 3D sector map islands, exported as JSON instance layouts (`scenes/*.json`) over the GLBs.
+- [x] UI kit complete: panels, buttons, icons (every icon the HUD/screens need), joystick, meter, checked against 01–11. **Part A done → all AUDIT rows OK.**
 
 ## Part B — Integration + ship (after all assets)
 

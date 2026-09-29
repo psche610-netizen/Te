@@ -1,266 +1,84 @@
 {
   "id": "sector-core",
-  "description": "Sector-selection miniature: core",
+  "description": "Sector-selection miniature on a sea-rock island: core",
   "coordinates": "Blender Z up; rotation radians around Z",
   "instances": [
     {
-      "asset": "walkway-floor",
-      "position": [
-        0,
-        0,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "foundation-pier",
-      "position": [
-        0,
-        0,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "walkway-floor",
-      "position": [
-        0,
-        4,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "foundation-pier",
-      "position": [
-        0,
-        4,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "walkway-floor",
-      "position": [
-        4,
-        0,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "foundation-pier",
-      "position": [
-        4,
-        0,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "walkway-floor",
-      "position": [
-        4,
-        4,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "foundation-pier",
-      "position": [
-        4,
-        4,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "bulkhead-wall",
-      "position": [
-        0,
-        6,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "bulkhead-wall",
-      "position": [
-        4,
-        6,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "bulkhead-wall",
-      "position": [
-        -2,
-        0,
-        0
-      ],
-      "rotation": 1.5707963267948966,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "bulkhead-wall",
-      "position": [
-        -2,
-        4,
-        0
-      ],
-      "rotation": 1.5707963267948966,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "guardrail",
-      "position": [
-        0,
-        -2,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "guardrail",
-      "position": [
-        4,
-        -2,
-        0
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "guardrail",
-      "position": [
-        6,
-        0,
-        0
-      ],
-      "rotation": 1.5707963267948966,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "guardrail",
-      "position": [
-        6,
-        4,
-        0
-      ],
-      "rotation": 1.5707963267948966,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "wall-lamp",
-      "position": [
-        0,
-        5.7,
-        1.9
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "wall-lamp",
-      "position": [
-        4,
-        5.7,
-        1.9
-      ],
-      "rotation": 0,
-      "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
       "asset": "overseer-housing",
       "position": [
-        1.8,
         2,
-        0
+        2,
+        -1.9999999999999998
+      ],
+      "rotation": 0,
+      "scale": [
+        0.42,
+        0.42,
+        0.42
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        -1.5,
+        4.5,
+        -3.8
+      ],
+      "rotation": 1.35,
+      "scale": [
+        0.45,
+        0.45,
+        0.45
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        5.2,
+        4.8,
+        -3.8
+      ],
+      "rotation": 1.2000000000000002,
+      "scale": [
+        0.4,
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        -1,
+        -1.5,
+        -3.8
+      ],
+      "rotation": 0.96,
+      "scale": [
+        0.32,
+        0.32,
+        0.32
+      ]
+    },
+    {
+      "asset": "cliff-stack",
+      "position": [
+        5.5,
+        -0.5,
+        -3.8
+      ],
+      "rotation": 1.08,
+      "scale": [
+        0.36,
+        0.36,
+        0.36
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        2,
+        2,
+        -3.8
       ],
       "rotation": 0,
       "scale": [
@@ -270,13 +88,13 @@
       ]
     },
     {
-      "asset": "electrical-cabinet",
+      "asset": "sea-rock",
       "position": [
-        -0.2,
+        -1,
         1,
-        0
+        -3.8
       ],
-      "rotation": 0,
+      "rotation": 1,
       "scale": [
         1,
         1,
@@ -284,13 +102,13 @@
       ]
     },
     {
-      "asset": "electrical-cabinet",
+      "asset": "sea-rock",
       "position": [
-        4,
-        1,
-        0
+        4.5,
+        3.5,
+        -3.8
       ],
-      "rotation": 0,
+      "rotation": 2,
       "scale": [
         1,
         1,

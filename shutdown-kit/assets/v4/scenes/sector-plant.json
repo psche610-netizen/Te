@@ -1,6 +1,6 @@
 {
   "id": "sector-plant",
-  "description": "Sector-selection miniature: plant",
+  "description": "Sector-selection miniature on a sea-rock island: plant",
   "coordinates": "Blender Z up; rotation radians around Z",
   "instances": [
     {
@@ -284,6 +284,20 @@
       ]
     },
     {
+      "asset": "overhead-duct",
+      "position": [
+        2,
+        3,
+        2.5
+      ],
+      "rotation": 1.5707963267948966,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
       "asset": "chimney",
       "position": [
         0,
@@ -292,31 +306,31 @@
       ],
       "rotation": 0,
       "scale": [
-        1,
-        1,
-        1
-      ]
-    },
-    {
-      "asset": "overhead-duct",
-      "position": [
-        2,
-        3,
-        2.5
-      ],
-      "rotation": 1.5707963267948966,
-      "scale": [
-        1,
-        1,
-        1
+        0.7,
+        0.7,
+        0.7
       ]
     },
     {
       "asset": "chimney",
       "position": [
-        1.4,
+        1.8,
         4.6,
         0
+      ],
+      "rotation": 0,
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        2,
+        2,
+        -3.8
       ],
       "rotation": 0,
       "scale": [
@@ -326,13 +340,27 @@
       ]
     },
     {
-      "asset": "overhead-duct",
+      "asset": "sea-rock",
       "position": [
-        2,
-        3,
-        2.5
+        0,
+        5,
+        -3.8
       ],
-      "rotation": 1.5707963267948966,
+      "rotation": 1.4,
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "asset": "sea-rock",
+      "position": [
+        5,
+        0,
+        -3.8
+      ],
+      "rotation": 2.6,
       "scale": [
         1,
         1,
