@@ -352,7 +352,7 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 17 (Phases 13–16 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 18 (Phases 13–17 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
@@ -382,6 +382,15 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 - `core-kill-switch`: shared `number_plate(p, item, size)` (steel plate, 4 screws, decal with `extras.decal_slot = "number"`); root `decal_item` code-01 + `decal_variants` code-01..04 (exported to the manifest). Separate `number-plate` asset.
 - NEW: `pipe-tee`, `pipe-riser` (3 m, wall clamps), `pipe-bracket` (pipe centre (0,-.5,0)), `junction-box` (E1 decal, conduits), `floor-drain-grate`, `coat-hook-workwear` (tint slot suit).
 - For review: `scene_recipes.py` places four kill switches but every instance shows `code-01` until the runtime (or `put()`) sets the variant. Locker interior viewer side assumed -Y.
+
+**Phase 17 (Water + Cold Storage) — scripts only, not built yet (`complete_library.py`, `effects/v4-effects.js`):**
+- Materials: `water` now matte (metallic 0, rough .9; was .2/.27 glossy), new flat `fall-water` and `foam-splash`. `EFFECTS` dict (material name → runtime shader spec, V4 token colors) exported as manifest top-level `effects`; assets list the effect materials they use in `effects`.
+- Helpers: `_uv_mesh` (from_pydata + per-vertex UVs), `grid_plane`, `sweep` (elliptical section along a YZ path, u around / v down the path, normals recalculated), `annulus` (flat ring or open frustum, v inner→outer), `frost_drips`.
+- `water-tile`: 8 m 16×16 grid at z 0 (was an 8 cm box at -.06; scene recipes place it by origin so levels are unchanged). Spec: world-xz ripples so tiles line up, UV scroll, opaque, no reflections, optional contact-foam line from pier AABBs.
+- `waterfall`: lip at (0,0,2) along -Y, ballistic path (1.2 m/s) landing at (0,-.766,0): body sweep 12 sides, 2 foam streaks, foam lip, splash crown frustum + 3 splash rings. Manifest `fall_lip_blender` / `fall_landing_blender`. `v4-effects.js`: `createWaterMaterial` (world-space, deep/mid/crest), new `createFallMaterial({foam})` (v scroll), `createSplashMaterial(center)` (pulse about the landing).
+- NEW `outlet-pipe` (machinery): wall face y 0, origin on the water line; 0.45 m pipe at z 2.38 out to y -.95, bolted wall + mouth flanges, dark opening, clamp band + strut, amber paint band, rust run, `code-s2`. `waterfall_anchor_blender` [0,-.95,0] = where to put the waterfall origin so its lip meets the mouth bottom.
+- NEW `frost-silo` (machinery, r 1.0, ~5.2 m): see AUDIT. Reviewed coolant-tank (frost crown/drips, torus seams → bands, `code-c1` decal replaces the COOLANT text mesh — no COOLANT word in the decal atlas), refrigeration-unit (frost top, frosted back lines, decals, torus rims dropped), cold-storage-door (jamb hazard stripes, gasket, keeper, frosted threshold, `code-02` on the leaf).
+- For review: frost-silo is the heaviest (~3.7k est. vs 4k budget). Splash center for the shader is hard-coded [0,.766] (glTF xz) — read it from `fall_landing_blender` in Part B. `effects/v4-effects.js` still exports `createSparks` (sparks are banned by section 2) — don't use it in Part B. `scene_recipes.py` doesn't place outlet-pipe/frost-silo yet (Phase 20 recipes).
 
 **Phase 12 (Ship) — done (edited via GitLab, no local build):**
 - `capacitor.config.ts` (appId `com.hideogroup.shutdown`, webDir `out`, ink background). Deps added: `@capacitor/android`, `@capacitor/haptics`, dev `@capacitor/cli` (all ^8). **The lockfile was not regenerated**: CI uses `pnpm install --no-frozen-lockfile`; run `pnpm install` locally and commit `pnpm-lock.yaml`.
@@ -585,9 +594,9 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] NEW pipe-tee, vertical riser, pipe bracket, junction box, floor drain grate, coat hook + hanging workwear. (ids: `pipe-tee`, `pipe-riser`, `pipe-bracket`, `junction-box`, `floor-drain-grate`, `coat-hook-workwear`, + shared `number-plate`)
 
 ### Phase 17 — Water + Cold Storage assets (Sector 2)
-- [ ] FIX water-tile → mesh + shader spec (dark water, ripple normal/UV scroll, no reflections); FIX waterfall → volume, foam, splash ring.
-- [ ] NEW outlet-pipe (outfall feeding the waterfall).
-- [ ] NEW frost-silo. Review coolant-tank, refrigeration-unit, cold-storage-door against 03/09.
+- [x] FIX water-tile → mesh + shader spec (dark water, ripple normal/UV scroll, no reflections); FIX waterfall → volume, foam, splash ring.
+- [x] NEW outlet-pipe (outfall feeding the waterfall).
+- [x] NEW frost-silo. Review coolant-tank, refrigeration-unit, cold-storage-door against 03/09.
 
 ### Phase 18 — Foundry assets (Sector 3)
 - [ ] FIX weaver → chunky armored "W-01": box torso, thick 3-joint hydraulic legs, hazard stripes, box head with red slit. Leg bones/pivots named to match the tripod gait in `weaver-body.tsx` (KNEE/FOOT).

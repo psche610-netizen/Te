@@ -25,7 +25,8 @@ def concept_for(name,category):
     table={'operator-amber':'04-loadout','crew-teal':'07-crew','crew-ivory':'07-crew','warden':'06-locker','weaver':'10-paywall',
       'containment-capsule':'07-crew','locker-interior-frame':'06-locker','wall-microphone':'02-mic','rotary-control':'02-mic',
       'operator-plinth':'04-loadout','overseer-housing':'01-title','chimney':'03-sectors','coolant-tank':'09-results',
-      'refrigeration-unit':'09-results','cold-storage-door':'09-results','water-tile':'01-title','waterfall':'01-title'}
+      'refrigeration-unit':'09-results','cold-storage-door':'09-results','water-tile':'01-title','waterfall':'01-title',
+      'outlet-pipe':'01-title','frost-silo':'03-sectors'}
     if name in table:return table[name]
     if category=='core' or name.startswith('core-'):return '08-core'
     if name.startswith(('foundry-','overhead-gantry','casting-','molten-')):return '10-paywall'
@@ -36,8 +37,11 @@ for a in ASSETS.values():a.update(category='environment',clips=[])
 material('visor',(.004,.014,.02),.3,.18)
 material('frost',(.57,.72,.72),0,.9)
 material('molten',(1,.19,.008),0,.5,3)
-material('water',(.018,.08,.1),.2,.27)
+# Water family is matte (V4: no reflections, no speculars); motion comes from EFFECTS shader specs.
+material('water',(.018,.08,.1),0,.9)
+material('fall-water',(.05,.16,.17),0,.9)
 material('foam',(.46,.64,.62),0,.95)
+material('foam-splash',(.52,.66,.63),0,.95)
 material('glass',(.12,.3,.31),0,.15)
 MATS['glass'].node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.22
 MATS['glass'].surface_render_method='DITHERED'
@@ -591,28 +595,75 @@ label('POWER',(0,-.327,1.77),.12,'ivory');box('Warning band',(0,-.324,.85),(.78,
 begin('warning-beacon','Compact caged red alarm beacon (0.26 m), base on z 0. Runtime pulses the danger-red emission.','equipment');lamp_beacon((0,0,0))
 
 # Cold storage and foundry ------------------------------------------------------
-begin('coolant-tank','Tall refrigeration tank with insulation seams, gauge, frost cap and service valves.','machinery')
-cylinder('Tank',(0,0,1.4),.65,2.6,'petrol','Z',40)
-ellipsoid('Tank cap',(0,0,2.7),(.65,.65,.26),'ivory',32)
-for z in [.2,1.4,2.58]:ring('Tank seam',(0,0,z),.65,.037,'hardware')
-for x in [-.4,.4]:box('Tank foot',(x,0,.12),(.15,.9,.24),'steel')
+def frost_drips(r,z_top,angles,lengths):
+    """Frost runs hanging from a cap edge on a vertical cylinder of radius r (thin axis radial)."""
+    for a,l in zip(angles,lengths):
+        o=box('Frost drip',((r+.012)*math.cos(a),(r+.012)*math.sin(a),z_top-l/2),(.11,.04,l),'frost',.008,1);o.rotation_euler[2]=a+math.pi/2
+
+# Sector 2 (03/09): petrol tanks with frosted ivory-white domes, ivory insulated casings, stencils via decals.
+begin('coolant-tank','Tall refrigeration tank (r .65): painted bands, ivory cap with frost crown and drips, gauge, frosted service pipe, C1 stencil decal.','machinery')
+cylinder('Tank',(0,0,1.4),.65,2.6,'petrol','Z',32)
+ellipsoid('Tank cap',(0,0,2.7),(.65,.65,.26),'ivory',24)
+ellipsoid('Frost crown',(0,0,2.78),(.56,.56,.2),'frost',16)
+frost_drips(.65,2.72,[.5,1.9,3.4,4.6],[.28,.5,.2,.38])
+for z in [.2,1.4,2.58]:cylinder('Tank band',(0,0,z),.665,.05,'hardware','Z',32)
+for x in [-.4,.4]:box('Tank foot',(x,0,.12),(.15,.9,.24),'steel',.02,1)
 gauge(0,-.67,1.7,.14);rod('Service pipe',(.55,-.4,.2),(.55,-.4,2.65),.046,'hardware')
-cylinder('Top connection',(0,0,3),.12,.32,'steel');label('COOLANT',(0,-.66,1.15),.13,'ivory')
+cylinder('Service pipe frost',(.55,-.4,2.3),.062,.5,'frost','Z',10)
+cylinder('Top connection',(0,0,3),.12,.32,'steel','Z',16)
+# Flat decal on the curved shell: .3 m wide sags ~.018 m, so it floats .02 proud of r.
+decal('code-c1',(0,-.67,1.15),.3,mat='decal-ivory')
 
-begin('refrigeration-unit','Twin-fan chiller with cream insulated casing and coolant connections.','machinery')
+begin('refrigeration-unit','Twin-fan chiller: ivory insulated casing, frosted top, frosted coolant connections at the back, COLD STORAGE stencil and hazard kick strip (decals).','machinery')
 box('Chiller',(0,0,.85),(2.4,.9,1.7),'ivory',.06)
+box('Frost top',(0,0,1.715),(2.3,.8,.05),'frost',.015,1)
 for x in [-.61,.61]:
-    cylinder('Fan recess',(x,-.47,.94),.43,.06,'rubber','Y');ring('Fan rim',(x,-.53,.94),.42,.035,'petrol','Y')
+    cylinder('Fan recess',(x,-.47,.94),.43,.06,'rubber','Y',24)
     for j in range(5):
-        a=j*math.tau/5;rod('Fan blade',(x,-.55,.94),(x+.34*math.cos(a),-.55,.94+.34*math.sin(a)),.049,'hardware')
-    for dx in [-.27,-.14,0,.14,.27]:rod('Fan guard',(x+dx,-.61,.65),(x+dx,-.61,1.23),.009,'steel',6)
-label('COLD STORAGE',(0,-.48,.24),.16,'steel')
+        a=j*math.tau/5;rod('Fan blade',(x,-.53,.94),(x+.34*math.cos(a),-.53,.94+.34*math.sin(a)),.045,'hardware',6)
+    for dx in [-.27,-.14,0,.14,.27]:rod('Fan guard',(x+dx,-.56,.65),(x+dx,-.56,1.23),.009,'steel',6)
+for x in [-.7,.7]:
+    tube('Coolant line',[(x,.45,1.2),(x,.62,1.2),(x,.7,1.3),(x,.7,1.9)],.07,'petrol',10)
+    cylinder('Line frost',(x,.7,1.62),.085,.4,'frost','Z',10)
+decal('cold-storage',(0,-.452,.3),1.2,mat='decal-indigo')
+decal('hazard-strip',(0,-.452,.06),1.2,.086,mat='decal-hazard')
 
-begin('cold-storage-door','Heavy insulated sliding door with latch, gasket and open clip.','environment')
-for x in [-.92,.92]:box('Insulated frame',(x,0,1.3),(.18,.45,2.6),'ivory')
+begin('cold-storage-door','Heavy insulated sliding door: ivory frame with vertical hazard stripes, rubber gasket, frosted threshold, 02 stencil decal on the moving leaf, open clip.','environment')
+for x in [-.92,.92]:
+    box('Insulated frame',(x,0,1.3),(.18,.45,2.6),'ivory')
+    decal('hazard-strip',(x,-.227,1.2),.14,2.2,mat='decal-hazard',vertical=True)
 box('Top rail',(0,0,2.63),(2.2,.5,.15),'steel')
-idx=len(ASSETS[CURRENT]['objects']);box('Insulated door',(0,0,1.27),(1.7,.23,2.45),'ivory',.06);box('Door kickplate',(0,-.13,.32),(1.6,.025,.48),'petrol');rod('Latch',(.59,-.22,.9),(.59,-.22,1.45),.035,'hardware');label('02',(0,-.135,1.65),.38,'petrol')
+box('Frosted threshold',(0,0,.015),(1.9,.55,.03),'frost',.008,1)
+idx=len(ASSETS[CURRENT]['objects'])
+box('Insulated door',(0,0,1.27),(1.7,.23,2.45),'ivory',.06);box('Door kickplate',(0,-.13,.32),(1.6,.025,.48),'petrol',.01,1)
+for x in [-.87,.87]:box('Door gasket',(x,0,1.27),(.03,.2,2.4),'rubber',0)
+box('Door gasket',(0,0,2.5),(1.74,.2,.03),'rubber',0)
+rod('Latch',(.59,-.22,.9),(.59,-.22,1.45),.035,'hardware');box('Latch keeper',(.59,-.16,1.18),(.12,.1,.7),'steel',.01,1)
+decal('code-02',(0,-.117,1.65),.5,mat='decal-indigo')
 pivot_part('cold-door',(0,0,0),ASSETS[CURRENT]['objects'][idx:],'open','X',1.8,True)
+
+begin('frost-silo','Tall domed cryogenic silo (03/09/11), larger than coolant-tank: r 1.0, 5.2 m. Concrete plinth, steel skirt with amber band, petrol shell, frost-crowned dome with drips, cage ladder, frosted bottom outlet, 02 stencil decal.','machinery')
+R=1.0;SH0=.55;SH1=4.15
+cylinder('Silo plinth',(0,0,.15),1.18,.3,'concrete-dark','Z',20)
+cylinder('Silo skirt',(0,0,.425),1.03,.25,'steel','Z',32)
+cylinder('Skirt band',(0,0,.54),1.04,.04,'amber','Z',24)
+cylinder('Silo shell',(0,0,(SH0+SH1)/2),R,SH1-SH0,'petrol','Z',32)
+cylinder('Shell band',(0,0,2.35),R+.015,.05,'hardware','Z',24)
+ellipsoid('Silo dome',(0,0,SH1),(R,R,.5),'petrol',20)
+ellipsoid('Frost crown',(0,0,SH1+.1),(.92,.92,.44),'frost',16)
+frost_drips(R,SH1+.02,[.3,1.4,2.6,3.9,5.1],[.5,.9,.35,.7,.55])
+cylinder('Manway',(0,0,SH1+.52),.22,.14,'steel','Z',12)
+# Cage ladder on the -X/-Y quarter so it never covers the front stencil.
+la=-2.3;rd=Vector((math.cos(la),math.sin(la),0));td=Vector((-math.sin(la),math.cos(la),0))
+def lp(off,z,out=R+.18):return tuple(rd*out+td*off+Vector((0,0,z)))
+for off in [-.2,.2]:
+    rod('Ladder rail',lp(off,SH0),lp(off,SH1),.022,'amber',6)
+    for z in [1.0,3.6]:rod('Ladder standoff',lp(off,z,R),lp(off,z),.018,'steel',4)
+for k in range(6):z=.9+k*.55;rod('Ladder rung',lp(-.2,z),lp(.2,z),.016,'hardware',4)
+cylinder('Outlet flange',(R+.02,0,.9),.15,.06,'steel','X',12)
+tube('Bottom outlet',[(R-.05,0,.9),(R+.3,0,.9),(R+.45,0,.75),(R+.45,0,.3)],.09,'petrol',10)
+cylinder('Outlet frost',(R+.45,0,.55),.105,.4,'frost','Z',12)
+decal('code-02',(0,-(R+.02),2.2),.38,mat='decal-ivory')
 
 begin('chimney','Plant exhaust stack with ivory/red bands, rim and service collar.','machinery')
 for k in range(8):cylinder('Stack section',(0,0,.25+k*.5),.28,.5,'ivory' if k%2==0 else 'petrol')
@@ -711,12 +762,93 @@ begin('number-plate','Shared screwed number plate (kill switches 1-4, lockers, b
 number_plate((0,0,0),'code-01');ASSETS[CURRENT]['root']['decal_item']='code-01'
 
 # Effects meshes; time-dependent rendering is supplied separately in effects/v4-effects.js.
-begin('water-tile','Eight-metre water surface. Runtime water material supplies animated ripples.','effect')
-box('Water surface',(0,0,-.06),(8,8,.08),'water',0)
-begin('waterfall','Two-metre falling water ribbon with layered foam ribbons. Runtime scroll/pulse material supported.','effect')
-for j in range(8):
-    x=(j-3.5)*.065;tube('Falling ribbon',[(x,0,2),(x,-.07,1.6),(x*1.1,-.13,.9),(x*1.25,-.16,0)],.035 if j%3 else .019,'water' if j%3 else 'foam',6)
-for j in range(5):ring('Splash ring',(0,-.15,.02+j*.002),.12+j*.1,.009,'foam')
+# Runtime shader specs by material name (exported to manifest "effects"). Colors are V4 tokens.
+# Ripples use WORLD xz (not UV) so neighbouring water tiles line up; UVs drive scroll only.
+EFFECTS={
+ 'water':{'kind':'water','deep':'#142127','mid':'#23474C','crest':'#507C79','opaque':True,'reflections':False,'specular':0,
+   'wave':{'amp':.018,'freq':[3,2],'speed':[1,.7]},'ripple':{'freq':[7,8],'warp':1.8,'speed':[1,.8],'line':[.72,.91],'mix':.58},
+   'broad':{'freq':[.8,1.4],'speed':.3,'mix':.07},'scroll_uv':[.02,.035],
+   'contact_foam':{'color':'#DED7BC','width':.25,'alpha':.35,'note':'optional line where piers meet water; derive from level-grid pier AABBs, no depth texture'}},
+ 'fall-water':{'kind':'scroll','axis':'v','speed':1.6,'base':'#23474C','streak':'#507C79','streak_freq':[9,3],'streak_mix':.45,'side':'double'},
+ 'foam':{'kind':'scroll','axis':'v','speed':2.2,'base':'#DED7BC','alpha':.85,'breakup':.35,'side':'double'},
+ 'foam-splash':{'kind':'pulse','base':'#DED7BC','alpha':.7,'hz':1.2,'scale':[1,1.12],'fade':'v','side':'double','note':'rings: v 0 inner -> 1 outer; alpha fades toward the outer edge and dips with the pulse'}}
+
+def _uv_mesh(name,verts,faces,uvs,mat,recalc=False):
+    # Flat pieces are wound CCW from +Z already; only closed sweeps need normals recalculated outward.
+    mesh=bpy.data.meshes.new(name);mesh.from_pydata(verts,[],faces);mesh.update()
+    uv=mesh.uv_layers.new(name='UVMap')
+    for poly in mesh.polygons:
+        for li in poly.loop_indices:uv.data[li].uv=uvs[mesh.loops[li].vertex_index]
+    o=bpy.data.objects.new(name,mesh);scene.collection.objects.link(o);o=finish_obj(o,name,mat)
+    if recalc:
+        bpy.context.view_layer.objects.active=o;bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.normals_make_consistent(inside=False);bpy.ops.object.mode_set(mode='OBJECT')
+    return o
+
+def grid_plane(name,size,n,z,mat):
+    """Subdivided square (n x n quads) so vertex waves bend it; UV 0..1 across the tile."""
+    verts=[((i/n-.5)*size,(j/n-.5)*size,z) for j in range(n+1) for i in range(n+1)]
+    uvs=[(i/n,j/n) for j in range(n+1) for i in range(n+1)]
+    faces=[(j*(n+1)+i,j*(n+1)+i+1,(j+1)*(n+1)+i+1,(j+1)*(n+1)+i) for j in range(n) for i in range(n)]
+    return _uv_mesh(name,verts,faces,uvs,mat)
+
+def sweep(name,points,half_w,half_t,mat,sides=12):
+    """Elliptical sweep along a path in the YZ plane; width on world X. u around, v 0 at the start -> 1 at the end."""
+    pts=[Vector(p) for p in points];X=Vector((1,0,0));L=[0]
+    for i in range(1,len(pts)):L.append(L[-1]+(pts[i]-pts[i-1]).length)
+    verts=[];uvs=[];faces=[];s=sides+1
+    for i,p in enumerate(pts):
+        t=(pts[min(i+1,len(pts)-1)]-pts[max(i-1,0)]).normalized();nrm=t.cross(X).normalized()
+        for j in range(s):
+            a=j*math.tau/sides;verts.append(p+X*(math.cos(a)*half_w[i])+nrm*(math.sin(a)*half_t[i]));uvs.append((j/sides,L[i]/L[-1]))
+    for i in range(len(pts)-1):
+        for j in range(sides):faces.append((i*s+j,i*s+j+1,(i+1)*s+j+1,(i+1)*s+j))
+    return _uv_mesh(name,verts,faces,uvs,mat,recalc=True)
+
+def annulus(name,c,r0,r1,mat,n=24,z1=None):
+    """Flat ring (or open frustum when z1 is given: r0 at c.z, r1 at z1). v 0 inner/bottom -> 1 outer/top."""
+    x,y,z=c;s=n+1;verts=[];uvs=[]
+    for v,(r,zz) in enumerate([(r0,z),(r1,z if z1 is None else z1)]):
+        for k in range(s):a=k*math.tau/n;verts.append((x+r*math.cos(a),y+r*math.sin(a),zz));uvs.append((k/n,v))
+    faces=[(k,k+1,s+k+1,s+k) for k in range(n)]
+    return _uv_mesh(name,verts,faces,uvs,mat)
+
+begin('water-tile','Eight-metre dark water surface at z 0, 16x16 grid for vertex ripples. Matte, no reflections; see manifest effects.water.','effect')
+grid_plane('Water surface',8,16,0,'water')
+
+# Fall path: water leaves the lip at (0,0,H) moving -Y at FALL_V m/s and drops under gravity to z 0.
+FALL_H=2.0;FALL_V=1.2
+def fall_point(s):
+    d=FALL_H*s;return (0,-FALL_V*math.sqrt(2*d/9.81),FALL_H-d)
+FALL_S=[0,.02,.06,.12,.22,.36,.52,.7,.86,1]
+LAND=fall_point(1)
+begin('waterfall','Volumetric 2 m outfall: water body sheet leaving a lip at (0,0,2) along -Y, two foam streaks, foam lip curl, splash crown and three splash rings at the landing. UV v runs down the fall for scroll shaders (manifest effects).','effect')
+sweep('Fall body',[fall_point(s) for s in FALL_S],[.3+.12*s for s in FALL_S],[.06+.08*s for s in FALL_S],'fall-water',12)
+for off in [-.14,.12]:
+    sweep('Foam streak',[Vector(fall_point(s))+Vector((off,-.03-.08*s,0)) for s in FALL_S],[.06+.04*s for s in FALL_S],[.02+.02*s for s in FALL_S],'foam',6)
+sweep('Foam lip',[fall_point(s) for s in FALL_S[:4]],[.31,.31,.32,.33],[.08,.08,.075,.07],'foam',8)
+lx,ly,_=LAND
+annulus('Splash crown',(lx,ly,0),.32,.52,'foam-splash',16,.22)
+for k,(r0,r1) in enumerate([(.35,.47),(.56,.64),(.76,.82)]):annulus('Splash ring',(lx,ly,.012+k*.004),r0,r1,'foam-splash',24)
+ASSETS[CURRENT]['root']['fall_lip']=[0,0,FALL_H];ASSETS[CURRENT]['root']['fall_landing']=list(LAND)
+
+begin('outlet-pipe','Large wall outfall (01/05/07). Wall face at y 0 (+Y behind), origin at the wall foot on the water line. 0.45 m pipe out 0.95 m along -Y with bolted wall + mouth flanges, clamp strut, paint band, rust run, S2 stencil. Place waterfall at waterfall_anchor so its lip meets the mouth.','machinery')
+PR=.45;PZ=FALL_H+.38;PL=.95
+box('Wall collar',(0,-.07,PZ),(1.3,.14,1.3),'concrete-dark',.02,1)
+decal('code-s2',(-.5,-.142,PZ+.5),.16,mat='decal-ivory')
+cylinder('Wall flange',(0,-.19,PZ),.56,.1,'steel','Y',24)
+# Pipe body spans from the wall flange (y -.23) into the mouth flange (y -PL+.08).
+cylinder('Outfall pipe',(0,-(.23+PL-.08)/2,PZ),PR,PL-.08-.23,'petrol','Y',24)
+cylinder('Mouth flange',(0,-PL+.05,PZ),.54,.1,'steel','Y',24)
+cylinder('Mouth opening',(0,-PL-.005,PZ),.38,.02,'rubber','Y',24)
+for y in [-.25,-PL-.01]:
+    for j in range(8):a=j*math.tau/8+math.pi/8;box('Flange bolt',(.49*math.cos(a),y,PZ+.49*math.sin(a)),(.05,.04,.05),'hardware',.006,1)
+cylinder('Clamp band',(0,-.52,PZ),PR+.02,.08,'hardware','Y',24)
+cylinder('Paint band',(0,-.78,PZ),PR+.006,.06,'amber','Y',24)
+rod('Clamp strut',(0,-.52,PZ-PR-.01),(0,-.03,PZ-1.1),.035,'steel',6)
+box('Strut plate',(0,-.01,PZ-1.1),(.22,.02,.2),'steel',.006,1)
+box('Rust run',(0,-.62,PZ-PR-.002),(.16,.62,.006),'rust',0)
+ASSETS[CURRENT]['root']['waterfall_anchor']=[0,-PL,0]
 begin('vision-cone','Flat triangular enemy vision field with alpha material; visibility and occlusion are controlled by gameplay.','effect')
 material('vision-red',(.75,.035,.012),0,1,.3);MATS['vision-red'].node_tree.nodes.get('Principled BSDF').inputs['Alpha'].default_value=.16
 mesh=bpy.data.meshes.new('Vision field');mesh.from_pydata([(0,0,.025),(-1.5,-4,.025),(1.5,-4,.025)],[],[(0,1,2)]);mesh.update();o=bpy.data.objects.new('Vision field',mesh);scene.collection.objects.link(o);finish_obj(o,'Vision field','vision-red')
@@ -777,6 +909,10 @@ for name,a in ASSETS.items():
     if a['root'].get('decal_variants'):entries[name]['decal_variants']=list(a['root']['decal_variants'])
     if a.get('clip_meta'):entries[name]['clip_meta']=a['clip_meta']
     if a.get('tint_slots'):entries[name]['tint_slots']=a['tint_slots']
+    for key in ['fall_lip','fall_landing','waterfall_anchor']:
+        if a['root'].get(key) is not None:entries[name][key+'_blender']=[round(v,4) for v in a['root'][key]]
+    fx=sorted(m for m in entries[name]['materials'] if m in EFFECTS)
+    if fx:entries[name]['effects']=fx
     print('EXPORTED',name,triangles,'tris',('OVER BUDGET '+str(budget)) if triangles>budget else 'ok',flush=True)
 materials={}
 for n,m in MATS.items():
@@ -786,7 +922,7 @@ manifest={'version':3,'status':'v4-library','visual_match':'Requires scene-level
  'coordinates':'GLB Y up; metres; character front +Z after Blender -Y conversion',
  'textures':{'atlas':'textures/v4-atlas.png','atlas_layout':'textures/atlas-layout.json','decals':'textures/decals-atlas.png','decals_layout':'textures/decals-layout.json'},
  'runtime':'GLBs contain no images. Build one MeshStandardMaterial per material name: atlas_cell != null -> map = v4-atlas (flipY=false, sRGB), roughness .9, metalness 0; else flat fallback_color (+emissive when emission > 0). atlas == "decals": map = decals-atlas, transparent, depthWrite false, polygonOffset; decal_kind "mask" -> color = fallback_color with the atlas as alpha, "color" -> atlas color as is. Decal assets carry decal_item; UV rects come from decals-layout.json. Characters: clip_meta[clip] = {loop, drive, frames, seconds}; drive "walkPhase" -> time = ((walkPhase / 2pi) mod 1) * seconds, "time" -> play normally (one-shots hold the last frame). tint_slots {suit, trim} name the materials to clone + recolor per instance; meshes carry extras.tint_slot.',
- 'budgets':BUDGET,'materials':materials,'assets':[entries[n] for n in ASSETS if n in entries]}
+ 'budgets':BUDGET,'materials':materials,'effects':EFFECTS,'assets':[entries[n] for n in ASSETS if n in entries]}
 (ROOT/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
 if FULL:
     for i,a in enumerate(ASSETS.values()):a['root'].location=((i%8)*12,(i//8)*12,0)

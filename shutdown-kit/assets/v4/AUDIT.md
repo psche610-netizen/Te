@@ -43,10 +43,10 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes |
 |---|---|---|
-| coolant-tank | OK | |
-| refrigeration-unit | OK | |
-| cold-storage-door | OK | |
-| **frost-silo** | NEW | Tall domed tanks with frost caps (03, 09, 11). Larger than coolant-tank. |
+| coolant-tank | OK (P17 script) | Reviewed vs 03/09: frost crown + drips, torus seams → cheap bands, COOLANT text mesh → `code-c1` decal, frosted service pipe. |
+| refrigeration-unit | OK (P17 script) | Frosted top, frosted coolant lines at the back, COLD STORAGE + hazard kick strip as decals; torus fan rims dropped (tris). |
+| cold-storage-door | OK (P17 script) | Vertical hazard stripes on the jambs, rubber gasket, latch keeper, frosted threshold, `code-02` decal on the moving leaf. |
+| **frost-silo** | OK (P17 script) | r 1.0 × 5.2 m: plinth, skirt + amber band, petrol shell, frost-crowned dome + drips, cage ladder, frosted outlet, `code-02`. |
 
 ## D. Foundry / Sector 3 (03, 10)
 
@@ -78,7 +78,7 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | operator-plinth | FIX | Round disc; concept is a square worn concrete block with "OPERATOR 07" stencil + hazard edge (04). |
 | **sea-rock / cliff stacks** | NEW | Dark rock spires + island bases (01, 03). |
 | **facility-tower-block** | NEW | Big multi-storey concrete block with slogan stencils (01). |
-| **outlet-pipe** | NEW | Large wall outfall pipe that feeds a waterfall (01, 05, 07). |
+| **outlet-pipe** | OK (P17 script) | 0.45 m wall outfall, wall + mouth flanges, clamp strut, rust run, `code-s2`; `waterfall_anchor` in the manifest. |
 | **forklift / pallet** | NEW | Seen in 11 storage rooms. |
 
 ## G. Props & decals (all gameplay screens)
@@ -100,8 +100,8 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | Asset | Status |
 |---|---|
 | vision-cone | OK |
-| water-tile | FIX – needs dark water shader + ripples. |
-| waterfall | FIX – 3 thin ribbons; needs volume, foam, splash ring. |
+| water-tile | OK (P17 script) – 8 m 16×16 grid at z 0, matte; shader spec in `manifest.json` `effects.water` (world-xz ripples, UV scroll, no reflections), reference in `effects/v4-effects.js`. |
+| waterfall | OK (P17 script) – elliptical body sweep (`fall-water`), 2 foam streaks + lip (`foam`), splash crown + 3 rings (`foam-splash`); scroll/pulse specs in `effects`. |
 
 ## I. UI (`ui/`)
 
