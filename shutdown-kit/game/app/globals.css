@@ -4,15 +4,21 @@
 
 @custom-variant md (@media (min-width: 768px) and (min-height: 600px));
 
-/* SHUTDOWN palette — section 2 of SHUTDOWN.md. Mirrors PALETTE in lib/game/config.ts. */
+/* SHUTDOWN V4 palette — section 2 of SHUTDOWN.md, assets/v4/ui/tokens.json. Mirrors PALETTE in
+   lib/game/config.ts. v3 names are aliases: ink = indigo, graphite = petrol, bone = ivory, signal = amber. */
 :root {
   color-scheme: dark;
-  --ink: #0e0f12;
-  --graphite: #1c1f24;
-  --concrete: #5a5f66;
-  --bone: #edeae3;
-  --signal: #ff5a1f;
-  --danger: #e5383b;
+  --petrol: #23474c;
+  --teal: #507c79;
+  --ivory: #ded7bc;
+  --amber: #dea33a;
+  --indigo: #142127;
+  --danger: #d84726;
+  --ink: var(--indigo);
+  --graphite: var(--petrol);
+  --concrete: #62716c;
+  --bone: var(--ivory);
+  --signal: var(--amber);
 
   --background: var(--ink);
   --foreground: var(--bone);
@@ -42,6 +48,11 @@
   --color-bone: var(--bone);
   --color-signal: var(--signal);
   --color-danger: var(--danger);
+  --color-petrol: var(--petrol);
+  --color-teal: var(--teal);
+  --color-ivory: var(--ivory);
+  --color-amber: var(--amber);
+  --color-indigo: var(--indigo);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -62,9 +73,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --font-display: 'Anton', 'Bebas Neue', Impact, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --font-sans: 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: var(--font-bebas), 'Bebas Neue', Impact, sans-serif;
+  --font-mono: var(--font-share-tech), 'Share Tech Mono', ui-monospace, monospace;
+  --font-sans: var(--font-share-tech), 'Share Tech Mono', ui-monospace, monospace;
 
   --radius-sm: 0rem;
   --radius-md: 0rem;

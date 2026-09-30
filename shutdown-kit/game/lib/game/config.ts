@@ -3,13 +3,29 @@
  * Units: world units (1 grid cell = CELL_SIZE), seconds, 0..1 for normalized levels.
  */
 
+/**
+ * V4 palette (section 2, `assets/v4/ui/tokens.json`). The v3 key names are kept as aliases so
+ * existing views keep working: ink = indigo (void), graphite = petrol (darks), concrete = muted
+ * grey-green, bone = ivory, signal = amber (player / interactables), danger = enemy only.
+ * Mirrors the CSS variables in `app/globals.css`.
+ */
 export const PALETTE = {
-  ink: '#0E0F12',
-  graphite: '#1C1F24',
-  concrete: '#5A5F66',
-  bone: '#EDEAE3',
-  signal: '#FF5A1F',
-  danger: '#E5383B',
+  ink: '#142127',
+  graphite: '#23474C',
+  concrete: '#62716C',
+  bone: '#DED7BC',
+  signal: '#DEA33A',
+  danger: '#D84726',
+  petrol: '#23474C',
+  teal: '#507C79',
+  ivory: '#DED7BC',
+  amber: '#DEA33A',
+  indigo: '#142127',
+} as const
+
+/** V4 kit integration switches (Part B). `models` off = every view renders its code primitive. */
+export const V4 = {
+  models: true,
 } as const
 
 export type PaletteKey = keyof typeof PALETTE
@@ -34,9 +50,17 @@ export const CAMERA = {
 } as const
 
 export const LIGHT = {
-  ambientIntensity: 0.65,
-  keyIntensity: 2.1,
+  /** Cool indigo ambient = the shadow color. */
+  ambientColor: '#6A7AA8',
+  ambientIntensity: 0.75,
+  /** Warm amber key, the only shadow caster. */
+  keyColor: '#FFC98A',
+  keyIntensity: 2.3,
   keyDirection: [8, 14, 5] as const,
+  /** Cool indigo fill from the opposite side (no shadows). */
+  fillColor: '#4A4FB8',
+  fillIntensity: 0.6,
+  fillDirection: [-6, 4, -5] as const,
   shadowMapSize: 2048,
 } as const
 

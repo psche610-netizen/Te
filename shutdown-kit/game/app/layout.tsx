@@ -1,9 +1,20 @@
 import type { Metadata, Viewport } from 'next'
-import '@fontsource/anton/latin-400.css'
-import '@fontsource/jetbrains-mono/latin-400.css'
-import '@fontsource/jetbrains-mono/latin-500.css'
-import '@fontsource/jetbrains-mono/latin-700.css'
+import localFont from 'next/font/local'
 import './globals.css'
+
+// V4 type (section 2): Bebas Neue display, Share Tech Mono instrument/labels. Local OFL files, no network.
+const bebas = localFont({
+  src: './fonts/BebasNeue-Regular.ttf',
+  weight: '400',
+  display: 'swap',
+  variable: '--font-bebas',
+})
+const shareTech = localFont({
+  src: './fonts/ShareTechMono-Regular.ttf',
+  weight: '400',
+  display: 'swap',
+  variable: '--font-share-tech',
+})
 
 export const metadata: Metadata = {
   title: 'SHUTDOWN — Facility 07',
@@ -18,7 +29,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0E0F12',
+  themeColor: '#142127',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -33,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="bg-ink">
+    <html lang="en" className={`${bebas.variable} ${shareTech.variable} bg-ink`}>
       <body className="bg-ink text-bone font-mono antialiased">{children}</body>
     </html>
   )

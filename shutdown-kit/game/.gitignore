@@ -19,3 +19,7 @@ out/
 /android/
 /ios/
 .gradle/
+
+# V4 kit copies (scripts/sync-v4-assets.mjs, source of truth is ../assets/v4)
+/public/models/v4/
+/public/textures/v4/

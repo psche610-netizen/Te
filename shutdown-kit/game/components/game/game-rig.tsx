@@ -3,9 +3,10 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useLayoutEffect, useRef } from 'react'
 import { type DirectionalLight, type OrthographicCamera, Vector3 } from 'three'
-import { CAMERA, JUICE, LIGHT, MODIFIERS, PALETTE } from '@/lib/game/config'
+import { CAMERA, JUICE, LIGHT, MODIFIERS } from '@/lib/game/config'
 import { juiceLive } from '@/lib/game/juice'
 import type { PlayerState } from '@/lib/game/player'
+import { V4Lights } from './v4-lights'
 
 const offsetDir = new Vector3(...CAMERA.offset).normalize()
 const SHADOW_EXTENT = 16
@@ -59,22 +60,5 @@ export function GameRig({ player: p, blackout = false }: { player: PlayerState; 
     }
   })
 
-  return (
-    <>
-      <color attach="background" args={[PALETTE.ink]} />
-      <ambientLight intensity={LIGHT.ambientIntensity * lightScale} />
-      <directionalLight
-        ref={light}
-        intensity={LIGHT.keyIntensity * lightScale}
-        castShadow
-        shadow-mapSize={[LIGHT.shadowMapSize, LIGHT.shadowMapSize]}
-        shadow-camera-left={-SHADOW_EXTENT}
-        shadow-camera-right={SHADOW_EXTENT}
-        shadow-camera-top={SHADOW_EXTENT}
-        shadow-camera-bottom={-SHADOW_EXTENT}
-        shadow-camera-far={60}
-        shadow-bias={-0.0005}
-      />
-    </>
-  )
+  return <V4Lights keyRef={light} scale={lightScale} shadowExtent={SHADOW_EXTENT} />
 }

@@ -352,9 +352,17 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: Phase 20 (Phases 13–19 scripts done, `py_compile` clean; Blender build + review deferred to after Phase 20). Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phase 21 written, awaiting the user's typecheck + screenshot.** Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
+
+**Phase 21 (Engine pipeline + V4 look) — code written, WAITING for the user's `npx tsc --noEmit` + screenshot before ticking:**
+- `game/scripts/sync-v4-assets.mjs` (`pnpm assets:sync`, also runs first in `pnpm dev` / `pnpm build`): copies the 86 GLBs → `public/models/v4/<id>.glb`, `v4-atlas.png` + `decals-atlas.png` → `public/textures/v4/`, and writes the trimmed runtime manifest `lib/game/v4-manifest.json` (materials, effects, per-asset clips/clip_meta/tint_slots/anchors/decals). **Deviation:** the public copies are gitignored (they duplicate `assets/v4`, ~15 MB); the JSON is committed so typecheck works without the script. GLBs already carry no images, so nothing to strip.
+- `lib/game/assets.ts`: `AssetId` (typed from the manifest), `assetUrl`, `preloadAssets(ids)` (`useGLTF.preload`, Draco off so the APK never hits a CDN), lazy shared `atlasTexture()` / `decalTexture()` (flipY false, sRGB), `v4Material(name)` = one cached `MeshStandardMaterial` per manifest name (atlas cell → atlas map, rough .9, metal 0; else `fallback_color`; `emission` → emissive; decals: decal atlas, transparent, depthWrite off, polygonOffset, mask = tinted), `applyV4Materials(root)`, `tintAsset(root, id, {suit, trim})` (clones only the slot materials), `useV4Asset(id)` (memoized clone; SkeletonUtils for rigged), `walkPhaseTime(meta, walkPhase)`.
+- `components/game/v4-model.tsx` `<V4Model id fallback>`: Suspense + error boundary, renders the primitive while loading / on error / when `V4.models` is false (`config.ts`). Not mounted anywhere yet (Phase 22+).
+- Palette: `PALETTE` = V4 tokens; v3 keys kept as aliases (ink=indigo, graphite=petrol, concrete=#62716C muted, bone=ivory, signal=amber, danger=#D84726) + new keys petrol/teal/ivory/amber/indigo. Same in `globals.css` (+ `bg-petrol` etc. utilities). `facility-map.tsx` hex literals → `PALETTE`.
+- Fonts: Bebas Neue + Share Tech Mono via `next/font/local` from `app/fonts/` (OFL files copied from `assets/v4/ui/fonts`), CSS vars `--font-bebas` / `--font-share-tech` feed `font-display` / `font-mono` / `font-sans`. The `@fontsource/anton` + `jetbrains-mono` deps are now unused (remove in Phase 27).
+- Lights: `components/game/v4-lights.tsx` shared by `GameRig`, `SceneRig`, `LoadoutDiorama`: amber key `LIGHT.keyColor` (the only shadow caster, still follows the player), indigo fill `LIGHT.fillColor` from `fillDirection`, indigo ambient `LIGHT.ambientColor`. Tune in `config.ts` `LIGHT` from the screenshot. The primitives still use flat Lambert materials, so only colors/light change visually this phase.
 
 **Phase 19 (Core) — scripts only, not built yet (`complete_library.py`, `scene_recipes.py`, `scenes/core-arena.json`):**
 - All core geometry now comes from constants that mirror `config.ts` `CORE` (`CORE_PILLAR`, `CORE_RINGS`, `CORE_RIM`, `CORE_SPOKE_HALF`, `CORE_SEGMENTS`, `CORE_SEAM`, depth 0.6). The old pieces used different radii (2.2/4.4/6.6); if `CORE` changes, update both.
@@ -565,7 +573,8 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 **Level format (`lib/game/level/`):** ASCII rows, one char per 2-unit cell: `#` wall, `D` door, `=` dynamic wall raised, `-` dynamic wall lowered, `E` exit gate, `L` locker, `G` generator site, `c` crate, `P` spawn, `.` floor, space = void. Cell (cx,cz) center is world (cx*2, 0, cz*2). Door/dynamic/gate axis is inferred from wall neighbours. Props snug against, and face away from, the first adjacent wall (N,S,W,E).
 
 **File map:**
-- `app/layout.tsx` — fonts (Anton, JetBrains Mono), metadata, viewport (no zoom, viewport-fit cover).
+- `app/layout.tsx` — fonts (V4: Bebas Neue, Share Tech Mono via `next/font/local`), metadata, viewport (no zoom, viewport-fit cover).
+- `lib/game/assets.ts` + `v4-manifest.json` — V4 GLB registry, shared atlas materials, tints. `components/game/v4-model.tsx` (GLB with primitive fallback), `v4-lights.tsx` (amber key / indigo fill). `scripts/sync-v4-assets.mjs` — kit → `public/`.
 - `app/globals.css` — palette tokens (`ink graphite concrete bone signal danger`), `font-display`/`font-mono`, `safe-area`, `tracking-label`, zero radius.
 - `app/page.tsx` — client shell: `OrientationGate` > canvas + overlay chosen by `screen` (title / game).
 - `lib/game/config.ts` — all tunables + `PALETTE`.

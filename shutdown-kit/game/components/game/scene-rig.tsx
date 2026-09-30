@@ -3,7 +3,8 @@
 import { useThree } from '@react-three/fiber'
 import { useLayoutEffect } from 'react'
 import { Vector3 } from 'three'
-import { CAMERA, LIGHT, PALETTE } from '@/lib/game/config'
+import { CAMERA } from '@/lib/game/config'
+import { V4Lights } from './v4-lights'
 
 const offsetDir = new Vector3(...CAMERA.offset).normalize()
 
@@ -20,21 +21,5 @@ export function SceneRig({ target }: { target: [number, number, number] }) {
     camera.updateProjectionMatrix()
   }, [camera, size.width, size.height, target])
 
-  return (
-    <>
-      <color attach="background" args={[PALETTE.ink]} />
-      <ambientLight intensity={LIGHT.ambientIntensity} />
-      <directionalLight
-        position={LIGHT.keyDirection as unknown as [number, number, number]}
-        intensity={LIGHT.keyIntensity}
-        castShadow
-        shadow-mapSize={[LIGHT.shadowMapSize, LIGHT.shadowMapSize]}
-        shadow-camera-left={-14}
-        shadow-camera-right={14}
-        shadow-camera-top={14}
-        shadow-camera-bottom={-14}
-        shadow-bias={-0.0005}
-      />
-    </>
-  )
+  return <V4Lights shadowExtent={14} />
 }

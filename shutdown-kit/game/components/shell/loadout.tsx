@@ -163,6 +163,11 @@ const SWATCH: Record<PaletteKey, string> = {
   bone: 'bg-bone',
   signal: 'bg-signal',
   danger: 'bg-danger',
+  petrol: 'bg-petrol',
+  teal: 'bg-teal',
+  ivory: 'bg-ivory',
+  amber: 'bg-amber',
+  indigo: 'bg-indigo',
 }
 
 function SkinRow<Id extends string>({

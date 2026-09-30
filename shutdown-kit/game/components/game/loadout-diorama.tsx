@@ -3,11 +3,12 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useLayoutEffect, useRef, useState } from 'react'
 import { Vector3, type Group } from 'three'
-import { CAMERA, LIGHT, PALETTE } from '@/lib/game/config'
+import { CAMERA } from '@/lib/game/config'
 import { flatMaterial, UNIT_BOX } from '@/lib/game/materials'
 import { createPlayer } from '@/lib/game/player'
 import { useSkinColors } from '@/lib/game/use-skin-colors'
 import { Mannequin } from './player-view'
+import { V4Lights } from './v4-lights'
 
 const offsetDir = new Vector3(0.4, 0.3, 1).normalize()
 const UP = new Vector3(0, 1, 0)
@@ -39,19 +40,7 @@ export function LoadoutDiorama() {
 
   return (
     <>
-      <color attach="background" args={[PALETTE.ink]} />
-      <ambientLight intensity={LIGHT.ambientIntensity} />
-      <directionalLight
-        position={LIGHT.keyDirection as unknown as [number, number, number]}
-        intensity={LIGHT.keyIntensity}
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-camera-left={-3}
-        shadow-camera-right={3}
-        shadow-camera-top={3}
-        shadow-camera-bottom={-3}
-        shadow-bias={-0.0005}
-      />
+      <V4Lights shadowExtent={3} shadowMapSize={1024} />
       <mesh geometry={UNIT_BOX} material={flatMaterial('concrete')} position={[0, -0.1, 0]} scale={[1.25, 0.2, 1.05]} receiveShadow />
       <group ref={turn}>
         <Mannequin p={pose} material={flatMaterial(suit)} />

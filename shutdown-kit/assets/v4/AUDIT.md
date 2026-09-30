@@ -2,7 +2,7 @@
 
 Compared every GLB in `models/` (rendered via `contact-sheet.html`) against `concepts/v4/01–11`.
 
-**Big picture:** the game uses **none** of these GLBs yet — everything in-game is still code primitives. Each GLB embeds its own 2 MB atlas (~140 MB total); runtime needs one shared texture.
+**Big picture:** Part A done (86/86 within budget). GLBs carry no images; the runtime builds shared atlas materials by name. **Phase 21:** the engine pipeline exists (`game/scripts/sync-v4-assets.mjs` → `game/public/models/v4`, `game/lib/game/assets.ts`, `<V4Model>`), but no view mounts a GLB yet — in-game is still code primitives until Phases 22–26. Integration status per asset starts in Phase 22.
 
 Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
