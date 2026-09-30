@@ -2,7 +2,7 @@
 
 Compared every GLB in `models/` (rendered via `contact-sheet.html`) against `concepts/v4/01–11`.
 
-**Big picture:** Part A done (86/86 within budget). GLBs carry no images; the runtime builds shared atlas materials by name. **Phase 21:** the engine pipeline exists (`game/scripts/sync-v4-assets.mjs` → `game/public/models/v4`, `game/lib/game/assets.ts`, `<V4Model>`), but no view mounts a GLB yet — in-game is still code primitives until Phases 22–26. Integration status per asset starts in Phase 22.
+**Big picture:** Part A done (86/86 within budget). GLBs carry no images; the runtime builds shared atlas materials by name. **Phase 21:** the engine pipeline exists (`game/scripts/sync-v4-assets.mjs` → `game/public/models/v4`, `game/lib/game/assets.ts`, `<V4Model>`), and views mount the GLBs (primitives stay as fallback). Integration status per asset: **In game (P2x)** notes below (P22 environment/Plant, P23 characters, P24 Sectors 2 + 3; Core in P25, menus in P26).
 
 Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
@@ -13,7 +13,7 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | operator-amber | OK (P15 script) | Bulkier suit + shoulder pads, rubber knee pads, dark gloves/gauntlets, toe-capped boots, larger pack with canisters, chest radio. Clips incl. hide-enter; tint slots suit/trim. **In game (P23):** player + loadout via `OperatorModel` (idle/walk/run/crouch). |
 | crew-teal / crew-ivory | OK (P15 script) | Same body as operator (shared `operator()` builder). |
 | warden | OK (P15 script) | Larger ivory box head, brow, full-width red slit, chin vent; articulated three-claw hands (fingers/fingertips/thumb bones). Clips idle/walk/scan/chase/grab/stunned. **In game (P23):** grid sectors + Core via `WardenRig` (idle/walk/scan/chase/stunned; grab unused). |
-| weaver | OK (P18 script) | Chunky petrol box hull + skirt, thorax, dorsal pack/reservoirs, `code-w-01` + hazard decals; ivory box head with red slit; thick armored hydraulic legs (hip motor → thigh → shin → foot). Rest pose = `weaver-body.tsx` (HIP_Y/SPLAY/KNEE/FOOT); bones `hip{row}.{L|R}` (yaw/lift) + `leg/shin/foot` (flex); manifest `gait`. Clips idle/scuttle/chase/scan/strike/stunned on the tripod gait. |
+| weaver | OK (P18 script) | Chunky petrol box hull + skirt, thorax, dorsal pack/reservoirs, `code-w-01` + hazard decals; ivory box head with red slit; thick armored hydraulic legs (hip motor → thigh → shin → foot). Rest pose = `weaver-body.tsx` (HIP_Y/SPLAY/KNEE/FOOT); bones `hip{row}.{L|R}` (yaw/lift) + `leg/shin/foot` (flex); manifest `gait`. Clips idle/scuttle/chase/scan/strike/stunned on the tripod gait. **In game (P24):** Foundry hunter via `WardenRig kind="weaver"` (idle/scuttle/chase/scan/stunned; strike unused). |
 
 ## B. Plant / Sector 1 environment (05, 07, 01)
 
@@ -43,20 +43,20 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes |
 |---|---|---|
-| coolant-tank | OK (P17 script) | Reviewed vs 03/09: frost crown + drips, torus seams → cheap bands, COOLANT text mesh → `code-c1` decal, frosted service pipe. |
-| refrigeration-unit | OK (P17 script) | Frosted top, frosted coolant lines at the back, COLD STORAGE + hazard kick strip as decals; torus fan rims dropped (tris). |
-| cold-storage-door | OK (P17 script) | Vertical hazard stripes on the jambs, rubber gasket, latch keeper, frosted threshold, `code-02` decal on the moving leaf. |
-| **frost-silo** | OK (P17 script) | r 1.0 × 5.2 m: plinth, skirt + amber band, petrol shell, frost-crowned dome + drips, cage ladder, frosted outlet, `code-02`. |
+| coolant-tank | OK (P17 script) | Reviewed vs 03/09: frost crown + drips, torus seams → cheap bands, COOLANT text mesh → `code-c1` decal, frosted service pipe. **In game (P24):** Sector 2 crate sites (scale .88). |
+| refrigeration-unit | OK (P17 script) | Frosted top, frosted coolant lines at the back, COLD STORAGE + hazard kick strip as decals; torus fan rims dropped (tris). **In game (P24):** Sector 2 crate sites (squashed to the 1.24 m collider) + north ledge. |
+| cold-storage-door | OK (P17 script) | Vertical hazard stripes on the jambs, rubber gasket, latch keeper, frosted threshold, `code-02` decal on the moving leaf. **In game (P24):** all Sector 2 doors (`doorKit`, leaf `cold-door` slides with the `open` offset). |
+| **frost-silo** | OK (P17 script) | r 1.0 × 5.2 m: plinth, skirt + amber band, petrol shell, frost-crowned dome + drips, cage ladder, frosted outlet, `code-02`. **In game (P24):** Sector 2 north ledge (scale .75). |
 
 ## D. Foundry / Sector 3 (03, 10)
 
 | Asset | Status | Notes |
 |---|---|---|
-| foundry-furnace, casting-trough | OK | |
-| overhead-gantry | OK (P18 script) | Vertical hazard decals on columns, knee braces, `code-f-03` + hazard rail on the crossbeam, shorter cables, striped hook block + hook. `anchors.hook` (0,0,3.3). |
-| foundry-crucible | OK (P18 script) | Hanging ladle, origin = bail eye (hangs at gantry `anchors.hook`): bail yoke with hazard arms, tapered banded drum + ribs, -Y spout, `molten-core` melt, tilt gear. `pour` clip tilts 1.05 rad; `anchors.pour_lip`. |
-| molten-stream | OK (P18 script) | Ballistic pour 1.25 m lip → surface: `molten-core` ribbon inside a translucent `molten-glow` sheath, glow pool, splash crown, 10 ico droplets. `anchors.lip/landing`; shader `createMoltenMaterial` in `effects/v4-effects.js`. |
-| **tall-smokestack** | OK (P18 script) | ~9 m tapered rust stack on concrete plinth, flare, steel bands, soot crown + ember rim, flue inlet, amber cage ladder, red top lamp, `code-f-03`. |
+| foundry-furnace, casting-trough | OK | **In game (P24):** Sector 3 crate sites (furnace .55, trough squashed); trough also under the ladle rig. |
+| overhead-gantry | OK (P18 script) | Vertical hazard decals on columns, knee braces, `code-f-03` + hazard rail on the crossbeam, shorter cables, striped hook block + hook. `anchors.hook` (0,0,3.3). **In game (P24):** Sector 3 north-ledge ladle rig (`set-pieces.tsx`, scale .8). |
+| foundry-crucible | OK (P18 script) | Hanging ladle, origin = bail eye (hangs at gantry `anchors.hook`): bail yoke with hazard arms, tapered banded drum + ribs, -Y spout, `molten-core` melt, tilt gear. `pour` clip tilts 1.05 rad; `anchors.pour_lip`. **In game (P24):** on the gantry hook, held at the end of `pour`. |
+| molten-stream | OK (P18 script) | Ballistic pour 1.25 m lip → surface: `molten-core` ribbon inside a translucent `molten-glow` sheath, glow pool, splash crown, 10 ico droplets. `anchors.lip/landing`; shader `createMoltenMaterial` in `effects/v4-effects.js`. **In game (P24):** from the tilted spout into the trough; `molten-glow` alpha lowered to .35. |
+| **tall-smokestack** | OK (P18 script) | ~9 m tapered rust stack on concrete plinth, flare, steel bands, soot crown + ember rim, flue inlet, amber cage ladder, red top lamp, `code-f-03`. **In game (P24):** Sector 3 north ledge x2 (scale .8). |
 
 ## E. Core finale (08)
 
@@ -80,7 +80,7 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | operator-plinth | FIX → OK (P20) | Square 1.8 m worn concrete block, top z 0.42 (operator stands there), OPERATOR 07 stencil, hazard edge, chipped corners (04). |
 | **sea-rock / cliff-stack** | NEW → OK (P20) | Hex-column basalt island base (foot z -1.5, wet waterline) + 14 m stepped spire (01, 03). |
 | **facility-tower-block** | NEW → OK (P20) | 8 × 6 × 12.6 m block, floor bands, lit amber windows, slogan stencils, big 07, roof plant, down-pipes (01). |
-| **outlet-pipe** | OK (P17 script) | 0.45 m wall outfall, wall + mouth flanges, clamp strut, rust run, `code-s2`; `waterfall_anchor` in the manifest. |
+| **outlet-pipe** | OK (P17 script) | 0.45 m wall outfall, wall + mouth flanges, clamp strut, rust run, `code-s2`; `waterfall_anchor` in the manifest. **In game (P24):** all grid sectors, S + E pier faces (scale .6), waterfall at `waterfall_anchor`. |
 | **forklift / pallet** | NEW → OK (P20) | Amber compact forklift (mast, forks, guard, beacon) + 1.2 × 1.0 m pallet; placed in `overseer-map` storage rooms (11). |
 | scene recipes | NEW → OK (P20) | `scenes/title-station.json` (01), `sector-{plant,cold-storage,foundry,core}.json` + composed `sector-map.json` (03), `loadout-stage.json` (04), `overseer-map.json` (11). JSON instance layouts, assembled from the GLBs in Part B. |
 
@@ -103,8 +103,8 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 | Asset | Status |
 |---|---|
 | vision-cone | OK |
-| water-tile | OK (P17 script) – 8 m 16×16 grid at z 0, matte; shader spec in `manifest.json` `effects.water` (world-xz ripples, UV scroll, no reflections), reference in `effects/v4-effects.js`. |
-| waterfall | OK (P17 script) – elliptical body sweep (`fall-water`), 2 foam streaks + lip (`foam`), splash crown + 3 rings (`foam-splash`); scroll/pulse specs in `effects`. |
+| water-tile | OK (P17 script) – 8 m 16×16 grid at z 0, matte; shader spec in `manifest.json` `effects.water` (world-xz ripples, UV scroll, no reflections), reference in `effects/v4-effects.js`. **In game (P24):** one tile scaled around every grid sector at y -2.2, shader in `game/lib/game/v4-effects.ts`. |
+| waterfall | OK (P17 script) – elliptical body sweep (`fall-water`), 2 foam streaks + lip (`foam`), splash crown + 3 rings (`foam-splash`); scroll/pulse specs in `effects`. **In game (P24):** under every outlet pipe (scale .6), fall/foam/splash shaders. |
 
 ## I. UI (`ui/`)
 

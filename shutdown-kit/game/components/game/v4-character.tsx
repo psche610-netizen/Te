@@ -29,7 +29,7 @@ import {
   v4Material,
   walkPhaseTime,
 } from '@/lib/game/assets'
-import { HUNTER, PALETTE, type PaletteKey, PLAYER } from '@/lib/game/config'
+import { HUNTER_PROFILES, PALETTE, type PaletteKey, PLAYER } from '@/lib/game/config'
 import type { HunterMode } from '@/lib/game/hunter'
 import { xrayDangerMaterial, xrayMaterial } from '@/lib/game/materials'
 import type { PlayerState } from '@/lib/game/player'
@@ -227,18 +227,29 @@ export type WardenPose = { speed: number; walkPhase: number; mode: HunterMode; h
 
 const SCAN_MODES: ReadonlySet<HunterMode> = new Set<HunterMode>(['suspicious', 'investigate', 'search'])
 
+export type HunterKind = keyof typeof HUNTER_PROFILES
+
+/** Per hunter: GLB, locomotion clip, and the patrol speed its walk cycle was authored for. */
+const HUNTER_RIGS: Record<HunterKind, { asset: AssetId; walk: string }> = {
+  warden: { asset: 'warden', walk: 'walk' },
+  // Tripod gait from `weaver-body.tsx` (manifest `gait`); `strike` is not wired (no view-side state).
+  weaver: { asset: 'weaver', walk: 'scuttle' },
+}
+
 /**
- * The warden GLB. Clip by mode: stunned → stunned; moving → walk (chase → chase); standing while
- * searching → scan, else idle. The sim's head yaw is added on top of the clip.
+ * The warden / weaver GLB. Clip by mode: stunned → stunned; moving → walk or scuttle (chase → chase);
+ * standing while searching → scan, else idle. The sim's head yaw is added on top of the clip.
  */
 export function WardenModel({
   hunter: h,
+  kind = 'warden',
   shell,
   slit = null,
   bodyVisible,
   xrayVisible,
 }: {
   hunter: WardenPose
+  kind?: HunterKind
   shell: PaletteKey
   /** Replaces the red slit material (the Core dims it during the ending). */
   slit?: Material | null
@@ -248,14 +259,16 @@ export function WardenModel({
   xrayVisible?: () => boolean
 }) {
   const tint = useMemo(() => shellTint(shell), [shell])
-  const { rig, step, has } = useCharacterRig('warden', tint, slit, xrayVisible ? xrayDangerMaterial : null)
+  const { asset, walk } = HUNTER_RIGS[kind]
+  const { rig, step, has } = useCharacterRig(asset, tint, slit, xrayVisible ? xrayDangerMaterial : null)
   const shownBody = useRef(true)
+  const patrolSpeed = HUNTER_PROFILES[kind].patrolSpeed
 
   useFrame((_, dt) => {
-    const a = Math.min(1, h.speed / HUNTER.patrolSpeed)
+    const a = Math.min(1, h.speed / patrolSpeed)
     const rest = SCAN_MODES.has(h.mode) ? 'scan' : 'idle'
     const target: Weights =
-      h.mode === 'stunned' ? { stunned: 1 } : { [h.mode === 'chase' ? 'chase' : 'walk']: a, [rest]: 1 - a }
+      h.mode === 'stunned' ? { stunned: 1 } : { [h.mode === 'chase' ? 'chase' : walk]: a, [rest]: 1 - a }
     step(pick(target, has), Math.min(dt, 0.1), h.walkPhase, h.headYaw)
 
     const show = bodyVisible ? bodyVisible() : true

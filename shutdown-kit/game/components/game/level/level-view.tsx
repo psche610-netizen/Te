@@ -16,7 +16,8 @@ import { V4Only } from '../v4-model'
 import { InstancedAsset } from './instanced-asset'
 import { InstancedBoxes } from './instanced-boxes'
 import { DoorView, DynamicWallView, GateView, V4Doors } from './module-views'
-import { LEVEL_ASSETS, layoutLevel } from './v4-layout'
+import { EffectsClock, SetPieces } from './set-pieces'
+import { doorKit, LEVEL_ASSETS, layoutLevel, SECTOR_ASSETS } from './v4-layout'
 
 const TILE_INSET = 0.012
 const TILE_HEIGHT = 0.06
@@ -26,7 +27,7 @@ function matFor(id: MatId) {
   return flatMaterial(key, e === 'e')
 }
 
-/** Sector 2 / 3 crate dressing (cabinets, cages). Stays primitive until Phase 24. */
+/** Sector 2 / 3 crate dressing for the primitive fallback (the kit uses `crateDressing` in v4-layout). */
 function sectorProps(level: LevelData, props = new Map<MatId, Box[]>()) {
   const add = (id: MatId, boxes: Box[]) => props.set(id, [...(props.get(id) ?? []), ...boxes])
   if (level.id === 'sector-2') {
@@ -55,19 +56,22 @@ function PropBoxes({ props }: { props: [MatId, Box[]][] }) {
   )
 }
 
+const NO_SHADOW = new Set<string>(['foundation-pier', 'water-tile', 'waterfall'])
+
 function V4Shell({ level }: { level: LevelData }) {
   const layout = useMemo(() => layoutLevel(level), [level])
-  const extras = useMemo(() => [...sectorProps(level).entries()], [level])
   return (
     <group>
+      <EffectsClock />
       {layout.models.map(([asset, placements]) => (
         <InstancedAsset
           key={asset}
           asset={asset}
           placements={placements}
-          castShadow={!asset.startsWith('floor-') && asset !== 'foundation-pier'}
+          castShadow={!asset.startsWith('floor-') && !NO_SHADOW.has(asset)}
         />
       ))}
+      <SetPieces pieces={layout.setPieces} />
       {layout.decals.map((d) => (
         <InstancedAsset
           key={`${d.asset}:${d.to}`}
@@ -77,7 +81,6 @@ function V4Shell({ level }: { level: LevelData }) {
           castShadow={false}
         />
       ))}
-      <PropBoxes props={extras} />
     </group>
   )
 }
@@ -86,13 +89,14 @@ preloadAssets(LEVEL_ASSETS)
 
 export function LevelView({ level }: { level: LevelData }) {
   const primitive = <PrimitiveShell level={level} />
+  useMemo(() => preloadAssets(SECTOR_ASSETS[level.id] ?? []), [level.id])
   return (
     <group>
       <V4Only fallback={primitive}>
         <V4Shell level={level} />
       </V4Only>
       <V4Only fallback={<PrimitiveDoors doors={level.doors} />}>
-        <V4Doors doors={level.doors} />
+        <V4Doors doors={level.doors} kit={doorKit(level.id)} />
       </V4Only>
       {level.dynamicWalls.map((w) => (
         <DynamicWallView key={`w${w.id}`} wall={w} />

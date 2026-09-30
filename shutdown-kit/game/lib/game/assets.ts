@@ -17,6 +17,7 @@ import {
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { clone as cloneSkinned } from 'three/examples/jsm/utils/SkeletonUtils.js'
 import manifest from './v4-manifest.json'
+import { effectMaterial, effectTime } from './v4-effects'
 
 /** V4 kit registry + shared atlas materials. Source: `scripts/sync-v4-assets.mjs` → `v4-manifest.json`. */
 
@@ -128,6 +129,23 @@ export function v4Material(name: string): MeshStandardMaterial {
   return m
 }
 
+/** Kit material by name: the effect shader (water, falls, molten) if there is one, else the atlas material. */
+export function assetMaterial(name: string): Material {
+  return effectMaterial(name) ?? v4Material(name)
+}
+
+const MOLTEN_FLICKER = { base: 3, depth: 0.15, hz: 5 }
+
+/** Advances every effect shader and the `molten` flicker (manifest effects). Call once per frame. */
+export function tickAssetEffects(time: number) {
+  effectTime.value = time
+  const molten = materialCache.get('molten')
+  if (molten) {
+    const f = MOLTEN_FLICKER
+    molten.emissiveIntensity = f.base * (1 + f.depth * Math.sin(time * Math.PI * 2 * f.hz))
+  }
+}
+
 type MeshLike = Object3D & { isMesh?: boolean; material?: Material | Material[] }
 
 /** Swap every GLB placeholder material for the shared atlas material of the same name. */
@@ -135,7 +153,7 @@ export function applyV4Materials(root: Object3D, shadows = true) {
   root.traverse((o) => {
     const mesh = o as MeshLike
     if (!mesh.isMesh || !mesh.material) return
-    const swap = (mat: Material) => v4Material(mat.name)
+    const swap = (mat: Material) => assetMaterial(mat.name)
     mesh.material = Array.isArray(mesh.material) ? mesh.material.map(swap) : swap(mesh.material)
     const decal = Array.isArray(mesh.material)
       ? mesh.material.some((m) => m.transparent)
@@ -211,7 +229,7 @@ export function useV4Asset(id: AssetId) {
 // Instancing: bake a GLB into one merged geometry per material, so N copies cost one draw call
 // per material instead of N x meshes.
 
-export type AssetPart = { geometry: BufferGeometry; material: MeshStandardMaterial; decal: boolean }
+export type AssetPart = { geometry: BufferGeometry; material: Material; decal: boolean }
 
 /** Picks a node subtree by name (e.g. the sliding leaf of a door) or everything except it. */
 export type PartFilter = { key: string; node: string; exclude?: boolean }
@@ -257,7 +275,7 @@ function extractParts(key: string, root: Object3D, filter?: PartFilter): AssetPa
     const geometry = list.length === 1 ? list[0] : mergeGeometries(list, false)
     if (!geometry) continue
     geometry.computeBoundingSphere()
-    const material = v4Material(name)
+    const material = assetMaterial(name)
     parts.push({ geometry, material, decal: material.transparent })
   }
   partsCache.set(key, parts)

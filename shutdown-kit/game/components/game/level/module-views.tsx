@@ -11,7 +11,7 @@ import type { Axis, DoorModule, DynamicWallModule, GateModule } from '@/lib/game
 import { flatMaterial, slitMaterial, UNIT_BOX } from '@/lib/game/materials'
 import { V4Model } from '../v4-model'
 import { InstancedParts, type Placement, placementMatrix } from './instanced-asset'
-import { DOOR_LOCAL, DOOR_SCALE, WALL_FACE } from './v4-layout'
+import { type DoorKit, WALL_FACE } from './v4-layout'
 
 const CS = GRID.cellSize
 const H = GRID.wallHeight
@@ -125,8 +125,6 @@ export function DoorView({ door }: { door: DoorModule }) {
   )
 }
 
-const DOOR_FRAME: PartFilter = { key: 'frame', node: 'bulkhead-leaf', exclude: true }
-const DOOR_LEAF: PartFilter = { key: 'leaf', node: 'bulkhead-leaf' }
 const DOOR_LAMP_Z = WALL_FACE + 0.02
 const _leaf = new Matrix4()
 const _slide = new Vector3()
@@ -161,11 +159,18 @@ function DoorSignals({ door, lampY, lampZ }: { door: DoorModule; lampY: number; 
  * All doors as the V4 sliding bulkhead: frames are one static instance set, leaves another set whose
  * matrices slide along the GLB `open` clip offset. Scaled to the 2 m cell (see `DOOR_SCALE`).
  */
-export function V4Doors({ doors }: { doors: DoorModule[] }) {
-  const frame = useAssetParts('sliding-bulkhead', DOOR_FRAME)
-  const leaf = useAssetParts('sliding-bulkhead', DOOR_LEAF)
-  const { animations } = useGLTF(assetUrl('sliding-bulkhead'))
-  const slide = useMemo(() => clipNodeOffset(animations, 'open', 'bulkhead-leaf'), [animations])
+export function V4Doors({ doors, kit }: { doors: DoorModule[]; kit: DoorKit }) {
+  const filters = useMemo<[PartFilter, PartFilter]>(
+    () => [
+      { key: 'frame', node: kit.leaf, exclude: true },
+      { key: 'leaf', node: kit.leaf },
+    ],
+    [kit.leaf],
+  )
+  const frame = useAssetParts(kit.asset, filters[0])
+  const leaf = useAssetParts(kit.asset, filters[1])
+  const { animations } = useGLTF(assetUrl(kit.asset))
+  const slide = useMemo(() => clipNodeOffset(animations, 'open', kit.leaf), [animations, kit.leaf])
   const leafMeshes = useRef<(InstancedMesh | null)[]>([])
   const openness = useRef<number[]>([])
 
@@ -176,12 +181,12 @@ export function V4Doors({ doors }: { doors: DoorModule[] }) {
         y: 0,
         z: d.z,
         rotY: axisRot(d.axis),
-        sx: DOOR_SCALE[0],
-        sy: DOOR_SCALE[1],
-        sz: DOOR_SCALE[2],
-        local: DOOR_LOCAL,
+        sx: kit.scale[0],
+        sy: kit.scale[1],
+        sz: kit.scale[2],
+        local: kit.local,
       })),
-    [doors],
+    [doors, kit],
   )
 
   useFrame((_, dt) => {

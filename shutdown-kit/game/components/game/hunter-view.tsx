@@ -173,23 +173,20 @@ export function HunterView({
   return (
     <>
       {!blackout && <VisionCone hunter={h} level={level} />}
-      {weaver ? (
-        primitive
-      ) : (
-        <V4Only fallback={primitive}>
-          <WardenRig
-            hunter={h}
-            shell={shellColor}
-            bodyVisible={blackout ? () => distance() < MODIFIERS.blackout.hunterRevealDistance : undefined}
-            xrayVisible={awareness ? aware : undefined}
-          />
-        </V4Only>
-      )}
+      <V4Only fallback={primitive}>
+        <WardenRig
+          hunter={h}
+          kind={h.profile.kind}
+          shell={shellColor}
+          bodyVisible={blackout ? () => distance() < MODIFIERS.blackout.hunterRevealDistance : undefined}
+          xrayVisible={awareness ? aware : undefined}
+        />
+      </V4Only>
     </>
   )
 }
 
-/** Warden GLB placed from the sim each frame (grid sectors and the Core). */
+/** Warden / weaver GLB placed from the sim each frame (grid sectors and the Core). */
 export function WardenRig({
   hunter: h,
   visible,

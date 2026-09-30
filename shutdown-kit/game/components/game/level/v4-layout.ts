@@ -30,6 +30,34 @@ export const DOOR_SCALE: [number, number, number] = [0.553, 0.665, 1.3]
 /** The bulkhead frame is x -1.70..1.92 (GLB units); centre it in the door cell. */
 export const DOOR_LOCAL: [number, number, number] = [-0.11, 0, 0]
 
+/** Door kit per sector: frame + sliding leaf (node name), scaled to the 2 m cell / 2.1 m wall kit. */
+export type DoorKit = { asset: AssetId; leaf: string; scale: [number, number, number]; local: [number, number, number] }
+
+const DOOR_KITS: Record<string, DoorKit> = {
+  default: { asset: 'sliding-bulkhead', leaf: 'bulkhead-leaf', scale: DOOR_SCALE, local: DOOR_LOCAL },
+  // Cold door is 2.2 x 0.55 x 2.705 (GLB units).
+  'sector-2': { asset: 'cold-storage-door', leaf: 'cold-door', scale: [0.909, 0.776, 1.6], local: [0, 0, 0] },
+}
+
+export const doorKit = (levelId: string) => DOOR_KITS[levelId] ?? DOOR_KITS.default
+
+/**
+ * Sea level around every grid sector. The piers (top y -0.3, bottom -3.9) carry a tide mark at y -1.3;
+ * the water sits lower so the outlet pipes pour out of the pier faces fully under the deck.
+ */
+export const WATER_Y = -2.2
+/** Pier half width (foundation-pier is 4.32 m square), i.e. the pier face out from the ledge cell centre. */
+const PIER_HALF = 2.16
+/** Outlet pipe + waterfall scale: mouth bottom 2 m (GLB) above the water → 1.2 m; flange top stays under the pier top. */
+const OUTLET_SCALE = 0.6
+/** outlet-pipe `waterfall_anchor_blender` [0,-0.95,0] → glTF +z. */
+const OUTLET_FALL_Z = 0.95
+/** Uniform scale of the single water tile (8 m) around the level. */
+const WATER_MARGIN = 40
+
+/** Foundry ladle rig (gantry + tilted crucible + trough + pour) on the far ledge, see `set-pieces.tsx`. */
+export type SetPiece = { kind: 'foundry-pour'; x: number; z: number; rotY: number; s: number }
+
 type DecalAsset = 'decal-wall-stencil' | 'decal-floor-stencil' | 'decal-hazard-edge'
 
 export type DecalGroup = { asset: DecalAsset; from: string; to: string; placements: Placement[] }
@@ -37,6 +65,22 @@ export type DecalGroup = { asset: DecalAsset; from: string; to: string; placemen
 export type LevelLayout = {
   models: [AssetId, Placement[]][]
   decals: DecalGroup[]
+  setPieces: SetPiece[]
+}
+
+/** Sector machines on the crate sites (1.24 m colliders), scaled to fit the collider footprint. */
+function crateDressing(levelId: string, h: number): [AssetId, Omit<Placement, 'x' | 'y' | 'z'>] {
+  if (levelId === 'sector-2') {
+    return h % 2 === 0
+      ? ['coolant-tank', { sx: 0.88, sy: 0.88, sz: 0.88, local: [0, 0, -0.042] }]
+      : ['refrigeration-unit', { sx: 0.52, sy: 0.75, sz: 0.9, local: [0, 0, 0.107] }]
+  }
+  if (levelId === 'sector-3') {
+    return h % 2 === 0
+      ? ['foundry-furnace', { sx: 0.55, sy: 0.55, sz: 0.55, local: [0, 0, -0.124] }]
+      : ['casting-trough', { sx: 0.75, sy: 1, sz: 0.44 }]
+  }
+  return ['supply-crate', {}]
 }
 
 const DECAL_BAKED: Record<DecalAsset, string> = {
@@ -164,6 +208,46 @@ export function layoutLevel(level: LevelData): LevelLayout {
     }
   }
 
+  // Far (north) ledge dressing, behind the level from the camera: silos / stacks / the ladle rig.
+  const setPieces: SetPiece[] = []
+  const reserved = new Set<string>()
+  const ledge = (cx: number) => {
+    reserved.add(`${cx},-1`)
+    return { x: cx * cs, y: 0, z: -cs }
+  }
+  if (level.id === 'sector-2') {
+    for (let cx = 3; cx < width - 1; cx += 8) put('frost-silo', { ...ledge(cx), sx: 0.75, sy: 0.75, sz: 0.75, local: [-0.19, 0, 0] })
+    for (let cx = 7; cx < width - 1; cx += 8) put('refrigeration-unit', { ...ledge(cx), local: [0, 0, 0.107] })
+  }
+  if (level.id === 'sector-3') {
+    const mid = Math.floor(width / 2)
+    const { x, z } = ledge(mid)
+    reserved.add(`${mid - 1},-1`).add(`${mid + 1},-1`)
+    // Pour points out over the water (-Z), so the trough overhangs the pier shelf, not the wall.
+    setPieces.push({ kind: 'foundry-pour', x, z, rotY: Math.PI, s: 0.8 })
+    for (const cx of [3, width - 5]) put('tall-smokestack', { ...ledge(cx), sx: 0.8, sy: 0.8, sz: 0.8 })
+  }
+
+  // Sea: one big water tile under everything, outlet pipes + waterfalls on the camera-side pier faces.
+  const span = Math.max(width, height) * cs + WATER_MARGIN * 2
+  const ws = span / 8
+  put('water-tile', { x: ((width - 1) * cs) / 2, y: WATER_Y, z: ((height - 1) * cs) / 2, sx: ws, sz: ws })
+  const outlet = (x: number, z: number, d: 0 | 3) => {
+    const s = OUTLET_SCALE
+    const [dx, dz] = DIRS[d]
+    const base = { y: WATER_Y, rotY: FACE[d], sx: s, sy: s, sz: s }
+    put('outlet-pipe', { ...base, x: x + dx * PIER_HALF, z: z + dz * PIER_HALF })
+    put('waterfall', { ...base, x: x + dx * (PIER_HALF + OUTLET_FALL_Z * s), z: z + dz * (PIER_HALF + OUTLET_FALL_Z * s) })
+  }
+  let pierIndex = 0
+  for (let cx = 0; cx < width; cx++) {
+    if ((cx + height) % 2 === 0 && pierIndex++ % 3 === 1) outlet(cx * cs, height * cs, 3)
+  }
+  pierIndex = 0
+  for (let cz = 0; cz < height; cz++) {
+    if ((width + cz) % 2 === 0 && pierIndex++ % 3 === 1) outlet(width * cs, cz * cs, 0)
+  }
+
   // Outer ledge: one ring of edge cells outside the building, guardrails on the rim, piers below.
   for (let cz = -1; cz <= height; cz++) {
     for (let cx = -1; cx <= width; cx++) {
@@ -175,7 +259,8 @@ export function layoutLevel(level: LevelData): LevelLayout {
       const inward = DIRS.findIndex(([dx, dz]) => inLevel(cx + dx, cz + dz))
       if (inward >= 0) put('floor-cell-edge', { ...p, rotY: FACE[(inward + 2) % 4] })
       else put('floor-cell', p)
-      for (let d = 0; d < 4; d++) {
+      const railed = !reserved.has(`${cx},${cz}`)
+      for (let d = 0; railed && d < 4; d++) {
         const [dx, dz] = DIRS[d]
         const nx = cx + dx
         const nz = cz + dz
@@ -209,7 +294,11 @@ export function layoutLevel(level: LevelData): LevelLayout {
       sz: 0.7,
     })
   })
-  for (const c of level.crates) put('supply-crate', { x: c.x, y: 0, z: c.z, rotY: (cellHash(c.cx, c.cz) % 4) * QUARTER })
+  for (const c of level.crates) {
+    const h = cellHash(c.cx, c.cz)
+    const [asset, fit] = crateDressing(level.id, h >>> 3)
+    put(asset, { x: c.x, y: 0, z: c.z, rotY: (h % 4) * QUARTER, ...fit })
+  }
 
   // Dynamic wall tracks: KEEP CLEAR stencils on both sides.
   for (const w of level.dynamicWalls) {
@@ -242,7 +331,7 @@ export function layoutLevel(level: LevelData): LevelLayout {
     put('warning-beacon', { x: g.x, y: GRID.wallHeight + 0.8, z: g.z })
   }
 
-  return { models: [...models.entries()], decals: [...decals.values()] }
+  return { models: [...models.entries()], decals: [...decals.values()], setPieces }
 }
 
 /** Every asset the grid level can use, for preloading. */
@@ -269,4 +358,21 @@ export const LEVEL_ASSETS: AssetId[] = [
   'decal-wall-stencil',
   'decal-floor-stencil',
   'decal-hazard-edge',
+  'water-tile',
+  'outlet-pipe',
+  'waterfall',
 ]
+
+/** Extra kit per sector (Cold Storage / Foundry machines, doors, ledge set-pieces). */
+export const SECTOR_ASSETS: Record<string, AssetId[]> = {
+  'sector-2': ['cold-storage-door', 'coolant-tank', 'refrigeration-unit', 'frost-silo'],
+  'sector-3': [
+    'foundry-furnace',
+    'casting-trough',
+    'tall-smokestack',
+    'overhead-gantry',
+    'foundry-crucible',
+    'molten-stream',
+    'weaver',
+  ],
+}
