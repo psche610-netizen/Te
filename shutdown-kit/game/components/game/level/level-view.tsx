@@ -10,9 +10,13 @@ import {
   type MatId,
 } from '@/lib/game/level/parts'
 import type { Box, LevelData } from '@/lib/game/level/types'
+import { preloadAssets } from '@/lib/game/assets'
 import { flatMaterial, UNIT_BOX } from '@/lib/game/materials'
+import { V4Only } from '../v4-model'
+import { InstancedAsset } from './instanced-asset'
 import { InstancedBoxes } from './instanced-boxes'
-import { DoorView, DynamicWallView, GateView } from './module-views'
+import { DoorView, DynamicWallView, GateView, V4Doors } from './module-views'
+import { LEVEL_ASSETS, layoutLevel } from './v4-layout'
 
 const TILE_INSET = 0.012
 const TILE_HEIGHT = 0.06
@@ -22,7 +26,95 @@ function matFor(id: MatId) {
   return flatMaterial(key, e === 'e')
 }
 
+/** Sector 2 / 3 crate dressing (cabinets, cages). Stays primitive until Phase 24. */
+function sectorProps(level: LevelData, props = new Map<MatId, Box[]>()) {
+  const add = (id: MatId, boxes: Box[]) => props.set(id, [...(props.get(id) ?? []), ...boxes])
+  if (level.id === 'sector-2') {
+    add('bone', level.crates.map(c => ({ ...c, y: 1.25, sx: 1.18, sy: 2.5, sz: 1.18 })))
+    add('ink', level.crates.flatMap(c => [0.8, 1.65, 2.45].map(y => ({ x: c.x, y, z: c.z, sx: 1.2, sy: 0.04, sz: 1.2 }))))
+  }
+  if (level.id === 'sector-3') {
+    add('concrete', level.crates.flatMap(c => [-0.48, 0.48].flatMap(x => [-0.48, 0.48].map(z => ({ x: c.x + x, y: 1.15, z: c.z + z, sx: 0.12, sy: 2.3, sz: 0.12 })))))
+    add('signal', level.crates.map(c => ({ x: c.x, y: 1.4, z: c.z, sx: 0.65, sy: 0.7, sz: 0.65 })))
+  }
+  return props
+}
+
+function PropBoxes({ props }: { props: [MatId, Box[]][] }) {
+  return (
+    <>
+      {props.map(([id, boxes]) => (
+        <InstancedBoxes
+          key={id}
+          boxes={boxes}
+          material={matFor(id)}
+          castShadow={!id.endsWith(':e') && id !== 'ink'}
+        />
+      ))}
+    </>
+  )
+}
+
+function V4Shell({ level }: { level: LevelData }) {
+  const layout = useMemo(() => layoutLevel(level), [level])
+  const extras = useMemo(() => [...sectorProps(level).entries()], [level])
+  return (
+    <group>
+      {layout.models.map(([asset, placements]) => (
+        <InstancedAsset
+          key={asset}
+          asset={asset}
+          placements={placements}
+          castShadow={!asset.startsWith('floor-') && asset !== 'foundation-pier'}
+        />
+      ))}
+      {layout.decals.map((d) => (
+        <InstancedAsset
+          key={`${d.asset}:${d.to}`}
+          asset={d.asset}
+          decal={{ from: d.from, to: d.to }}
+          placements={d.placements}
+          castShadow={false}
+        />
+      ))}
+      <PropBoxes props={extras} />
+    </group>
+  )
+}
+
+preloadAssets(LEVEL_ASSETS)
+
 export function LevelView({ level }: { level: LevelData }) {
+  const primitive = <PrimitiveShell level={level} />
+  return (
+    <group>
+      <V4Only fallback={primitive}>
+        <V4Shell level={level} />
+      </V4Only>
+      <V4Only fallback={<PrimitiveDoors doors={level.doors} />}>
+        <V4Doors doors={level.doors} />
+      </V4Only>
+      {level.dynamicWalls.map((w) => (
+        <DynamicWallView key={`w${w.id}`} wall={w} />
+      ))}
+      {level.gates.map((g) => (
+        <GateView key={`g${g.id}`} gate={g} />
+      ))}
+    </group>
+  )
+}
+
+function PrimitiveDoors({ doors }: { doors: LevelData['doors'] }) {
+  return (
+    <>
+      {doors.map((d) => (
+        <DoorView key={`d${d.id}`} door={d} />
+      ))}
+    </>
+  )
+}
+
+function PrimitiveShell({ level }: { level: LevelData }) {
   const cs = level.cellSize
 
   const { tiles, caps, props } = useMemo(() => {
@@ -44,18 +136,7 @@ export function LevelView({ level }: { level: LevelData }) {
     const props = composeParts(level.lockers, LOCKER_PARTS)
     composeParts(level.generators, GENERATOR_BODY_PARTS, props)
     composeParts(level.crates, CRATE_PARTS, props)
-    if (level.id === 'sector-2') {
-      const cabinets = level.crates.map(c => ({ ...c, y: 1.25, sx: 1.18, sy: 2.5, sz: 1.18 }))
-      props.set('bone', [...(props.get('bone') ?? []), ...cabinets])
-      const seams = level.crates.flatMap(c => [0.8, 1.65, 2.45].map(y => ({ x: c.x, y, z: c.z, sx: 1.2, sy: 0.04, sz: 1.2 })))
-      props.set('ink', [...(props.get('ink') ?? []), ...seams])
-    }
-    if (level.id === 'sector-3') {
-      const cages = level.crates.flatMap(c => [-0.48, 0.48].flatMap(x => [-0.48, 0.48].map(z => ({ x: c.x + x, y: 1.15, z: c.z + z, sx: 0.12, sy: 2.3, sz: 0.12 }))))
-      props.set('concrete', [...(props.get('concrete') ?? []), ...cages])
-      const cores = level.crates.map(c => ({ x: c.x, y: 1.4, z: c.z, sx: 0.65, sy: 0.7, sz: 0.65 }))
-      props.set('signal', [...(props.get('signal') ?? []), ...cores])
-    }
+    sectorProps(level, props)
     const trim: Box[] = []
     for (const a of level.wallArms) {
       trim.push({ ...a, y: 0.16, sy: 0.3, sx: a.sx + 0.035, sz: a.sz + 0.035 })
@@ -90,23 +171,7 @@ export function LevelView({ level }: { level: LevelData }) {
       <InstancedBoxes boxes={level.wallArms} material={flatMaterial('bone')} />
       <InstancedBoxes boxes={caps} material={flatMaterial('bone')} castShadow={false} />
       <InstancedBoxes boxes={level.wallPosts} material={flatMaterial('graphite')} />
-      {props.map(([id, boxes]) => (
-        <InstancedBoxes
-          key={id}
-          boxes={boxes}
-          material={matFor(id)}
-          castShadow={!id.endsWith(':e') && id !== 'ink'}
-        />
-      ))}
-      {level.doors.map((d) => (
-        <DoorView key={`d${d.id}`} door={d} />
-      ))}
-      {level.dynamicWalls.map((w) => (
-        <DynamicWallView key={`w${w.id}`} wall={w} />
-      ))}
-      {level.gates.map((g) => (
-        <GateView key={`g${g.id}`} gate={g} />
-      ))}
+      <PropBoxes props={props} />
     </group>
   )
 }

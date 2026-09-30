@@ -20,6 +20,19 @@ class AssetBoundary extends Component<{ fallback: ReactNode; children: ReactNode
   }
 }
 
+/**
+ * Renders kit-backed children, or `fallback` (the code primitive) while loading, on load errors,
+ * and whenever `V4.models` is off, so every view keeps working during Part B.
+ */
+export function V4Only({ fallback = null, children }: { fallback?: ReactNode; children: ReactNode }) {
+  if (!V4.models) return <>{fallback}</>
+  return (
+    <AssetBoundary fallback={fallback}>
+      <Suspense fallback={fallback}>{children}</Suspense>
+    </AssetBoundary>
+  )
+}
+
 function Model({ asset, ...props }: ModelProps) {
   const { scene } = useV4Asset(asset)
   return (
@@ -29,17 +42,11 @@ function Model({ asset, ...props }: ModelProps) {
   )
 }
 
-/**
- * A kit GLB with the shared V4 materials. The code primitive in `fallback` renders while loading,
- * on load errors, and whenever `V4.models` is off, so every view keeps working during Part B.
- */
+/** A single kit GLB instance with the shared V4 materials. Use `InstancedAsset` for repeated pieces. */
 export function V4Model({ fallback = null, ...props }: ModelProps & { fallback?: ReactNode }) {
-  if (!V4.models) return <>{fallback}</>
   return (
-    <AssetBoundary fallback={fallback}>
-      <Suspense fallback={fallback}>
-        <Model {...props} />
-      </Suspense>
-    </AssetBoundary>
+    <V4Only fallback={fallback}>
+      <Model {...props} />
+    </V4Only>
   )
 }

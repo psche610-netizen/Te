@@ -1,15 +1,22 @@
 'use client'
 
+import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
-import type { Group, Mesh } from 'three'
+import { useMemo, useRef } from 'react'
+import { type Group, type InstancedMesh, Matrix4, type Mesh, Vector3 } from 'three'
+import { assetUrl, clipNodeOffset, type PartFilter, useAssetParts } from '@/lib/game/assets'
 import { GRID, SHIFT } from '@/lib/game/config'
 import { DOOR_JAMB } from '@/lib/game/level/build'
 import type { Axis, DoorModule, DynamicWallModule, GateModule } from '@/lib/game/level/types'
 import { flatMaterial, slitMaterial, UNIT_BOX } from '@/lib/game/materials'
+import { V4Model } from '../v4-model'
+import { InstancedParts, type Placement, placementMatrix } from './instanced-asset'
+import { DOOR_LOCAL, DOOR_SCALE, WALL_FACE } from './v4-layout'
 
 const CS = GRID.cellSize
 const H = GRID.wallHeight
+const STRIPE_Z = GRID.wallThickness / 2 + 0.01
+const TRACK_Z = GRID.wallThickness / 2 + 0.08
 
 type BoxProps = {
   p: [number, number, number]
@@ -54,7 +61,7 @@ function FloorTracks({ module, alwaysVisible }: { module: { telegraph: boolean }
 
   return (
     <>
-      {[0.24, -0.24].map((z, i) => (
+      {[TRACK_Z, -TRACK_Z].map((z, i) => (
         <mesh
           key={z}
           ref={(m) => {
@@ -118,6 +125,91 @@ export function DoorView({ door }: { door: DoorModule }) {
   )
 }
 
+const DOOR_FRAME: PartFilter = { key: 'frame', node: 'bulkhead-leaf', exclude: true }
+const DOOR_LEAF: PartFilter = { key: 'leaf', node: 'bulkhead-leaf' }
+const DOOR_LAMP_Z = WALL_FACE + 0.02
+const _leaf = new Matrix4()
+const _slide = new Vector3()
+
+/** Door status lights + telegraph tracks, shared by every door (primitive, they swap material live). */
+function DoorSignals({ door, lampY, lampZ }: { door: DoorModule; lampY: number; lampZ: number }) {
+  const lights = useRef<(Mesh | null)[]>([])
+  const signal = flatMaterial('signal', true)
+  useFrame(() => {
+    for (const l of lights.current) if (l) l.material = door.locked ? slitMaterial : signal
+  })
+  return (
+    <group position={[door.x, 0, door.z]} rotation-y={axisRot(door.axis)}>
+      <FloorTracks module={door} alwaysVisible={false} />
+      {[lampZ, -lampZ].map((z, i) => (
+        <mesh
+          key={z}
+          ref={(l) => {
+            lights.current[i] = l
+          }}
+          geometry={UNIT_BOX}
+          material={signal}
+          position={[0, lampY, z]}
+          scale={[0.4, 0.05, 0.02]}
+        />
+      ))}
+    </group>
+  )
+}
+
+/**
+ * All doors as the V4 sliding bulkhead: frames are one static instance set, leaves another set whose
+ * matrices slide along the GLB `open` clip offset. Scaled to the 2 m cell (see `DOOR_SCALE`).
+ */
+export function V4Doors({ doors }: { doors: DoorModule[] }) {
+  const frame = useAssetParts('sliding-bulkhead', DOOR_FRAME)
+  const leaf = useAssetParts('sliding-bulkhead', DOOR_LEAF)
+  const { animations } = useGLTF(assetUrl('sliding-bulkhead'))
+  const slide = useMemo(() => clipNodeOffset(animations, 'open', 'bulkhead-leaf'), [animations])
+  const leafMeshes = useRef<(InstancedMesh | null)[]>([])
+  const openness = useRef<number[]>([])
+
+  const placements = useMemo<Placement[]>(
+    () =>
+      doors.map((d) => ({
+        x: d.x,
+        y: 0,
+        z: d.z,
+        rotY: axisRot(d.axis),
+        sx: DOOR_SCALE[0],
+        sy: DOOR_SCALE[1],
+        sz: DOOR_SCALE[2],
+        local: DOOR_LOCAL,
+      })),
+    [doors],
+  )
+
+  useFrame((_, dt) => {
+    const k = 1 - Math.exp(-12 * dt)
+    let moved = false
+    doors.forEach((d, i) => {
+      const prev = openness.current[i] ?? (d.open ? 1 : 0)
+      const next = prev + ((d.open ? 1 : 0) - prev) * k
+      if (openness.current[i] !== undefined && Math.abs(next - prev) < 1e-4) return
+      openness.current[i] = next
+      moved = true
+      placementMatrix(placements[i], _leaf, _slide.copy(slide).multiplyScalar(next))
+      for (const m of leafMeshes.current) m?.setMatrixAt(i, _leaf)
+    })
+    if (moved) for (const m of leafMeshes.current) if (m) m.instanceMatrix.needsUpdate = true
+  })
+
+  return (
+    <>
+      <InstancedParts parts={frame} placements={placements} />
+      <InstancedParts parts={leaf} placements={placements} meshes={leafMeshes} />
+      {doors.map((d) => (
+        <DoorSignals key={d.id} door={d} lampY={H - 0.1} lampZ={DOOR_LAMP_Z} />
+      ))}
+    </>
+  )
+}
+
 export function DynamicWallView({ wall }: { wall: DynamicWallModule }) {
   const panel = useRef<Group>(null)
   const bone = flatMaterial('bone')
@@ -135,14 +227,14 @@ export function DynamicWallView({ wall }: { wall: DynamicWallModule }) {
 
   return (
     <group position={[wall.x, 0, wall.z]} rotation-y={axisRot(wall.axis)}>
-      <B p={[0, 0.004, 0]} s={[CS, 0.02, 0.56]} m={graphite} shadow={false} />
+      <B p={[0, 0.03, 0]} s={[CS, 0.02, GRID.wallThickness + 0.1]} m={graphite} shadow={false} />
       <FloorTracks module={wall} alwaysVisible />
       <group ref={panel} position-y={wall.raised ? 0 : lowered} visible={wall.raised}>
-        <B p={[0, H / 2, 0]} s={[CS, H, GRID.wallThickness]} m={bone} />
+        <V4Model asset="wall-straight" fallback={<B p={[0, H / 2, 0]} s={[CS, H, GRID.wallThickness]} m={bone} />} />
         {[-1, 1].map((side) => (
           <group key={side}>
-            <B p={[-CS / 2 + 0.12, H * 0.55, side * 0.16]} s={[0.04, H * 0.6, 0.02]} m={signal} shadow={false} />
-            <B p={[CS / 2 - 0.12, H * 0.55, side * 0.16]} s={[0.04, H * 0.6, 0.02]} m={signal} shadow={false} />
+            <B p={[-CS / 2 + 0.12, H * 0.55, side * STRIPE_Z]} s={[0.06, H * 0.6, 0.02]} m={signal} shadow={false} />
+            <B p={[CS / 2 - 0.12, H * 0.55, side * STRIPE_Z]} s={[0.06, H * 0.6, 0.02]} m={signal} shadow={false} />
           </group>
         ))}
       </group>

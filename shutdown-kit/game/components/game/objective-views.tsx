@@ -4,13 +4,19 @@ import { useFrame } from '@react-three/fiber'
 import { useCallback, useMemo, useRef } from 'react'
 import { MeshBasicMaterial, type Group, type Mesh } from 'three'
 import { generatorAvailable } from '@/lib/game/missions'
-import { LOCKER, PALETTE, SECURITY_CAMERA } from '@/lib/game/config'
+import { LOCKER, PALETTE, SECURITY_CAMERA, V4 } from '@/lib/game/config'
 import { lockerPoint } from '@/lib/game/hide'
-import { composeParts, GENERATOR_LIGHT_PARTS } from '@/lib/game/level/parts'
+import { composeParts, GENERATOR_LIGHT_PARTS, type Part } from '@/lib/game/level/parts'
 import type { CameraModule, LevelData } from '@/lib/game/level/types'
 import { flatMaterial, slitMaterial, UNIT_BOX } from '@/lib/game/materials'
 import type { GameSession } from '@/lib/game/session'
 import { FanCone, type FanState } from './fan-cone'
+
+/** Status lights for the V4 turbine (scaled 0.38): a floor strip at the front and a lamp on top. */
+const V4_GENERATOR_LIGHT_PARTS: Part[] = [
+  { mat: 'signal:e', box: { x: 0, y: 0.045, z: 0.78, sx: 1.3, sy: 0.02, sz: 0.1 } },
+  { mat: 'signal:e', box: { x: 0, y: 1.22, z: 0, sx: 0.22, sy: 0.1, sz: 0.22 } },
+]
 
 /** Generator status strips: signal = needs repair, blinking = in repair, bone = online. */
 export function GeneratorLights({ session }: { session: GameSession }) {
@@ -18,7 +24,9 @@ export function GeneratorLights({ session }: { session: GameSession }) {
   const boxes = useMemo(
     () =>
       session.level.generators.flatMap((g, gi) =>
-        [...composeParts([g], GENERATOR_LIGHT_PARTS).values()].flat().map((box) => ({ box, gi })),
+        [...composeParts([g], V4.models ? V4_GENERATOR_LIGHT_PARTS : GENERATOR_LIGHT_PARTS).values()]
+          .flat()
+          .map((box) => ({ box, gi })),
       ),
     [session],
   )

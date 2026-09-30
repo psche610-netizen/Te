@@ -78,7 +78,7 @@ export function buildLevel(def: LevelDef): LevelData {
     ]
     for (const [dx, dz, rotY] of dirs) {
       if (net(cx + dx, cz + dz)) {
-        const inset = snug ? cs / 2 - T / 2 - depth / 2 - 0.02 : 0
+        const inset = snug ? cs / 2 - GRID.propWallThickness / 2 - depth / 2 - 0.02 : 0
         return { id: 0, cx, cz, x: wx + dx * inset, z: wz + dz * inset, rotY }
       }
     }

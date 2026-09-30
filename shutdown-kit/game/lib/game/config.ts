@@ -33,8 +33,11 @@ export type PaletteKey = keyof typeof PALETTE
 export const GRID = {
   cellSize: 2,
   wallHeight: 2.0,
-  wallThickness: 0.3,
-  postThickness: 0.42,
+  /** Matches the V4 wall kit body (0.88 m). The extra width stays inside wall cells, so walkable space is unchanged. */
+  wallThickness: 0.88,
+  postThickness: 0.88,
+  /** Wall thickness used to place lockers against walls; kept at the v3 value so hide spots don't move. */
+  propWallThickness: 0.3,
   doorHeight: 1.72,
 } as const
 

@@ -62,9 +62,17 @@ const KEEP = [
   'fall_landing_blender',
   'waterfall_anchor_blender',
 ]
+const decalLayoutPath = join(kit, 'textures', 'decals-layout.json')
+const decalUvs = existsSync(decalLayoutPath)
+  ? Object.fromEntries(
+      Object.entries(JSON.parse(readFileSync(decalLayoutPath, 'utf8')).items).map(([k, v]) => [k, [...v.uv, v.aspect]]),
+    )
+  : {}
+
 const runtime = {
   version: manifest.version,
   textures: { atlas: '/textures/v4/v4-atlas.png', decals: '/textures/v4/decals-atlas.png' },
+  decal_uvs: decalUvs,
   materials: manifest.materials,
   effects: manifest.effects ?? {},
   assets: Object.fromEntries(

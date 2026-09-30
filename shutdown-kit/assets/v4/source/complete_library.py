@@ -486,6 +486,9 @@ def blob(name,p,s,mat):
 # Props and equipment ----------------------------------------------------------
 def pivot_part(name,p,objects,clip,axis='Z',amount=1.4,translation=False):
     a=ASSETS[CURRENT];node=bpy.data.objects.new(name,None);scene.collection.objects.link(node);node.parent=a['root'];node.location=p
+    # Without this update node.matrix_world is still identity, so the children kept absolute offsets
+    # and were exported shifted by p a second time. The game only re-centres nodes lacking this flag.
+    bpy.context.view_layer.update();node['pivot_fixed']=1
     for o in objects:
         world=o.matrix_world.copy();o.parent=node;o.matrix_world=world
     node.animation_data_create();act=bpy.data.actions.new(CURRENT+'_'+clip);node.animation_data.action=act

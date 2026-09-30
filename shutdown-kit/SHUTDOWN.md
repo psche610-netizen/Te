@@ -352,7 +352,7 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phase 21 done (tsc + `pnpm build` clean, menu/sector/loadout/in-game checked in the browser, no console errors). Next: Phase 22.** Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phases 21–22 done (tsc + `pnpm build` clean, in-game checked in the browser). Phase 22 fixed `pivot_part` in `complete_library.py` (animated doors were exported offset); the user must rerun the props Blender build. Next: Phase 23.** Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
@@ -698,8 +698,8 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] V4 palette in `config.ts` `PALETTE` + `globals.css`; fonts Bebas Neue + Share Tech Mono. Lights: amber key, indigo fill/ambient, hard shadows kept.
 
 ### Phase 22 — Integrate environment + Plant
-- [ ] Thick wall rendering from the grid (update deviation note in section 16), floor, pier, decals, doors, bulkheads, lamps, rails.
-- [ ] Machines + props: generator, lockers, crates, console, Sector 1 dressing (off the walkable grid or on wall cells).
+- [x] Thick wall rendering from the grid (update deviation note in section 16), floor, pier, decals, doors, bulkheads, lamps, rails.
+- [x] Machines + props: generator, lockers, crates, console, Sector 1 dressing (off the walkable grid or on wall cells).
 
 ### Phase 23 — Integrate characters
 - [ ] player-view, hunter-view, loadout diorama, locker view; clips driven by `walkPhase` + hunter mode; skins via material tint.
