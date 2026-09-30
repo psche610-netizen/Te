@@ -21,7 +21,7 @@ export default function GameCanvas() {
       orthographic
       shadows="basic"
       dpr={[1, PERF.maxDpr]}
-      gl={{ antialias: true, powerPreference: 'high-performance' }}
+      gl={{ antialias: true, powerPreference: 'high-performance', stencil: true }}
       camera={{ near: 0.1, far: 200 }}
       className="!absolute inset-0"
     >

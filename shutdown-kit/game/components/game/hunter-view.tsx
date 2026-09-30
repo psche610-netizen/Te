@@ -9,6 +9,8 @@ import type { LevelData } from '@/lib/game/level/types'
 import { flatMaterial, slitMaterial, UNIT_BOX, xrayDangerMaterial } from '@/lib/game/materials'
 import type { PlayerState } from '@/lib/game/player'
 import { useSkinColors } from '@/lib/game/use-skin-colors'
+import { WardenModel } from './v4-character'
+import { V4Only } from './v4-model'
 import { VisionCone } from './vision-cone'
 import { WeaverBody } from './weaver-body'
 
@@ -157,20 +159,53 @@ export function HunterView({
     materials.frame.visible = show
   })
 
-  const Body = h.profile.kind === 'weaver' ? WeaverBody : HunterBody
+  const weaver = h.profile.kind === 'weaver'
+  const Body = weaver ? WeaverBody : HunterBody
+  const aware = () => distance() < PERK_EFFECTS.awarenessDistance
+
+  const primitive = (
+    <>
+      <Body hunter={h} materials={materials} shadow />
+      {awareness && <Body hunter={h} materials={XRAY} shadow={false} visible={aware} />}
+    </>
+  )
 
   return (
     <>
       {!blackout && <VisionCone hunter={h} level={level} />}
-      <Body hunter={h} materials={materials} shadow />
-      {awareness && (
-        <Body
-          hunter={h}
-          materials={XRAY}
-          shadow={false}
-          visible={() => distance() < PERK_EFFECTS.awarenessDistance}
-        />
+      {weaver ? (
+        primitive
+      ) : (
+        <V4Only fallback={primitive}>
+          <WardenRig
+            hunter={h}
+            shell={shellColor}
+            bodyVisible={blackout ? () => distance() < MODIFIERS.blackout.hunterRevealDistance : undefined}
+            xrayVisible={awareness ? aware : undefined}
+          />
+        </V4Only>
       )}
     </>
+  )
+}
+
+/** Warden GLB placed from the sim each frame (grid sectors and the Core). */
+export function WardenRig({
+  hunter: h,
+  visible,
+  ...props
+}: { hunter: HunterPose; visible?: () => boolean } & Omit<Parameters<typeof WardenModel>[0], 'hunter'>) {
+  const root = useRef<Group>(null)
+  useFrame(() => {
+    const g = root.current
+    if (!g) return
+    g.visible = visible ? visible() : true
+    g.position.set(h.x, 0, h.z)
+    g.rotation.y = h.facing
+  })
+  return (
+    <group ref={root}>
+      <WardenModel hunter={h} {...props} />
+    </group>
   )
 }

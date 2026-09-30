@@ -8,7 +8,9 @@ import { flatMaterial, UNIT_BOX } from '@/lib/game/materials'
 import { createPlayer } from '@/lib/game/player'
 import { useSkinColors } from '@/lib/game/use-skin-colors'
 import { Mannequin } from './player-view'
+import { OperatorModel } from './v4-character'
 import { V4Lights } from './v4-lights'
+import { V4Only } from './v4-model'
 
 const offsetDir = new Vector3(0.4, 0.3, 1).normalize()
 const UP = new Vector3(0, 1, 0)
@@ -43,7 +45,9 @@ export function LoadoutDiorama() {
       <V4Lights shadowExtent={3} shadowMapSize={1024} />
       <mesh geometry={UNIT_BOX} material={flatMaterial('concrete')} position={[0, -0.1, 0]} scale={[1.25, 0.2, 1.05]} receiveShadow />
       <group ref={turn}>
-        <Mannequin p={pose} material={flatMaterial(suit)} />
+        <V4Only fallback={<Mannequin p={pose} material={flatMaterial(suit)} />}>
+          <OperatorModel p={pose} suit={suit} />
+        </V4Only>
       </group>
     </>
   )

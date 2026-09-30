@@ -352,9 +352,17 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phases 21–22 done (tsc + `pnpm build` clean, in-game checked in the browser). Phase 22 fixed `pivot_part` in `complete_library.py` (animated doors were exported offset); the user must rerun the props Blender build. Next: Phase 23.** Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phases 21–23 done (tsc + `pnpm build` clean, in-game checked in the browser). Phase 22 fixed `pivot_part` in `complete_library.py` (animated doors were exported offset); the user must rerun the props Blender build. Next: Phase 24.** Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
+
+**Phase 23 (Characters in game) — DONE. Verified: `tsc --noEmit` + `pnpm build` clean; browser (898x624): loadout operator, in-night operator walking + x-ray behind walls, warden with cone; no page errors.**
+- `components/game/v4-character.tsx`: `OperatorModel` (player + loadout) and `WardenModel` (grid + Core). Each instance = SkeletonUtils clone + own `AnimationMixer`; all clips play at once and are blended by weight (smoothed, rate 10/s). `walkPhase` clips (walk/run/crouch/chase) have timeScale 0 and are scrubbed with `walkPhaseTime`, so steps match ground speed; `time` clips advance with dt. Operator: crouch when crouching, else walk/run × speed/`PLAYER.walkSpeed` + idle. Warden: stunned; else walk (chase in chase mode) × speed/`HUNTER.patrolSpeed` + scan (suspicious/investigate/search) or idle. Sim `headYaw` is added to the `head` bone after the mixer (reset to rest first). `grab`, `hide-enter`, `repair`, `caught` are not wired (no view-side state for them; lib/game stays untouched).
+- Skins: `tintAsset` suit slot only when the skin isn't the default (operator amber / warden petrol); warden Porcelain = ivory shell + petrol trim. Tinted slots lose the paint strokes (flat color), per `tintAsset`.
+- X-ray (player always, warden with Awareness): silhouette SkinnedMesh siblings bound to the same skeleton (no extra skinning pass). **Stencil mask**: body materials are per-instance clones that write stencil 1 and render at renderOrder 5 (after the level); the silhouette draws only where stencil ≠ 1, so it shows behind walls but no longer over the character's own pack/legs. Needs `gl.stencil: true` (`game-canvas.tsx`).
+- Blackout hides all warden meshes except the `danger-red` slit. Core passes its `useSlitMaterial` as the slit (dims at the ending; not cloned).
+- `hunter-view.tsx` exports `WardenRig` (places the model from sim state); the Weaver keeps `WeaverBody` until Phase 24. All primitives stay as `V4Only` fallbacks. Locker view: player is hidden while in the locker, the warden checking it plays scan (no locker-specific code needed).
+- For the playtest: walk/run foot sliding, crouch pose, warden head yaw direction vs the cone, Porcelain/Hazmat/Night Shift tints. Headless browser ran at ~2 fps, so clip timing wasn't judged there.
 
 **Phase 21 (Engine pipeline + V4 look) — DONE. Verified by the agent: `tsc --noEmit` clean, `pnpm build` clean, static `out/` checked in the browser. `<V4Model>` takes the kit id as `asset` (not `id`: `group` already has a string `id` prop).**
 - `game/scripts/sync-v4-assets.mjs` (`pnpm assets:sync`, also runs first in `pnpm dev` / `pnpm build`): copies the 86 GLBs → `public/models/v4/<id>.glb`, `v4-atlas.png` + `decals-atlas.png` → `public/textures/v4/`, and writes the trimmed runtime manifest `lib/game/v4-manifest.json` (materials, effects, per-asset clips/clip_meta/tint_slots/anchors/decals). **Deviation:** the public copies are gitignored (they duplicate `assets/v4`, ~15 MB); the JSON is committed so typecheck works without the script. GLBs already carry no images, so nothing to strip.
@@ -702,7 +710,7 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - [x] Machines + props: generator, lockers, crates, console, Sector 1 dressing (off the walkable grid or on wall cells).
 
 ### Phase 23 — Integrate characters
-- [ ] player-view, hunter-view, loadout diorama, locker view; clips driven by `walkPhase` + hunter mode; skins via material tint.
+- [x] player-view, hunter-view, loadout diorama, locker view; clips driven by `walkPhase` + hunter mode; skins via material tint.
 
 ### Phase 24 — Integrate Sectors 2 + 3
 - [ ] Water shader, waterfall, outlet pipe, Cold Storage props; Foundry props, Weaver GLB with existing gait.

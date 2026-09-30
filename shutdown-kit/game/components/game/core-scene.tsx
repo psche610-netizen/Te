@@ -25,7 +25,8 @@ import { useGameStore } from '@/lib/game/store'
 import { useSkinColors } from '@/lib/game/use-skin-colors'
 import { FanCone, type FanCast, type FanState } from './fan-cone'
 import { GameRig } from './game-rig'
-import { HunterBody, type HunterMaterials } from './hunter-view'
+import { HunterBody, type HunterMaterials, WardenRig } from './hunter-view'
+import { V4Only } from './v4-model'
 import { PlayerView } from './player-view'
 import { CONE_OPACITY, HALF_FOV } from './vision-cone'
 
@@ -234,6 +235,8 @@ function CoreHunterView({ session, hunter: h }: { session: CoreSession; hunter: 
     [],
   )
   const shown = () => h.active || (h.fall >= 0 && h.fall < 3)
+  const aware = () =>
+    h.active && Math.hypot(h.x - session.player.x, h.z - session.player.z) < PERK_EFFECTS.awarenessDistance
   const read = useCallback(
     (out: FanState) => {
       out.x = h.x
@@ -252,17 +255,24 @@ function CoreHunterView({ session, hunter: h }: { session: CoreSession; hunter: 
     <>
       <FanCone cast={coneCast} range={HUNTER.visionRange} halfFov={HALF_FOV} read={read} />
       <group ref={group}>
-        <HunterBody hunter={h} materials={materials} shadow visible={shown} />
-        {session.perks.awareness && (
-          <HunterBody
+        <V4Only
+          fallback={
+            <>
+              <HunterBody hunter={h} materials={materials} shadow visible={shown} />
+              {session.perks.awareness && (
+                <HunterBody hunter={h} materials={xray} shadow={false} visible={aware} />
+              )}
+            </>
+          }
+        >
+          <WardenRig
             hunter={h}
-            materials={xray}
-            shadow={false}
-            visible={() =>
-              h.active && Math.hypot(h.x - session.player.x, h.z - session.player.z) < PERK_EFFECTS.awarenessDistance
-            }
+            shell={shellColor}
+            slit={slit}
+            visible={shown}
+            xrayVisible={session.perks.awareness ? aware : undefined}
           />
-        )}
+        </V4Only>
       </group>
     </>
   )

@@ -10,9 +10,9 @@ Legend: OK = usable as is · FIX = exists, needs rework · NEW = missing
 
 | Asset | Status | Notes vs concept |
 |---|---|---|
-| operator-amber | OK (P15 script) | Bulkier suit + shoulder pads, rubber knee pads, dark gloves/gauntlets, toe-capped boots, larger pack with canisters, chest radio. Clips incl. hide-enter; tint slots suit/trim. |
+| operator-amber | OK (P15 script) | Bulkier suit + shoulder pads, rubber knee pads, dark gloves/gauntlets, toe-capped boots, larger pack with canisters, chest radio. Clips incl. hide-enter; tint slots suit/trim. **In game (P23):** player + loadout via `OperatorModel` (idle/walk/run/crouch). |
 | crew-teal / crew-ivory | OK (P15 script) | Same body as operator (shared `operator()` builder). |
-| warden | OK (P15 script) | Larger ivory box head, brow, full-width red slit, chin vent; articulated three-claw hands (fingers/fingertips/thumb bones). Clips idle/walk/scan/chase/grab/stunned. |
+| warden | OK (P15 script) | Larger ivory box head, brow, full-width red slit, chin vent; articulated three-claw hands (fingers/fingertips/thumb bones). Clips idle/walk/scan/chase/grab/stunned. **In game (P23):** grid sectors + Core via `WardenRig` (idle/walk/scan/chase/stunned; grab unused). |
 | weaver | OK (P18 script) | Chunky petrol box hull + skirt, thorax, dorsal pack/reservoirs, `code-w-01` + hazard decals; ivory box head with red slit; thick armored hydraulic legs (hip motor → thigh → shin → foot). Rest pose = `weaver-body.tsx` (HIP_Y/SPLAY/KNEE/FOOT); bones `hip{row}.{L|R}` (yaw/lift) + `leg/shin/foot` (flex); manifest `gait`. Clips idle/scuttle/chase/scan/strike/stunned on the tripod gait. |
 
 ## B. Plant / Sector 1 environment (05, 07, 01)

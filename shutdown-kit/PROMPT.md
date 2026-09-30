@@ -1,6 +1,6 @@
 ## READ FIRST: where things are and who runs what
 
-**Status:** Phases 0–22 are DONE. All 86 V4 assets are within budget and have been reviewed; the engine pipeline + V4 look is in (`SHUTDOWN.md` section 17). **Next: Phase 23.** (After Phase 22, rerun the props Blender build for the `pivot_part` fix.)
+**Status:** Phases 0–23 are DONE. All 86 V4 assets are within budget and have been reviewed; the engine pipeline, V4 look, environment and characters are in (`SHUTDOWN.md` section 17). **Next: Phase 24.** (After Phase 22, rerun the props Blender build for the `pivot_part` fix.)
 
 **In the v0 chat:** the user starts each chat with `git clone https://github.com/psche610-netizen/Te`, so the repo is at `./Te/` in the project root (paths below are relative to `Te/`). `GITHUB_PAT` is set in the project Vars. Push with `git push https://x-access-token:$GITHUB_PAT@github.com/psche610-netizen/Te.git HEAD:main`, and never print or commit the token. If `$GITHUB_PAT` is empty in the shell, read it from `.env.development.local` in the project root.
 

@@ -7,6 +7,8 @@ import { PLAYER } from '@/lib/game/config'
 import { flatMaterial, UNIT_BOX, xrayMaterial } from '@/lib/game/materials'
 import type { PlayerState } from '@/lib/game/player'
 import { useSkinColors } from '@/lib/game/use-skin-colors'
+import { OperatorModel } from './v4-character'
+import { V4Only } from './v4-model'
 
 type Part = { p: [number, number, number]; s: [number, number, number] }
 
@@ -97,8 +99,16 @@ export function PlayerView({ player: p, isHidden }: { player: PlayerState; isHid
 
   return (
     <group ref={root}>
-      <Mannequin p={p} material={flatMaterial(suit)} />
-      <Mannequin p={p} material={xrayMaterial} xray />
+      <V4Only
+        fallback={
+          <>
+            <Mannequin p={p} material={flatMaterial(suit)} />
+            <Mannequin p={p} material={xrayMaterial} xray />
+          </>
+        }
+      >
+        <OperatorModel p={p} suit={suit} xray />
+      </V4Only>
     </group>
   )
 }
