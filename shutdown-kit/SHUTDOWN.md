@@ -352,11 +352,11 @@ Fair, non pay-to-win. One purchase unlocks content, not power.
 
 ## 16. Progress log
 
-**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phase 21 written, awaiting the user's typecheck + screenshot.** Rules in section 2 are now V4.
+**Status:** Phases 0–12 complete (code, v3 flat look). **V4 art pass: Phases 13–27 in section 17 — Part A (13–20) authors ALL assets first, Part B (21–27) integrates them into the game later.** Current: **Part A done (86/86 built, reviewed). Part B: Phase 21 done (tsc + `pnpm build` clean, menu/sector/loadout/in-game checked in the browser, no console errors). Next: Phase 22.** Rules in section 2 are now V4.
 
 **Next step (agent):** continue the first unchecked phase in section 17. Do one phase per turn, then stop, report, commit + push.
 
-**Phase 21 (Engine pipeline + V4 look) — code written, WAITING for the user's `npx tsc --noEmit` + screenshot before ticking:**
+**Phase 21 (Engine pipeline + V4 look) — DONE. Verified by the agent: `tsc --noEmit` clean, `pnpm build` clean, static `out/` checked in the browser. `<V4Model>` takes the kit id as `asset` (not `id`: `group` already has a string `id` prop).**
 - `game/scripts/sync-v4-assets.mjs` (`pnpm assets:sync`, also runs first in `pnpm dev` / `pnpm build`): copies the 86 GLBs → `public/models/v4/<id>.glb`, `v4-atlas.png` + `decals-atlas.png` → `public/textures/v4/`, and writes the trimmed runtime manifest `lib/game/v4-manifest.json` (materials, effects, per-asset clips/clip_meta/tint_slots/anchors/decals). **Deviation:** the public copies are gitignored (they duplicate `assets/v4`, ~15 MB); the JSON is committed so typecheck works without the script. GLBs already carry no images, so nothing to strip.
 - `lib/game/assets.ts`: `AssetId` (typed from the manifest), `assetUrl`, `preloadAssets(ids)` (`useGLTF.preload`, Draco off so the APK never hits a CDN), lazy shared `atlasTexture()` / `decalTexture()` (flipY false, sRGB), `v4Material(name)` = one cached `MeshStandardMaterial` per manifest name (atlas cell → atlas map, rough .9, metal 0; else `fallback_color`; `emission` → emissive; decals: decal atlas, transparent, depthWrite off, polygonOffset, mask = tinted), `applyV4Materials(root)`, `tintAsset(root, id, {suit, trim})` (clones only the slot materials), `useV4Asset(id)` (memoized clone; SkeletonUtils for rigged), `walkPhaseTime(meta, walkPhase)`.
 - `components/game/v4-model.tsx` `<V4Model id fallback>`: Suspense + error boundary, renders the primitive while loading / on error / when `V4.models` is false (`config.ts`). Not mounted anywhere yet (Phase 22+).
@@ -603,7 +603,7 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 - `components/game/game-rig.tsx` — follow camera (zoom = height / `gameViewHeight`) + key light and shadow frustum that follow.
 - `components/game/level/level-view.tsx` — instanced floor tiles, walls, caps, posts, props; `module-views.tsx` — door, dynamic wall, gate. `instanced-boxes.tsx` — one draw call per material group.
 - `components/game/player-view.tsx` — faceless mannequin + x-ray pass, procedural walk cycle.
-- `components/game/foundation-diorama.tsx` — primitive room used as title backdrop.
+- `components/game/foundation-diorama.tsx` �� primitive room used as title backdrop.
 - `components/shell/orientation-gate.tsx` — CSS `portrait:` rotate screen.
 - `components/shell/title-overlay.tsx` — title (01): PLAY / PERKS / SETTINGS.
 - `lib/game/campaign.ts` — sectors, access, nights, modifiers. `perks.ts` — perk defs. `results.ts` — scrap + night result. `level/sector2.ts` — Cold Storage.
@@ -693,9 +693,9 @@ Phase 6 (OVERSEER director) was logic-tested headlessly (`/tmp/p6/test.ts`, 20 r
 ## Part B — Integration + ship (after all assets)
 
 ### Phase 21 — Engine pipeline + V4 look
-- [ ] Copy packed GLBs + atlases into `game/public/models/v4` and `game/public/textures/v4`.
-- [ ] `lib/game/assets.ts`: GLB registry (id → path), `useGLTF.preload`, shared atlas + material factory (`MeshStandardMaterial`, roughness 0.9, metalness 0) by material name.
-- [ ] V4 palette in `config.ts` `PALETTE` + `globals.css`; fonts Bebas Neue + Share Tech Mono. Lights: amber key, indigo fill/ambient, hard shadows kept.
+- [x] Copy packed GLBs + atlases into `game/public/models/v4` and `game/public/textures/v4`.
+- [x] `lib/game/assets.ts`: GLB registry (id → path), `useGLTF.preload`, shared atlas + material factory (`MeshStandardMaterial`, roughness 0.9, metalness 0) by material name.
+- [x] V4 palette in `config.ts` `PALETTE` + `globals.css`; fonts Bebas Neue + Share Tech Mono. Lights: amber key, indigo fill/ambient, hard shadows kept.
 
 ### Phase 22 — Integrate environment + Plant
 - [ ] Thick wall rendering from the grid (update deviation note in section 16), floor, pier, decals, doors, bulkheads, lamps, rails.
